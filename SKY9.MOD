@@ -1,0 +1,14 @@
+Rectangle (0,7,319,13,184,TRUE);
+Rectangle (0,14,319,20,183,TRUE);
+Rectangle (0,21,320,28,182,TRUE);
+Rectangle (0,28,319,34,181,TRUE);
+Rectangle (0,35,320,41,180,TRUE);
+Rectangle (0,42,320,48,179,TRUE);
+Rectangle (0,49,319,55,178,TRUE);
+Rectangle (0,56,319,62,177,TRUE);
+Rectangle (0,63,319,69,176,TRUE);
+Rectangle (0,70,319,76,177,TRUE);
+Rectangle (0,77,319,83,178,TRUE);
+Rectangle (0,84,319,90,179,TRUE);
+Rectangle (0,91,320,97,180,TRUE);
+Rectangle (0,98,319,104,181,TRUE);

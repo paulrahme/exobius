@@ -1,0 +1,289 @@
+
+ Start  Stop   Length Name               Class              Group
+
+ 00000H 0000FH 0000FH MATHLIB_TEXT       CODE               (none)
+ 00010H 0002BH 0001BH SYSTEM_TEXT        CODE               (none)
+ 00030H 00052H 00022H Process_TEXT       CODE               (none)
+ 00060H 000E1H 00081H ENTERCODE          CODE               (none)
+ 000F0H 00246H 00156H Lib_TEXT           CODE               (none)
+ 00250H 0047AH 0022AH CORE_TEXT          CODE               (none)
+ 00480H 0073DH 002BDH PROC_TEXT          CODE               (none)
+ 00740H 00A56H 00316H STR_TEXT           CODE               (none)
+ 00A60H 00E11H 003B1H Music_TEXT         CODE               (none)
+ 00E20H 01291H 00471H PROCESS_TEXT       CODE               (none)
+ 012A0H 01732H 00492H Storage_TEXT       CODE               (none)
+ 01740H 01FADH 0086DH _TEXT              CODE               (none)
+ 01FB0H 02A71H 00AC1H FIO_TEXT           CODE               (none)
+ 02A80H 02C30H 001B0H SIG_TEXT           SIG_CODE           (none)
+ 02C30H 02C9CH 0006CH MP_CODE            MP_CODE            (none)
+ 02CA0H 02CB5H 00015H _INIT              INIT_CODE          (none)
+ 02CC0H 02CC2H 00002H EMU_STATE          DATA               DGROUP 
+ 02CC2H 02CC2H 00000H _CONST             DATA               DGROUP 
+ 02CC2H 02E09H 00147H _DATA              DATA               DGROUP 
+ 02E09H 02E0AH 00001H BSS_START          BSS                DGROUP 
+ 02E0AH 02E0AH 00000H CONST              CONST              DGROUP 
+ 02E0AH 03E48H 0103EH _BSS               BSS                DGROUP 
+ 03E48H 03E48H 00000H BSS_END            BSS                DGROUP 
+ 03E48H 03E49H 00001H NEAR_STACK         BSS                DGROUP 
+ 03E49H 03E49H 00000H NEAR_HEAP          BSS                DGROUP 
+ 03E50H 03E52H 00002H SYSTEM_BSS         FAR_DATA           SYSTEMDGROUP 
+ 03E60H 03E68H 00008H Storage_BSS        FAR_DATA           StorageDGROUP 
+ 03E70H 03E70H 00000H Lib_CONST          FAR_DATA           LibDGROUP 
+ 03E70H 03E80H 00010H Lib_BSS            FAR_DATA           LibDGROUP 
+ 03E80H 03E80H 00000H Music_CONST        FAR_DATA           MusicDGROUP 
+ 03E80H 03E89H 00009H Music_DATA         FAR_DATA           MusicDGROUP 
+ 03E89H 03E9BH 00012H Music_BSS          FAR_DATA           MusicDGROUP 
+ 03EA0H 03F49H 000A9H FIO_BSS            FAR_DATA           FIODGROUP 
+ 03F50H 07F50H 04000H STACK              STACK              (none)
+
+  Address         Publics by Value
+
+ 0000:0001       MATHLIB$
+ 0001:0015       SYSTEM$
+ 0003:0014       Process$
+ 000F:0000       Lib$FarWordFill
+ 000F:000B       Lib$InternalDelay
+ 000F:0011       Lib$Sound
+ 000F:003C       Lib$NoSound
+ 000F:00BD       Lib$SysErrno
+ 000F:00CE       Lib$Delay
+ 000F:0144       Lib$
+ 0025:0000       F$UnsMol
+ 0025:0000       F$SgnMol
+ 0025:005F       F$UnsDiv
+ 0025:00E8       F$UnsRem
+ 0025:0177       F$UnsMul
+ 0025:01BB       F$CnsStk
+ 0025:01C1       F$CnsPtr
+ 0025:01C7       F$CnsIdx
+ 0025:01CD       F$CnsOvr
+ 0025:01D3       F$CnsRng
+ 0025:01D9       F$CnsRet
+ 0025:01DF       F$CnsCase
+ 0025:01E5       F$CnsDiv
+ 0025:01EB       F$CnsPVC
+ 0048:0000       __set_machine_id
+ 0048:000E       @MachineId
+ 0048:000F       @Save8087
+ 0048:0011       @CurrentProcess
+ 0048:0034       _new_priority
+ 0048:0041       SYSTEM$Listen
+ 0048:00D8       CoreProc$TRANSFER
+ 0048:00D8       SYSTEM$TRANSFER
+ 0048:0105       SYSTEM$IOTRANSFER
+ 0048:0105       CoreProc$IOTRANSFER
+ 0048:019F       SYSTEM$NEWPROCESS
+ 0048:019F       CoreProc$NEWPROCESS
+ 0048:026A       SYSTEM$NewPriority
+ 0048:026A       CoreProc$NewPriority
+ 0048:0276       SYSTEM$CurrentPriority
+ 0048:0276       CoreProc$CurrentPriority
+ 0048:027A       SYSTEM$InterruptRegisters
+ 0048:0292       SYSTEM$initprocess
+ 0048:0292       CoreProc$initprocess
+ 0048:02B5       SYSTEM$CurrentProcess
+ 0048:02B5       CoreProc$CurrentProcess
+ 0074:0000       Str$Length
+ 0074:0018       Str$Compare
+ 0074:0065       Str$Append
+ 0074:0098       Str$Copy
+ 0074:00E9       Str$CardToStr
+ 0074:019A       Str$StrToCard
+ 00A6:03A3       _main
+ 00E2:0105       Process$StopScheduler
+ 00E2:0134       Process$StartProcess
+ 00E2:01E8       Process$Delay
+ 00E2:029E       Process$Lock
+ 00E2:02AC       Process$Unlock
+ 00E2:02DB       Process$Idler
+ 012A:0049       Storage$FarAllocate
+ 012A:00BB       Storage$FarMakeHeap
+ 012A:012C       Storage$FarHeapAllocate
+ 0174:0006       _exit
+ 0174:002D       __InitLoop
+ 0174:00B2       __Term2
+ 0174:00FB       __cleanup
+ 0174:0131       __InitLink
+ 0174:0150       __InitReset
+ 0174:016E       __InitSetup
+ 0174:01D5       __getheapbase
+ 0174:01FD       __osversion
+ 0174:0231       __exit
+ 0174:027D       __real_pdef
+ 0174:027D       __real_sdef
+ 0174:028F       __startup
+ 0174:032D       $Stage2
+ 0174:0374       __fp_0
+ 0174:0386       __errno__
+ 0174:03A3       __ioerr
+ 0174:03CC       __FatalErrorPos
+ 0174:03D6       __FatalError
+ 0174:04F2       __initm
+ 0174:0505       $initm
+ 0174:050C       $initm2
+ 0174:056C       $go
+ 0174:0616       __initio
+ 0174:06AA       __open
+ 0174:06C6       __read
+ 0174:06E2       __write
+ 0174:06FE       __dos_close
+ 0174:06FE       __close
+ 0174:0718       _isatty
+ 0174:0733       _lseek
+ 0174:074E       _tell
+ 0174:076E       __getTID
+ 0174:07A8       Str$
+ 0174:07B6       __init_dummy
+ 0174:07B6       __exit1
+ 0174:07B6       __initwin
+ 0174:07B6       __setvideomode
+ 0174:07B6       __initmt
+ 0174:07B7       __initgraph
+ 0174:07B8       _AdjustMem
+ 0174:07E7       __getheapmem
+ 0174:0846       Storage$
+ 0174:0854       __FloatInit
+ 0174:085E       __FloatLoadCW
+ 0174:085E       __FloatFinish
+ 0174:085E       __FloatStoreCW
+ 0174:085E       __FloatJmpSave
+ 0174:085E       __FloatStoreSW
+ 0174:085E       __FloatJmpRestore
+ 0174:085E       __FloatExecRestore
+ 0174:085E       __FloatMathExcepDos
+ 0174:085E       __FloatExecSave
+ 0174:085E       __FloatSave
+ 0174:085E       __FloatInitInstance
+ 0174:085E       __FloatRestore
+ 0174:0863       __FloatMathExcepOs2
+ 01FB:0094       FIO$Open
+ 01FB:010C       FIO$Close
+ 01FB:018F       FIO$GetPos
+ 01FB:02D3       FIO$Seek
+ 01FB:03B3       FIO$Flush
+ 01FB:0469       FIO$RdChar
+ 01FB:05B1       FIO$RdCard
+ 01FB:0621       FIO$RdItem
+ 01FB:06D6       FIO$ThreadOK
+ 01FB:0AAF       FIO$
+ 02A8:0000       @InProgramFlag
+ 02A8:0001       @StopProgramFlag
+ 02A8:0002       @DosInterrupt
+ 02A8:003F       __SigInit
+ 02A8:005A       __DelayFactor
+ 02A8:005C       __Iter
+ 02A8:005E       __Count
+ 02A8:00E3       _delay
+ 02A8:0110       @LoadRegisters
+ 02A8:012D       @SaveRegisters
+ 02A8:0156       Lib$Dos
+ 02CC:000A       @InitCalled
+ 02CC:000C       @InitGrandTotal
+ 02CC:000E       @InitCurrent
+ 02CC:0010       @InitRecPointer
+ 02CC:0014       @InitPointer
+ 02CC:0018       @StackContextSP
+ 02CC:001A       @StackContextBP
+ 02CC:001C       @StackContextSS
+ 02CC:001E       @InitPriority
+ 02CC:001F       __exit_ptr
+ 02CC:0023       __exit_top
+ 02CC:0027       standard@haltChain
+ 02CC:002B       __farstack
+ 02CC:002D       __sp_temp
+ 02CC:002F       __ss_temp
+ 02CC:0031       _x_initx
+ 02CC:0035       _x_bss_end
+ 02CC:0037       _x_bss_start
+ 02CC:0039       __psp
+ 02CC:003B       __env
+ 02CC:003D       __heap_base
+ 02CC:003F       __main_args
+ 02CC:0041       __env_init
+ 02CC:0043       __arg_init
+ 02CC:0045       STKHQQ
+ 02CC:0045       __stklen
+ 02CC:0047       __SSisDS
+ 02CC:0049       __far_ss
+ 02CC:004B       __x_near_stack_start
+ 02CC:004D       __heap_size
+ 02CC:004F       __osmode
+ 02CC:0051       _x_main
+ 02CC:0055       __stk_base
+ 02CC:0057       @InitChain
+ 02CC:00BB       __open_max
+ 02CC:00DB       __iosetup
+ 02CC:00DD       __doserrno
+ 02CC:00E1       __DelayTag
+ 02CC:00E5       __ProcIds
+ 02CC:0127       __core_lock
+ 02CC:012B       __core_unlock
+ 02CC:012F       __core_delay
+ 02CC:0133       __SchedStack
+ 02CC:013B       SPAWN$
+ 02CC:0149       __bss_start
+ 02CC:0149       _edata
+ 02CC:014A       __argbuf
+ 02CC:01CA       __hugeshift
+ 02CC:01CC       __osmajor
+ 02CC:01CE       __osminor
+ 02CC:01D0       __exit_stk
+ 02CC:0250       @ExitCode
+ 02CC:0252       __exit_io
+ 02CC:0256       __exit_file
+ 02CC:025A       __exit_tmp
+ 02CC:025E       __exit_proc
+ 02CC:0262       __real_in
+ 02CC:0264       __real_out
+ 02CC:0266       __sigsetup
+ 02CC:0268       __exitbreak
+ 02CC:026C       __exitsig
+ 02CC:0270       __exitgraph
+ 02CC:0274       __fmodmemsetup
+ 02CC:0275       __fmemsetup
+ 02CC:0276       __res_mem
+ 02CC:027A       __fix_mem
+ 02CC:027E       __shr_mem
+ 02CC:0282       CoreSig@CnsHandler
+ 02CC:0286       @RecursiveExit
+ 02CC:0288       __pmd_stub
+ 02CC:028C       __iob
+ 02CC:046C       __openfd
+ 02CC:0494       _BufInf
+ 02CC:0AE4       __threadTable
+ 02CC:1164       __cp
+ 02CC:1168       __dq
+ 02CC:116C       __wq
+ 02CC:1170       __SchedProc
+ 02CC:1174       __Started
+ 02CC:1175       __Continue
+ 02CC:1179       _Stop
+ 02CC:117A       __LockNestMonster
+ 02CC:117C       __SchedTime
+ 02CC:117E       __NextThread
+ 02CC:1180       __proc_init
+ 02CC:1188       __near_stack_start
+ 02CC:1188       __bss_end
+ 02CC:1188       _end
+ 03E5:0000       SYSTEM@HeapBase
+ 03E6:0000       Storage@MainHeap
+ 03E6:0004       Storage@NearHeap
+ 03E6:0006       Storage@ClearOnAllocate
+ 03E6:0007       Storage@Check
+ 03E7:0000       Lib@NilStr
+ 03E7:0001       Lib@RunTimeError
+ 03E7:0005       Lib@ExecSearchPath
+ 03E7:0006       Lib@PSP
+ 03E7:0008       Lib@CommandLine
+ 03E8:0000       __initx
+ 03EA:0000       FIO@IOcheck
+ 03EA:0001       FIO@EOF
+ 03EA:0002       FIO@ShareMode
+ 03EA:0004       FIO@Separators
+ 03EA:0024       FIO@OK
+ 03EA:0025       FIO@ChopOff
+ 03EA:0026       FIO@Eng
+ 03EA:0027       FIO@PrefixChar
+ 03EA:0028       FIO@SuffixChar
+
+Program entry point at 0006:0000

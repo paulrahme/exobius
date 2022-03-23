@@ -1,0 +1,90 @@
+MODULE Music;
+
+IMPORT FIO, Str;
+
+FROM Lib IMPORT
+     Sound, NoSound, Delay;
+
+VAR
+   Pitch, Count, NoteCount : CARDINAL;
+   TheOctave : RECORD
+             One, Two, Three : CARDINAL;
+   END;
+   TheNote : RECORD
+           One, Two, Three : CHAR;
+   END;
+   f : FIO.File;
+   NewSong : BOOLEAN;
+
+CONST
+    NoteLength = 16;
+    NoOfNotes = 3;
+
+PROCEDURE Note (Pitch, Duration : CARDINAL);
+BEGIN
+     Sound (Pitch);
+     Delay (Duration);
+     NoSound;
+END Note;
+
+PROCEDURE Play (Octave : INTEGER; Key : CHAR);
+BEGIN
+    IF (Str.Compare (Key, 'c')=0) THEN
+       Pitch := 33
+    ELSIF (Str.Compare (Key, 'C')=0) THEN
+       Pitch := 35
+    ELSIF (Str.Compare (Key, 'd')=0) THEN
+       Pitch := 37
+    ELSIF (Str.Compare (Key, 'D')=0) THEN
+       Pitch := 39
+    ELSIF (Str.Compare (Key, 'e')=0) THEN
+       Pitch := 41
+    ELSIF (Str.Compare (Key, 'E')=0) THEN
+       Pitch := 41
+    ELSIF (Str.Compare (Key, 'f')=0) THEN
+       Pitch := 43
+    ELSIF (Str.Compare (Key, 'F')=0) THEN
+       Pitch := 45
+    ELSIF (Str.Compare (Key, 'g')=0) THEN
+       Pitch := 48
+    ELSIF (Str.Compare (Key, 'G')=0) THEN
+       Pitch := 51
+    ELSIF (Str.Compare (Key, 'a')=0) THEN
+       Pitch := 55
+    ELSIF (Str.Compare (Key, 'A')=0) THEN
+       Pitch := 57
+    ELSIF (Str.Compare (Key, 'b')=0) THEN
+       Pitch := 62
+    ELSIF (Str.Compare (Key, 'B')=0) THEN
+       Pitch := 62;
+     END;
+     FOR NoteCount := 1 TO Octave DO
+          Pitch := Pitch * 2;
+     END;
+     Note (Pitch, NoteLength);
+END Play;
+
+PROCEDURE PlaySong(Song : ARRAY OF CHAR);
+BEGIN
+  WHILE NOT (NewSong) DO
+    f := FIO.Open (Song);
+    WHILE (Str.Compare (TheNote.One,".") <> 0) DO
+       TheOctave.One := FIO.RdCard(f);
+       TheNote.One := FIO.RdChar(f);
+       TheOctave.Two := FIO.RdCard(f);
+       TheNote.Two := FIO.RdChar(f);
+       TheOctave.Three := FIO.RdCard(f);
+       TheNote.Three := FIO.RdChar(f);
+       FOR Count := 1 TO NoOfNotes DO
+           Play (TheOctave.One, TheNote.One);
+           Play (TheOctave.Two, TheNote.Two);
+           Play (TheOctave.Three, TheNote.Three);
+       END;
+    END;
+    FIO.Close (f);
+  END;
+END PlaySong;
+
+BEGIN
+    PlaySong("music.dat");
+END Music.

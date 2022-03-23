@@ -1,0 +1,11 @@
+DEFINITION MODULE Screens5;
+VAR
+  PlanetRadius : CARDINAL;
+
+PROCEDURE Screen8;
+
+PROCEDURE DrawStars8;
+
+PROCEDURE DrawPlanet (x, y, Radius : CARDINAL);
+
+END Screens5.

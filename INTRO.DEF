@@ -1,0 +1,47 @@
+DEFINITION MODULE Intro;
+
+IMPORT Exobius, Graph, Lib, Window, Str, IO, Storage;
+
+FROM Graph IMPORT
+     SetClipRgn, SetVideoMode, Rectangle, GraphMode, TextMode, Polygon, Line, HLine, Circle, Ellipse, Disc, Plot, Arc;
+
+FROM Lib IMPORT
+     Sound, NoSound, Delay;
+
+FROM Exobius IMPORT
+  NoteDelay, SolidFill, PlaneWidth, PlaneHeight, PlaneMovement,
+  EnemyYStart, PlaneXMin, PlaneXMax, CollisionY, NegPlaneSize,
+  Black, DarkestGrey, DarkGrey, Grey, LightGrey, LightestGrey,
+  DarkestWhite, DarkWhite, White, LightWhite, LightestWhite,
+  DarkestBlue, DarkBlue, Blue, LightBlue, LightestBlue, DarkestRed,
+  DarkRed, Red, LightRed, LightestRed, DarkestBrown, DarkBrown,
+  Brown, LightBrown, LightestBrown, DarkestGreen, DarkGreen, Green, LightGreen,
+  LightestGreen, DarkestYellow, DarkYellow, Yellow, LightYellow,
+  LightestYellow, PlaneX,  Enemy1X, Enemy2X, Enemy3X, Enemy4X, Enemy5X,
+  Enemy6X, Enemies, BulletX, BulletY, PlaneY, Width, Height, CoverRectangleX,
+  Count, Lives, EnemyY,  NegPlaneAddress, WritingAddress,  BkColour,
+  OldBkColor,  Xs, Ys,  OneAlive, TwoAlive, ThreeAlive, FourAlive, FiveAlive,
+  SixAlive, ScreenComplete, GameOver,  MouseButtons,  MouseMove, GameSpeed,
+  DrawBullet, DrawPlane, CheckMouse, CheckKeyboard, Die, A, B,
+  C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z,
+  FinishScreen1, Key, PlaneXMove, PlaneAddress, PlaneInMemory, GraphicsCard;
+
+TYPE
+     CoordArray = ARRAY [0..10] OF CARDINAL;
+
+PROCEDURE Infinite_Software;
+PROCEDURE FlashScreen;
+PROCEDURE SpinRectangle;
+PROCEDURE DrawStars;
+PROCEDURE MakeDiamond;
+PROCEDURE ExoLogo;
+PROCEDURE WriteMyName;
+PROCEDURE FillAtmosFear (TenNos : ARRAY OF CHAR; AtmosX : CARDINAL);
+PROCEDURE WriteAtmosFear;
+PROCEDURE ReadyForWriting (LetterString : ARRAY OF CHAR);
+PROCEDURE WriteThinks;
+PROCEDURE PlaneToPlanet;
+
+END Intro.
+
+

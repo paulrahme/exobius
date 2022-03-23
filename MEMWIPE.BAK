@@ -1,0 +1,12 @@
+MODULE MemWipe;
+(*$I+,O+,R+,S+,Z+*)
+(*$S FF00*)
+
+VAR
+  WipeArea [9D00H:0000H] : ARRAY [0..24] OF BYTE;
+  Count : CARDINAL;
+BEGIN
+    FOR Count := 0 TO 24 DO
+        WipeArea[Count] := 0;
+    END;
+END MemWipe.

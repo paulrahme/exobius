@@ -1,0 +1,381 @@
+
+ Start  Stop   Length Name               Class              Group
+
+ 00000H 0000FH 0000FH MATHLIB_TEXT       CODE               (none)
+ 00010H 0002BH 0001BH SYSTEM_TEXT        CODE               (none)
+ 00030H 00052H 00022H Process_TEXT       CODE               (none)
+ 00060H 000C9H 00069H STR_TEXT           CODE               (none)
+ 000D0H 00151H 00081H ENTERCODE          CODE               (none)
+ 00160H 0022BH 000CBH VgaClr_TEXT        CODE               (none)
+ 00230H 0036AH 0013AH Lib_TEXT           CODE               (none)
+ 00370H 004B3H 00143H Graph_TEXT         CODE               (none)
+ 004C0H 00660H 001A0H CORE_TEXT          CODE               (none)
+ 00660H 0086EH 0020EH IO_TEXT            CODE               (none)
+ 00870H 00B2DH 002BDH PROC_TEXT          CODE               (none)
+ 00B30H 00FA1H 00471H PROCESS_TEXT       CODE               (none)
+ 00FB0H 01442H 00492H Storage_TEXT       CODE               (none)
+ 01450H 01B2AH 006DAH _TEXT              CODE               (none)
+ 01B30H 0316DH 0163DH GRAPHICS_TEXT      CODE               (none)
+ 03170H 050CFH 01F5FH Graphics_TEXT      CODE               (none)
+ 050D0H 052C9H 001F9H SIG_TEXT           SIG_CODE           (none)
+ 052D0H 0533CH 0006CH MP_CODE            MP_CODE            (none)
+ 05340H 05355H 00015H _INIT              INIT_CODE          (none)
+ 05360H 05362H 00002H EMU_STATE          DATA               DGROUP 
+ 05362H 05362H 00000H _CONST             DATA               DGROUP 
+ 05362H 05568H 00206H _DATA              DATA               DGROUP 
+ 05568H 05569H 00001H BSS_START          BSS                DGROUP 
+ 05569H 05569H 00000H CONST              CONST              DGROUP 
+ 05569H 05721H 001B8H _BSS               BSS                DGROUP 
+ 05721H 05721H 00000H BSS_END            BSS                DGROUP 
+ 05721H 05722H 00001H NEAR_STACK         BSS                DGROUP 
+ 05722H 05722H 00000H NEAR_HEAP          BSS                DGROUP 
+ 05730H 05732H 00002H SYSTEM_BSS         FAR_DATA           SYSTEMDGROUP 
+ 05740H 05748H 00008H Storage_BSS        FAR_DATA           StorageDGROUP 
+ 05750H 05750H 00000H Lib_CONST          FAR_DATA           LibDGROUP 
+ 05750H 05760H 00010H Lib_BSS            FAR_DATA           LibDGROUP 
+ 05760H 05760H 00000H VgaClr_CONST       FAR_DATA           VgaClrDGROUP 
+ 05760H 05769H 00009H VgaClr_DATA        FAR_DATA           VgaClrDGROUP 
+ 05769H 05771H 00008H VgaClr_BSS         FAR_DATA           VgaClrDGROUP 
+ 05780H 057CEH 0004EH Graph_BSS          FAR_DATA           GraphDGROUP 
+ 057D0H 05826H 00056H IO_BSS             FAR_DATA           IODGROUP 
+ 05830H 15730H 0FF00H STACK              STACK              (none)
+
+  Address         Publics by Value
+
+ 0000:0001       MATHLIB$
+ 0001:0015       SYSTEM$
+ 0003:0014       Process$
+ 0006:0000       Str$Length
+ 0006:0018       Str$Copy
+ 0016:00B9       _main
+ 0023:0000       Lib$Terminate
+ 0023:0029       Lib$FarWordFill
+ 0023:0034       Lib$InternalDelay
+ 0023:00B2       Lib$Delay
+ 0023:0128       Lib$
+ 0037:012D       Graph$
+ 004C:0000       F$SgnDiv
+ 004C:00BB       F$UnsMul
+ 004C:00FF       F$ULngShr
+ 004C:010C       F$StkChk
+ 004C:0131       F$CnsStk
+ 004C:0137       F$CnsPtr
+ 004C:013D       F$CnsIdx
+ 004C:0143       F$CnsOvr
+ 004C:0149       F$CnsRng
+ 004C:014F       F$CnsRet
+ 004C:0155       F$CnsCase
+ 004C:015B       F$CnsDiv
+ 004C:0161       F$CnsPVC
+ 0066:0084       IO$WrStr
+ 0066:00A3       IO$WrLn
+ 0066:00CD       IO$RdLn
+ 0066:00DD       IO$RdKey
+ 0066:01FC       IO$
+ 0087:0000       __set_machine_id
+ 0087:000E       @MachineId
+ 0087:000F       @Save8087
+ 0087:0011       @CurrentProcess
+ 0087:0034       _new_priority
+ 0087:0041       SYSTEM$Listen
+ 0087:00D8       CoreProc$TRANSFER
+ 0087:00D8       SYSTEM$TRANSFER
+ 0087:0105       SYSTEM$IOTRANSFER
+ 0087:0105       CoreProc$IOTRANSFER
+ 0087:019F       SYSTEM$NEWPROCESS
+ 0087:019F       CoreProc$NEWPROCESS
+ 0087:026A       SYSTEM$NewPriority
+ 0087:026A       CoreProc$NewPriority
+ 0087:0276       SYSTEM$CurrentPriority
+ 0087:0276       CoreProc$CurrentPriority
+ 0087:027A       SYSTEM$InterruptRegisters
+ 0087:0292       SYSTEM$initprocess
+ 0087:0292       CoreProc$initprocess
+ 0087:02B5       SYSTEM$CurrentProcess
+ 0087:02B5       CoreProc$CurrentProcess
+ 00B3:0105       Process$StopScheduler
+ 00B3:0134       Process$StartProcess
+ 00B3:01E8       Process$Delay
+ 00B3:029E       Process$Lock
+ 00B3:02AC       Process$Unlock
+ 00B3:02DB       Process$Idler
+ 00FB:0049       Storage$FarAllocate
+ 00FB:00BB       Storage$FarMakeHeap
+ 00FB:012C       Storage$FarHeapAllocate
+ 0145:0006       _exit
+ 0145:002D       __InitLoop
+ 0145:00B2       __Term2
+ 0145:00FB       __cleanup
+ 0145:0131       __InitLink
+ 0145:0150       __InitReset
+ 0145:016E       __InitSetup
+ 0145:01D5       __getheapbase
+ 0145:01FD       __osversion
+ 0145:0231       __exit
+ 0145:027D       __real_pdef
+ 0145:027D       __real_sdef
+ 0145:028F       __startup
+ 0145:032D       $Stage2
+ 0145:0374       __fp_0
+ 0145:0386       __FatalErrorPos
+ 0145:0390       __FatalError
+ 0145:04AC       __initm
+ 0145:04BF       $initm
+ 0145:04C6       $initm2
+ 0145:0526       $go
+ 0145:05DB       __restore_mode
+ 0145:0615       Str$
+ 0145:0623       __init_dummy
+ 0145:0623       __exit1
+ 0145:0623       __initwin
+ 0145:0623       __setvideomode
+ 0145:0623       __initmt
+ 0145:0624       __initgraph
+ 0145:0625       _AdjustMem
+ 0145:0654       __getheapmem
+ 0145:06B3       Storage$
+ 0145:06C1       __FloatInit
+ 0145:06CB       __FloatLoadCW
+ 0145:06CB       __FloatFinish
+ 0145:06CB       __FloatStoreCW
+ 0145:06CB       __FloatJmpSave
+ 0145:06CB       __FloatStoreSW
+ 0145:06CB       __FloatJmpRestore
+ 0145:06CB       __FloatExecRestore
+ 0145:06CB       __FloatMathExcepDos
+ 0145:06CB       __FloatExecSave
+ 0145:06CB       __FloatSave
+ 0145:06CB       __FloatInitInstance
+ 0145:06CB       __FloatRestore
+ 0145:06D0       __FloatMathExcepOs2
+ 01B3:004B       Graph$InitVGA
+ 01B3:007F       Graph$InitGraph
+ 01B3:021F       Graph$SetVideoMode
+ 01B3:037A       Graph$SetActivePage
+ 01B3:03A2       Graph$SetVisualPage
+ 01B3:0409       Graph$Rectangle
+ 0317:0000       $OutWord
+ 0317:0009       __pixeladdrEGA
+ 0317:002F       __pixeladdrEGA2
+ 0317:0056       __pixeladdrHerc
+ 0317:0097       __pixeladdr320x200
+ 0317:00A7       __pixeladdr640x200
+ 0317:00B9       __hclip
+ 0317:00EA       __lclip
+ 0317:025F       __CGA640HLine
+ 0317:02DD       __CGA320HLine
+ 0317:035D       __HercHLine
+ 0317:03DB       __EGAHLine
+ 0317:049D       __EGA2HLine
+ 0317:0521       __VGAHLine
+ 0317:05FA       __VGALine
+ 0317:0681       __VGAleftscan
+ 0317:069B       __VGArightscan
+ 0317:080C       __CGA640Line
+ 0317:09FA       __CGA320Line
+ 0317:0B7C       __HercLine
+ 0317:0D7C       __EGALine
+ 0317:1037       __EGA2Line
+ 0317:10E5       __VGAPoint
+ 0317:10FB       __VGAGet
+ 0317:114F       __VGAPut
+ 0317:120C       __EGAGet
+ 0317:12C0       __EGAPoint
+ 0317:1328       __EGA2Point
+ 0317:135D       __EGAxlat
+ 0317:1375       __EGAPlot1
+ 0317:1378       __EGAPlot
+ 0317:13DA       __EGA2Plot
+ 0317:1410       __EGAPut
+ 0317:15C9       __EGAleftscan
+ 0317:162E       __EGArightscan
+ 0317:16AD       __CGA320Get
+ 0317:16EC       __CGA640Get
+ 0317:1897       __CGA320Put
+ 0317:18A8       __CGA640Put
+ 0317:1927       __CGA320leftscan
+ 0317:196A       __CGA320rightscan
+ 0317:19E0       __CGA640leftscan
+ 0317:1A1C       __CGA640rightscan
+ 0317:1A90       __HercGet
+ 0317:1C71       __HercPut
+ 0317:1D02       __gcur
+ 0317:1D18       __setbiosmode
+ 0317:1D24       __getvideomode
+ 0317:1D2B       __FindPS2
+ 0317:1D80       __FindEGA
+ 0317:1DAC       __FindCGA
+ 0317:1DBC       __FindMono
+ 0317:1E79       __getsystem
+ 0317:1EC2       __getmemory
+ 0317:1ED1       __clear_blink
+ 0317:1ED9       __gdummy
+ 0317:1EDA       __setcur
+ 0317:1EE5       __resetEGA
+ 0317:1F4F       __setbc
+ 0317:1F54       __setr10
+ 050D:0000       @InProgramFlag
+ 050D:0001       @StopProgramFlag
+ 050D:0002       @DosInterrupt
+ 050D:003F       __SigInit
+ 050D:005A       __DelayFactor
+ 050D:005C       __Iter
+ 050D:005E       __Count
+ 050D:00E3       _delay
+ 050D:0110       @LoadRegisters
+ 050D:012D       @SaveRegisters
+ 050D:0156       Lib$Dos
+ 050D:01B0       Lib$Intr
+ 0536:000A       @InitCalled
+ 0536:000C       @InitGrandTotal
+ 0536:000E       @InitCurrent
+ 0536:0010       @InitRecPointer
+ 0536:0014       @InitPointer
+ 0536:0018       @StackContextSP
+ 0536:001A       @StackContextBP
+ 0536:001C       @StackContextSS
+ 0536:001E       @InitPriority
+ 0536:001F       __exit_ptr
+ 0536:0023       __exit_top
+ 0536:0027       standard@haltChain
+ 0536:002B       __farstack
+ 0536:002D       __sp_temp
+ 0536:002F       __ss_temp
+ 0536:0031       _x_initx
+ 0536:0035       _x_bss_end
+ 0536:0037       _x_bss_start
+ 0536:0039       __psp
+ 0536:003B       __env
+ 0536:003D       __heap_base
+ 0536:003F       __main_args
+ 0536:0041       __env_init
+ 0536:0043       __arg_init
+ 0536:0045       STKHQQ
+ 0536:0045       __stklen
+ 0536:0047       __SSisDS
+ 0536:0049       __far_ss
+ 0536:004B       __x_near_stack_start
+ 0536:004D       __heap_size
+ 0536:004F       __osmode
+ 0536:0051       _x_main
+ 0536:0055       __stk_base
+ 0536:0057       @InitChain
+ 0536:00BB       __DelayTag
+ 0536:00BF       __ProcIds
+ 0536:0101       __core_lock
+ 0536:0105       __core_unlock
+ 0536:0109       __core_delay
+ 0536:010D       __SchedStack
+ 0536:0113       __get
+ 0536:0117       __put
+ 0536:011B       __hscan
+ 0536:011F       __plot
+ 0536:0123       __point
+ 0536:0127       __hline
+ 0536:012B       __line
+ 0536:012F       __text_br
+ 0536:0133       __fill_mask
+ 0536:013B       __current_linestyle
+ 0536:013D       __EGAScreen
+ 0536:0141       __EGAStartPlane
+ 0536:0143       __EGAPlaneShift
+ 0536:01C8       __TestSequence
+ 0536:01CB       __EGAflag
+ 0536:01CE       __CGAflag
+ 0536:01D1       __Monoflag
+ 0536:01F4       __defaultmode
+ 0536:01FA       SPAWN$
+ 0536:0208       __bss_start
+ 0536:0208       _edata
+ 0536:0209       __argbuf
+ 0536:0289       __hugeshift
+ 0536:028B       __osmajor
+ 0536:028D       __osminor
+ 0536:028F       __exit_stk
+ 0536:030F       @ExitCode
+ 0536:0311       __exit_io
+ 0536:0315       __exit_file
+ 0536:0319       __exit_tmp
+ 0536:031D       __exit_proc
+ 0536:0321       __real_in
+ 0536:0323       __real_out
+ 0536:0325       __sigsetup
+ 0536:0327       __exitbreak
+ 0536:032B       __exitsig
+ 0536:032F       __exitgraph
+ 0536:0333       __fmodmemsetup
+ 0536:0334       __fmemsetup
+ 0536:0335       __res_mem
+ 0536:0339       __fix_mem
+ 0536:033D       __shr_mem
+ 0536:0341       CoreSig@CnsHandler
+ 0536:0345       @RecursiveExit
+ 0536:0347       __pmd_stub
+ 0536:034B       __cp
+ 0536:034F       __dq
+ 0536:0353       __wq
+ 0536:0357       __SchedProc
+ 0536:035B       __Started
+ 0536:035C       __Continue
+ 0536:0360       _Stop
+ 0536:0361       __LockNestMonster
+ 0536:0363       __SchedTime
+ 0536:0365       __NextThread
+ 0536:0367       __proc_init
+ 0536:0368       __lastmode
+ 0536:036A       __depth
+ 0536:036C       __width
+ 0536:036E       __current_video
+ 0536:0384       __origin
+ 0536:0388       __clip_tl
+ 0536:038C       __clip_br
+ 0536:0390       __current_graph
+ 0536:0394       __text_tl
+ 0536:0398       __current_text
+ 0536:039C       __active_page
+ 0536:039E       __visual_page
+ 0536:03A0       __page_size
+ 0536:03A2       __fgcolor
+ 0536:03A4       __mode_changed
+ 0536:03A6       __txcolor
+ 0536:03A8       __cursor_lock
+ 0536:03AA       __scr_attr
+ 0536:03AC       __current_mask
+ 0536:03B0       __EGA64K
+ 0536:03B1       __cursor_state
+ 0536:03B2       __wrap_state
+ 0536:03B3       __display_state
+ 0536:03B4       __EGAtranslate
+ 0536:03B6       __bkcolor
+ 0536:03C1       __near_stack_start
+ 0536:03C1       __bss_end
+ 0536:03C1       _end
+ 0573:0000       SYSTEM@HeapBase
+ 0574:0000       Storage@MainHeap
+ 0574:0004       Storage@NearHeap
+ 0574:0006       Storage@ClearOnAllocate
+ 0574:0007       Storage@Check
+ 0575:0000       Lib@NilStr
+ 0575:0001       Lib@RunTimeError
+ 0575:0005       Lib@ExecSearchPath
+ 0575:0006       Lib@PSP
+ 0575:0008       Lib@CommandLine
+ 0576:0000       __initx
+ 0578:0000       Graph@Width
+ 0578:0002       Graph@Depth
+ 0578:0004       Graph@NumColor
+ 0578:0006       Graph@FillState
+ 057D:0000       IO@RdLnOnWr
+ 057D:0001       IO@Prompt
+ 057D:0002       IO@InputRedirected
+ 057D:0003       IO@OutputRedirected
+ 057D:0004       IO@WrStrRedirect
+ 057D:0008       IO@RdStrRedirect
+ 057D:000C       IO@Separators
+ 057D:002C       IO@OK
+ 057D:002D       IO@ChopOff
+ 057D:002E       IO@Eng
+ 057D:002F       IO@PrefixChar
+ 057D:0030       IO@SuffixChar
+
+Program entry point at 000D:0000

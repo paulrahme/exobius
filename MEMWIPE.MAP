@@ -1,0 +1,139 @@
+
+ Start  Stop   Length Name               Class              Group
+
+ 00000H 00010H 00010H PROC_TEXT          CODE               (none)
+ 00010H 0005CH 0004CH MemWipe_TEXT       CODE               (none)
+ 00060H 000CFH 0006FH CORE_TEXT          CODE               (none)
+ 000D0H 00151H 00081H ENTERCODE          CODE               (none)
+ 00160H 00721H 005C1H _TEXT              CODE               (none)
+ 00730H 0078AH 0005AH SIG_TEXT           SIG_CODE           (none)
+ 00790H 00790H 00000H _INIT              INIT_CODE          (none)
+ 00790H 00792H 00002H EMU_STATE          DATA               DGROUP 
+ 00792H 00853H 000C1H _DATA              DATA               DGROUP 
+ 00853H 00854H 00001H BSS_START          BSS                DGROUP 
+ 00854H 00854H 00000H CONST              CONST              DGROUP 
+ 00854H 00854H 00000H _CONST             DATA               DGROUP 
+ 00854H 00989H 00135H _BSS               BSS                DGROUP 
+ 00989H 00989H 00000H BSS_END            BSS                DGROUP 
+ 00989H 0098AH 00001H NEAR_STACK         BSS                DGROUP 
+ 0098AH 0098AH 00000H NEAR_HEAP          BSS                DGROUP 
+ 00990H 00999H 00009H MemWipe_DATA       FAR_DATA           MemWipeDGROUP 
+ 00999H 0099BH 00002H MemWipe_BSS        FAR_DATA           MemWipeDGROUP 
+ 009A0H 108A0H 0FF00H STACK              STACK              (none)
+
+  Address         Publics by Value
+
+ 0000:0000       __set_machine_id
+ 0000:000E       @MachineId
+ 0001:0046       _main
+ 0006:0000       F$CnsStk
+ 0006:0006       F$CnsPtr
+ 0006:000C       F$CnsIdx
+ 0006:0012       F$CnsOvr
+ 0006:0018       F$CnsRng
+ 0006:001E       F$CnsRet
+ 0006:0024       F$CnsCase
+ 0006:002A       F$CnsDiv
+ 0006:0030       F$CnsPVC
+ 0016:0006       _exit
+ 0016:002D       __InitLoop
+ 0016:00B2       __Term2
+ 0016:00FB       __cleanup
+ 0016:0131       __InitLink
+ 0016:0150       __InitReset
+ 0016:016E       __InitSetup
+ 0016:01D5       __osversion
+ 0016:0209       __exit
+ 0016:0255       __real_pdef
+ 0016:0255       __real_sdef
+ 0016:0267       __startup
+ 0016:0305       $Stage2
+ 0016:034C       __fp_0
+ 0016:035E       __FatalErrorPos
+ 0016:0368       __FatalError
+ 0016:0484       __initm
+ 0016:0497       $initm
+ 0016:049E       $initm2
+ 0016:04FE       $go
+ 0016:05A8       __FloatInit
+ 0016:05B2       __FloatLoadCW
+ 0016:05B2       __FloatFinish
+ 0016:05B2       __FloatStoreCW
+ 0016:05B2       __FloatJmpSave
+ 0016:05B2       __FloatStoreSW
+ 0016:05B2       __FloatJmpRestore
+ 0016:05B2       __FloatExecRestore
+ 0016:05B2       __FloatMathExcepDos
+ 0016:05B2       __FloatExecSave
+ 0016:05B2       __FloatSave
+ 0016:05B2       __FloatInitInstance
+ 0016:05B2       __FloatRestore
+ 0016:05B7       __FloatMathExcepOs2
+ 0073:0000       @InProgramFlag
+ 0073:0001       @StopProgramFlag
+ 0073:0002       @DosInterrupt
+ 0073:003F       __SigInit
+ 0079:000A       @InitCalled
+ 0079:000C       @InitGrandTotal
+ 0079:000E       @InitCurrent
+ 0079:0010       @InitRecPointer
+ 0079:0014       @InitPointer
+ 0079:0018       @StackContextSP
+ 0079:001A       @StackContextBP
+ 0079:001C       @StackContextSS
+ 0079:001E       @InitPriority
+ 0079:001F       __exit_ptr
+ 0079:0023       __exit_top
+ 0079:0027       standard@haltChain
+ 0079:002B       __farstack
+ 0079:002D       __sp_temp
+ 0079:002F       __ss_temp
+ 0079:0031       _x_initx
+ 0079:0035       _x_bss_end
+ 0079:0037       _x_bss_start
+ 0079:0039       __psp
+ 0079:003B       __env
+ 0079:003D       __heap_base
+ 0079:003F       __main_args
+ 0079:0041       __env_init
+ 0079:0043       __arg_init
+ 0079:0045       STKHQQ
+ 0079:0045       __stklen
+ 0079:0047       __SSisDS
+ 0079:0049       __far_ss
+ 0079:004B       __x_near_stack_start
+ 0079:004D       __heap_size
+ 0079:004F       __osmode
+ 0079:0051       _x_main
+ 0079:0055       __stk_base
+ 0079:0057       @InitChain
+ 0079:00BB       __core_lock
+ 0079:00BF       __core_unlock
+ 0079:00C3       __bss_start
+ 0079:00C3       _edata
+ 0079:00C4       __argbuf
+ 0079:0144       __hugeshift
+ 0079:0146       __osmajor
+ 0079:0148       __osminor
+ 0079:014A       __exit_stk
+ 0079:01CA       @ExitCode
+ 0079:01CC       __exit_io
+ 0079:01D0       __exit_file
+ 0079:01D4       __exit_tmp
+ 0079:01D8       __exit_proc
+ 0079:01DC       __real_in
+ 0079:01DE       __real_out
+ 0079:01E0       __sigsetup
+ 0079:01E2       __exitbreak
+ 0079:01E6       __exitsig
+ 0079:01EA       __exitgraph
+ 0079:01EE       __fmemsetup
+ 0079:01EF       CoreSig@CnsHandler
+ 0079:01F3       @RecursiveExit
+ 0079:01F5       __pmd_stub
+ 0079:01F9       __near_stack_start
+ 0079:01F9       _end
+ 0079:01F9       __bss_end
+ 0099:0000       __initx
+
+Program entry point at 000D:0000

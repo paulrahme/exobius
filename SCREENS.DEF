@@ -1,0 +1,20 @@
+DEFINITION MODULE Screens;
+
+VAR
+  GroundAddress : ADDRESS;
+  GroundSize : CARDINAL;
+
+PROCEDURE DrawGameOverSign;
+
+PROCEDURE Screen1;
+
+PROCEDURE Screen2;
+
+PROCEDURE Screen3;
+
+PROCEDURE BlankGround1;
+
+PROCEDURE DrawEnemies1;
+
+END Screens.
+

@@ -1,0 +1,21 @@
+MEMORY ALLOCATION MANAGER (c) 1990-1993 Marc Mulders  -  MAM V1.09U
+This is an UNREGISTERED shareware copy of MAM.  Use /? for help.
+MS-DOS 6.00 on 80386 AT (Real Mode) with 640K and VGA display
+
+SEG   OWN/TOP  SIZE  TYP  NAME/DIRECTORY PATH       VECTORS
+---   -------  ----  ---  -------------------       -------
+9D00 - 9FFF     12K  RAM ??virus?                   21
+A000 - AFFF     64K       VGA graphics buffer       F4 FB
+B000 - B7FF     32K  RAM  Additional RAM           
+B800 - BFFF     32K  RAM  VGA color text buffer    
+C000 - C7FF     32K  ROM  VGA BIOS                  1F 43
+C800 - EFFF    160K       --- Unused ---           
+F000 - FFFF     64K  ROM  System BIOS               05-07 11 12 14 16-18 1A
+                                                    1C 1D 31 40 42 44-5F 68-6F
+                                                    71 75 77 F0 F2 FC
+FD00 - FDFF      4K  ROM  -- Rammable --           
+10000-10FFF     64K  HMA  Used (by DOS, 5K free)    FE
+     @10A11   15960  Dos  30 Buffers               
+11000  ------------  End  Real Mode Adr End [1088k] ---------------------------
+11000-43FFF   3264K  RAM  Used (from top)          
+11000-14FFF    256K  EMB  Handle A8FEh (unlocked)  
