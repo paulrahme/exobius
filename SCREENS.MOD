@@ -25,14 +25,14 @@ FROM Exobius IMPORT
   Count, Lives, EnemyY,  NegPlaneAddress, WritingAddress,  BkColour,
   OldBkColor,  Xs, Ys,  OneAlive, TwoAlive, ThreeAlive, FourAlive, FiveAlive,
   SixAlive, ScreenComplete, GameOver,  MouseButtons,  MouseMove, GameSpeed,
-  DrawBullet, DrawPlane, CheckMouse, CheckKeyboard, Die, A, B,
+  DrawBullet, DrawPlane, CheckMouse, ReadMouse, CheckKeyboard, Die, A, B,
   C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z,
   FinishScreen1, Key, PlaneXMove, CheckDeath1, Score, Screen,
   PlaneAddress, BkAddress, BkSize, ClearTheBuffer, Cheat,
   MouseOrNot, GraphicsCard, HighDetail;
 
 FROM Sprites IMPORT
-  DrawUbeed, DrawSpinners, DrawFlyTraps, DrawMaces, DrawPlants,
+  DrawBoomGuards, DrawSpinners, DrawFlyTraps, DrawMaces, DrawPlants,
   DrawIceRocks, DrawSnowMen, DrawSnowBalls, DrawSkiiers, DrawGlowWorms;
 
 VAR
@@ -61,7 +61,7 @@ BEGIN
   Enemy6X := 160 + ((10+(3*(EnemyY-100) DIV 2))*2 DIV 3);
   IF OneAlive THEN
      CASE Enemies OF
-       | 1 : DrawUbeed (Enemy1X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
+       | 1 : DrawBoomGuards (Enemy1X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
        | 2 : DrawSpinners (Enemy1X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
        | 3 : DrawPlants (Enemy1X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
        | 4 : DrawFlyTraps (Enemy1X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
@@ -73,7 +73,7 @@ BEGIN
    END;
   IF TwoAlive THEN
      CASE Enemies OF
-       | 1 : DrawUbeed (Enemy2X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
+       | 1 : DrawBoomGuards (Enemy2X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
        | 2 : DrawSpinners (Enemy2X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
        | 3 : DrawPlants (Enemy2X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
        | 4 : DrawFlyTraps (Enemy2X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
@@ -88,7 +88,7 @@ BEGIN
    END;
   IF ThreeAlive THEN
      CASE Enemies OF
-       | 1 : DrawUbeed (Enemy3X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
+       | 1 : DrawBoomGuards (Enemy3X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
        | 2 : DrawSpinners (Enemy3X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
        | 3 : DrawPlants (Enemy3X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
        | 4 : DrawFlyTraps (Enemy3X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
@@ -103,7 +103,7 @@ BEGIN
    END;
   IF FourAlive THEN
      CASE Enemies OF
-       | 1 : DrawUbeed (Enemy4X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
+       | 1 : DrawBoomGuards (Enemy4X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
        | 2 : DrawSpinners (Enemy4X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
        | 3 : DrawPlants (Enemy4X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
        | 4 : DrawFlyTraps (Enemy4X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
@@ -118,7 +118,7 @@ BEGIN
    END;
   IF FiveAlive THEN
      CASE Enemies OF
-       | 1 : DrawUbeed (Enemy5X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
+       | 1 : DrawBoomGuards (Enemy5X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
        | 2 : DrawSpinners (Enemy5X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
        | 3 : DrawPlants (Enemy5X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
        | 4 : DrawFlyTraps (Enemy5X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
@@ -133,7 +133,7 @@ BEGIN
    END;
   IF SixAlive THEN
      CASE Enemies OF
-       | 1 : DrawUbeed (Enemy6X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
+       | 1 : DrawBoomGuards (Enemy6X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
        | 2 : DrawSpinners (Enemy6X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
        | 3 : DrawPlants (Enemy6X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
        | 4 : DrawFlyTraps (Enemy6X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
@@ -422,48 +422,50 @@ BEGIN
 END Screen1;
 
 PROCEDURE BlowUpEnemy2 (x, y : CARDINAL);
+CONST
+  SoundDelay = 30;
 BEGIN
   Sound (100);
   Disc (x + 10, y + 10, 10, LightestYellow);
-  Lib.Delay (50);
+  Lib.Delay (SoundDelay);
   NoSound;
   Sound (90);
   Disc (x + 10, y + 10, 10, LightYellow);
-  Lib.Delay (50);
+  Lib.Delay (SoundDelay);
   NoSound;
   Sound (80);
   Disc (x + 10, y + 10, 10, Yellow);
   NoSound;
   Sound (70);
-  Lib.Delay (50);
+  Lib.Delay (SoundDelay);
   Disc (x + 10, y + 10, 10, DarkYellow);
   NoSound;
   Sound (60);
-  Lib.Delay (50);
+  Lib.Delay (SoundDelay);
   Disc (x + 10, y + 10, 10, DarkestYellow);
   NoSound;
   Sound (50);
-  Lib.Delay (50);
+  Lib.Delay (SoundDelay);
   Disc (x + 10, y + 10, 10, LightestRed);
   NoSound;
   Sound (40);
-  Lib.Delay (50);
+  Lib.Delay (SoundDelay);
   Disc (x + 10, y + 10, 10, LightRed);
   NoSound;
   Sound (30);
-  Lib.Delay (50);
+  Lib.Delay (SoundDelay);
   Disc (x + 10, y + 10, 10, Red);
   NoSound;
   Sound (25);
-  Lib.Delay (50);
+  Lib.Delay (SoundDelay);
   Disc (x + 10, y + 10, 10, DarkRed);
   NoSound;
   Sound (22);
-  Lib.Delay (50);
+  Lib.Delay (SoundDelay);
   Disc (x + 10, y + 10, 10, DarkestRed);
   NoSound;
   Sound (20);
-  Lib.Delay (50);
+  Lib.Delay (SoundDelay);
   NoSound;
   Rectangle (x, y, x + 20, y + 35, Black, TRUE);
   Score := Score + 20;
@@ -472,12 +474,14 @@ END BlowUpEnemy2;
 PROCEDURE UpBullet;
 BEGIN
   Line (BulletX, BulletY, BulletX, BulletY + 11, Black);
+  (* Off the top of the screen? *)
   IF (BulletY = 5) THEN
      Rectangle (OldBulletX - 1, OldBulletY, OldBulletX + 1, OldBulletY + 15, Black, TRUE);
      Line (OldBulletX, OldBulletY, OldBulletX, OldBulletY + 15, Black);
      BulletY := 170;
      BulletX := PlaneX + (Width DIV 2);
   END;
+  (* Moving upwards *)
   BulletY := BulletY - 10;
   IF (BulletY < EnemyY) THEN
      Rectangle (BulletX - 1, BulletY - 5, BulletX + 1, BulletY + 15, Black, TRUE);
@@ -487,6 +491,7 @@ BEGIN
      BlowUpEnemy2 (BulletX - (BulletX MOD 30), BulletY - ((BulletY - EnemyY) MOD 30));
      BulletY := 65000;
   END;
+  (* Draw bullet *)
   Rectangle (BulletX - 1, BulletY + 1, BulletX + 1, BulletY + 9, LightBlue, FALSE);
   Line (BulletX, BulletY, BulletX, BulletY + 10, LightWhite);
 END UpBullet;
@@ -514,6 +519,8 @@ BEGIN
   ScreenComplete := FALSE;
   Graph.ClearScreen (Graph._GCLEARSCREEN);
   HitCounts := 0;
+
+  (* Draw cave interior *)
   FOR RoofDots := 1 TO 60000 DO
     Plot (Lib.RANDOM (320), Lib.RANDOM (200), White);
   END;
@@ -532,7 +539,7 @@ BEGIN
   Rectangle (158, 98, 162, 102, Black, TRUE);
   SetClipRgn (0, 0, 320, 199);
   BkSize := CARDINAL (Graph.ImageSize (0, 150, 320, 200));
-  Storage.ALLOCATE (BkAddress, BkSize);
+  Storage.ALLOCATE(BkAddress, BkSize);
   GetImage (0, 150, 320, 200, BkAddress);
   FOR PlaneY := 200 TO 175 BY -1 DO
       PlaneX := (200-PlaneY)*29 DIV 5;
@@ -542,8 +549,9 @@ BEGIN
       Lib.Delay (40);
       Graph.PutImage (0, 150, BkAddress, Graph._GPSET);
   END;
-  Storage.DEALLOCATE (BkAddress, BkSize);
+  Storage.DEALLOCATE(BkAddress, BkSize);
 
+  (* Darken cave *)
   PlaneX := 145; PlaneY := 175; Width := 50; Height := 25; BulletY := 65520;
   FOR RoofDots := 1 TO 3000 DO
       Disc (Lib.RANDOM(320), Lib.RANDOM (200), 5,  Black);
@@ -570,7 +578,7 @@ BEGIN
       END;
   END;
   EnemiesSize := CARDINAL (Graph.ImageSize (0, 0, 320, 120));
-  Storage.ALLOCATE (EnemiesAddress, EnemiesSize);
+  Storage.ALLOCATE(EnemiesAddress, EnemiesSize);
   EnemyX := 0;
   EnemyY := 0;
   EnemyMove := 1;
@@ -633,7 +641,7 @@ BEGIN
      O(110, 60); V(140, 60); E(170, 60); R(200, 60);
      Key := IO.RdKey();
   END;
-  Storage.DEALLOCATE (EnemiesAddress, EnemiesSize);
+  Storage.DEALLOCATE(EnemiesAddress, EnemiesSize);
 END Screen2;
 
 PROCEDURE DrawEnemies3;

@@ -5,3 +5,7 @@
 *.OBJ
 
 *.DB$
+*.DBD
+*.MAP
+*.SES
+*.EXE

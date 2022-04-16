@@ -32,7 +32,7 @@ FROM Exobius IMPORT
   GraphicsCard, MouseOrNot, HighDetail;
 
 FROM Sprites IMPORT
-  DrawUbeed, DrawSpinners, DrawFlyTraps, DrawMaces, DrawPlants,
+  DrawBoomGuards, DrawSpinners, DrawFlyTraps, DrawMaces, DrawPlants,
   DrawIceRocks, DrawSnowMen, DrawSnowBalls, DrawSkiiers, DrawGlowWorms;
 
 FROM Screens IMPORT

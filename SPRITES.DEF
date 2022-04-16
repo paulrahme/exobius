@@ -28,7 +28,7 @@ FROM Exobius IMPORT
   FinishScreen1, Key, PlaneXMove, CheckDeath1, Score, Screen,
   PlaneInMemory, PlaneAddress, BkAddress, BkSize;
 
-PROCEDURE DrawUbeed(x, y, Width : CARDINAL);
+PROCEDURE DrawBoomGuards(x, y, Width : CARDINAL);
 PROCEDURE DrawSpinners(x, y, Width : CARDINAL);
 PROCEDURE DrawMaces(x, y, Width : CARDINAL);
 PROCEDURE DrawPlants(x, y, Width : CARDINAL);

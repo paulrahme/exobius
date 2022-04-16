@@ -8,7 +8,7 @@ IMPORT
 FROM Graph IMPORT
   SetClipRgn, SetVideoMode, Rectangle, GraphMode, TextMode, Polygon, Line,
   HLine, Circle, Ellipse, Disc, Plot, Arc, Point, GetImage, ClearScreen,
-  OutText, SetTextPosition;
+  OutText, SetTextPosition, _GCLEARSCREEN;
 
 FROM Lib IMPORT
   Sound, NoSound, Delay, RANDOM;
@@ -135,7 +135,7 @@ BEGIN
     Plot (313,97,26);
     Plot (313,92,26);
     Plot (313,91,26);
-    Xs[0] := 293; Ys[0] := 20; Xs[1] := 293; Ys[1] := 22; Xs[2] := 239; Ys[2] := 0; Xs[3] := 241; Ys[3] := 0; 
+    Xs[0] := 293; Ys[0] := 20; Xs[1] := 293; Ys[1] := 22; Xs[2] := 239; Ys[2] := 0; Xs[3] := 241; Ys[3] := 0;
     Polygon (4, Xs, Ys, 115);
     Plot (296,25,15);
     Plot (297,25,15);
@@ -1261,7 +1261,7 @@ BEGIN
     Disc (146,99,2,15);
     Ellipse (126,124,18,3,39, TRUE);
     Ellipse (164,124,22,3,39, TRUE);
-    Xs[0] := 109; Ys[0] := 124; Xs[1] := 141; Ys[1] := 138; Xs[2] := 185; Ys[2] := 123; Xs[3] := 184; Ys[3] := 133; Xs[4] := 156; Ys[4] := 144; Xs[5] := 141; Ys[5] := 141; Xs[6] := 130; Ys[6] := 146; Xs[7] := 110; Ys[7] := 135; 
+    Xs[0] := 109; Ys[0] := 124; Xs[1] := 141; Ys[1] := 138; Xs[2] := 185; Ys[2] := 123; Xs[3] := 184; Ys[3] := 133; Xs[4] := 156; Ys[4] := 144; Xs[5] := 141; Ys[5] := 141; Xs[6] := 130; Ys[6] := 146; Xs[7] := 110; Ys[7] := 135;
     Polygon (8, Xs, Ys, 39);
     Rectangle (136,127,141,132,15,TRUE);
     Rectangle (145,127,150,132,15,TRUE);
@@ -1315,7 +1315,7 @@ BEGIN
     Polygon (7, Xs, Ys, 6);
     Xs[0] := 162; Ys[0] := 128; Xs[1] := 244; Ys[1] := 121; Xs[2] := 243; Ys[2] := 137; Xs[3] := 189; Ys[3] := 155; Xs[4] := 153; Ys[4] := 154; 
     Polygon (5, Xs, Ys, 6);
-    Xs[0] := 151; Ys[0] := 160; Xs[1] := 194; Ys[1] := 164; Xs[2] := 219; Ys[2] := 157; Xs[3] := 225; Ys[3] := 168; Xs[4] := 191; Ys[4] := 182; Xs[5] := 128; Ys[5] := 170; 
+    Xs[0] := 151; Ys[0] := 160; Xs[1] := 194; Ys[1] := 164; Xs[2] := 219; Ys[2] := 157; Xs[3] := 225; Ys[3] := 168; Xs[4] := 191; Ys[4] := 182; Xs[5] := 128; Ys[5] := 170;
     Polygon (6, Xs, Ys, 6);
     Line (135,21,123,32,41);
     Line (135,49,119,45,40);
@@ -1466,4 +1466,31 @@ BEGIN
     Plot (83,22,1);
 END Intro5;
 
+PROCEDURE EndGame;
+BEGIN
+    ClearScreen(_GCLEARSCREEN);
+    Intro1;
+    Intro2;
+    Key := IO.RdKey();
+    ClearScreen(_GCLEARSCREEN);
+    Intro3;
+    OldCoords := SetTextPosition (1, 1);
+    OutText("''You're not a bad driver'', he says...");
+    Key := IO.RdKey();
+    OldCoords := SetTextPosition (1, 1);
+    OutText("''What you doing in a place like this''");
+    Key := IO.RdKey();
+    ClearScreen(_GCLEARSCREEN);
+    ClearScreen(_GCLEARSCREEN);
+    Intro5;
+    OldCoords := SetTextPosition (1, 1);
+    OutText("''...so just keep the car...''");
+    Key := IO.RdKey();
+    OldCoords := SetTextPosition (2, 1);
+    OutText("''...and go on home, okay?''");
+    Key := IO.RdKey();
+
+END EndGame;
+
 END Intros1.
+

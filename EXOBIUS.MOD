@@ -1,6 +1,7 @@
 IMPLEMENTATION MODULE Exobius;
 (*$I+,O+,R+,S+,Z+*)
 (*$S FF00*)
+
 PROCEDURE VgaInitialisation;
 BEGIN
   Graph.SetFillMask (SolidFill);
@@ -296,13 +297,35 @@ END DrawPlane;
 
 (* PlaneToPlanet *)
 
-PROCEDURE CheckMouse;
+PROCEDURE CheckSpecialKeys;
 VAR
   TextPos : Graph.TextCoords;
 BEGIN
+  Key := IO.RdKey();
+  IF (Key="q") OR (Key="Q") THEN
+     GameOver := TRUE;
+  END;
+  IF (Key="p") OR (Key="P") THEN
+     TextPos := Graph.SetTextPosition(25, 33);
+     Graph.OutText('PAUSED');
+     Key := IO.RdKey();
+     Rectangle (250, 190, 320, 200, Black, TRUE);
+  END;
+  IF (Key="d") OR (Key="D") THEN
+     HighDetail := NOT (HighDetail);
+  END;
+END CheckSpecialKeys;
+
+PROCEDURE ReadMouse;
+BEGIN
+   MsMouse.GetStatus (MouseButtons);
+   MsMouse.GetMotion (MouseMove);
+END ReadMouse;
+
+PROCEDURE CheckMouse;
+BEGIN
 IF MouseUsed THEN
-  MsMouse.GetStatus (MouseButtons);
-  MsMouse.GetMotion (MouseMove);
+  ReadMouse();
   IF (MouseButtons.left_pressed) OR (MouseButtons.right_pressed) OR (MouseButtons.middle_pressed) THEN
      IF (Screen = 2) THEN
         Rectangle (BulletX - 1, BulletY, BulletX + 1, BulletY + 11, Black, TRUE);
@@ -323,19 +346,7 @@ IF MouseUsed THEN
      PlaneX := PlaneXMax;
   END;
   IF (IO.KeyPressed()) THEN
-     Key := IO.RdKey();
-     IF (Key="q") OR (Key="Q") THEN
-        GameOver := TRUE;
-     END;
-     IF (Key="p") OR (Key="P") THEN
-        TextPos := Graph.SetTextPosition(25, 33);
-        Graph.OutText('PAUSED');
-        Key := IO.RdKey();
-        Rectangle (250, 190, 320, 200, Black, TRUE);
-     END;
-     IF (Key="d") OR (Key="D") THEN
-        HighDetail := NOT (HighDetail);
-     END;
+    CheckSpecialKeys();
   END;
 END;
 END CheckMouse;
@@ -362,116 +373,107 @@ BEGIN
      IF (Key="9") THEN
         PlaneX := PlaneXMax;
      END;
-     IF (Key="q") OR (Key="Q") THEN
-        GameOver := TRUE;
-     END;
      IF (PlaneX < PlaneXMin) THEN
         PlaneX := PlaneXMin;
      END;
      IF (PlaneX > PlaneXMax) THEN
         PlaneX := PlaneXMax;
      END;
-     IF (Key="p") OR (Key="P") THEN
-        TextPos := Graph.SetTextPosition(25, 33);
-        Graph.OutText('PAUSED');
-        Key := IO.RdKey();
-        Rectangle (250, 190, 320, 200, Black, TRUE);
-     END;
-     IF (Key="d") OR (Key="D") THEN
-        HighDetail := NOT (HighDetail);
-     END;
+     CheckSpecialKeys();
   END;
 END CheckKeyboard;
 
 PROCEDURE BlowUpEnemy;
+CONST
+  SoundDelay = 30;
 BEGIN;
   IF (BulletX<=50) AND (OneAlive) THEN
      Sound (30);
      Disc (Enemy1X + (EnemyY-100) DIV 3, EnemyY + (EnemyY -100) DIV 3, (EnemyY -100) DIV 6, LightRed);
-     Lib.Delay (100);
+     Lib.Delay (SoundDelay);
      NoSound;
      Sound (25);
      Disc (Enemy1X + (EnemyY-100) DIV 3, EnemyY + (EnemyY -100) DIV 3, (EnemyY -100) DIV 8, LightestRed);
-     Lib.Delay (100);
+     Lib.Delay (SoundDelay);
      NoSound;
      Sound (21);
      Disc (Enemy1X + (EnemyY-100) DIV 3, EnemyY + (EnemyY -100) DIV 3, (EnemyY -100) DIV 10, DarkestYellow);
-     Lib.Delay (100);
+     Lib.Delay (SoundDelay);
      NoSound;
      OneAlive := FALSE;
   END;
   IF (BulletX>=55) AND (BulletX<=100) AND (TwoAlive) THEN
      Sound (30);
      Disc (Enemy2X + (EnemyY-100) DIV 3, EnemyY + (EnemyY -100) DIV 3, (EnemyY -100) DIV 6, LightRed);
-     Lib.Delay (100);
+     Lib.Delay (SoundDelay);
      NoSound;
      Sound (25);
      Disc (Enemy2X + (EnemyY-100) DIV 3, EnemyY + (EnemyY -100) DIV 3, (EnemyY -100) DIV 8, LightestRed);
-     Lib.Delay (100);
+     Lib.Delay (SoundDelay);
      NoSound;
      Sound (21);
      Disc (Enemy2X + (EnemyY-100) DIV 3, EnemyY + (EnemyY -100) DIV 3, (EnemyY -100) DIV 10, DarkestYellow);
-     Lib.Delay (100);
+     Lib.Delay (SoundDelay);
      NoSound;
      TwoAlive := FALSE;
   END;
   IF (BulletX>=100) AND (BulletX<=160) AND (ThreeAlive) THEN
      Sound (30);
      Disc (Enemy3X + (EnemyY-100) DIV 3, EnemyY + (EnemyY -100) DIV 3, (EnemyY -100) DIV 6, LightRed);
-     Lib.Delay (100);
+     Lib.Delay (SoundDelay);
      NoSound;
      Sound (25);
      Disc (Enemy3X + (EnemyY-100) DIV 3, EnemyY + (EnemyY -100) DIV 3, (EnemyY -100) DIV 8, LightestRed);
-     Lib.Delay (100);
+     Lib.Delay (SoundDelay);
      NoSound;
      Sound (21);
      Disc (Enemy3X + (EnemyY-100) DIV 3, EnemyY + (EnemyY -100) DIV 3, (EnemyY -100) DIV 10, DarkestYellow);
-     Lib.Delay (100);
+     Lib.Delay (SoundDelay);
      NoSound;
      ThreeAlive := FALSE;
   END;
   IF (BulletX>=160) AND (BulletX<=210) AND (FourAlive) THEN
      Sound (30);
      Disc (Enemy4X + (EnemyY-100) DIV 3, EnemyY + (EnemyY -100) DIV 3, (EnemyY -100) DIV 6, LightRed);
-     Lib.Delay (100);
+     Lib.Delay (SoundDelay);
      NoSound;
      Sound (25);
      Disc (Enemy4X + (EnemyY-100) DIV 3, EnemyY + (EnemyY -100) DIV 3, (EnemyY -100) DIV 8, LightestRed);
-     Lib.Delay (100);
+     Lib.Delay (SoundDelay);
      NoSound;
      Sound (21);
      Disc (Enemy4X + (EnemyY-100) DIV 3, EnemyY + (EnemyY -100) DIV 3, (EnemyY -100) DIV 10, DarkestYellow);
-     Lib.Delay (100);
+     Lib.Delay (SoundDelay);
      NoSound;
      FourAlive := FALSE;
   END;
   IF (BulletX>=210) AND (BulletX<=260) AND (FiveAlive) THEN
      Sound (30);
      Disc (Enemy5X + (EnemyY-100) DIV 3, EnemyY + (EnemyY -100) DIV 3, (EnemyY -100) DIV 6, LightRed);
-     Lib.Delay (100);
+     Lib.Delay (SoundDelay);
      NoSound;
      Sound (25);
      Disc (Enemy5X + (EnemyY-100) DIV 3, EnemyY + (EnemyY -100) DIV 3, (EnemyY -100) DIV 8, LightestRed);
-     Lib.Delay (100);
+     Lib.Delay (SoundDelay);
      NoSound;
      Sound (21);
      Disc (Enemy5X + (EnemyY-100) DIV 3, EnemyY + (EnemyY -100) DIV 3, (EnemyY -100) DIV 10, DarkestYellow);
-     Lib.Delay (100);
+     Lib.Delay (SoundDelay);
      NoSound;
      FiveAlive := FALSE;
   END;
   IF (BulletX>=260) AND (SixAlive) THEN
      Sound (30);
      Disc (Enemy6X + (EnemyY-100) DIV 3, EnemyY + (EnemyY -100) DIV 3, (EnemyY -100) DIV 6, LightRed);
-     Lib.Delay (100);
+     Lib.Delay (SoundDelay);
      NoSound;
      Sound (25);
      Disc (Enemy6X + (EnemyY-100) DIV 3, EnemyY + (EnemyY -100) DIV 3, (EnemyY -100) DIV 8, LightestRed);
-     Lib.Delay (100);
+     Lib.Delay (SoundDelay);
      NoSound;
      Sound (21);
      Disc (Enemy6X + (EnemyY-100) DIV 3, EnemyY + (EnemyY -100) DIV 3, (EnemyY -100) DIV 10, DarkestYellow);
-     Lib.Delay (100);
+     Lib.Delay (SoundDelay);
      NoSound;
      SixAlive := FALSE;
   END;
@@ -544,27 +546,29 @@ BEGIN
 END DrawBullet;
 
 PROCEDURE Die;
+CONST
+  SoundDelay = 50;
 BEGIN
   Sound (200);
   Ellipse (PlaneX + (PlaneWidth DIV 2), PlaneY + (PlaneHeight DIV 2), PlaneWidth DIV 2, PlaneHeight DIV 2, Red, TRUE);
-  Lib.Delay(80);
+  Lib.Delay(SoundDelay);
   NoSound;
   Sound (150);
   Ellipse (PlaneX + (PlaneWidth DIV 2), PlaneY + (PlaneHeight DIV 2), PlaneWidth DIV 2, PlaneHeight DIV 2, LightestRed, TRUE);
-  Lib.Delay(80);
+  Lib.Delay(SoundDelay);
   NoSound;
   Sound (120);
   Ellipse (PlaneX + (PlaneWidth DIV 2), PlaneY + (PlaneHeight DIV 2), PlaneWidth DIV 2, PlaneHeight DIV 2, Yellow, TRUE);
-  Lib.Delay(80);
+  Lib.Delay(SoundDelay);
   Sound (100);
   Ellipse (PlaneX + (PlaneWidth DIV 2), PlaneY + (PlaneHeight DIV 2), PlaneWidth DIV 2, PlaneHeight DIV 2, LightYellow, TRUE);
-  Lib.Delay(80);
+  Lib.Delay(SoundDelay);
   Sound (60);
   Ellipse (PlaneX + (PlaneWidth DIV 2), PlaneY + (PlaneHeight DIV 2), PlaneWidth DIV 2, PlaneHeight DIV 2, LightestYellow, TRUE);
-  Lib.Delay(80);
+  Lib.Delay(SoundDelay);
   Sound (80);
   Ellipse (PlaneX + (PlaneWidth DIV 2), PlaneY*(PlaneHeight DIV 2), PlaneWidth DIV 2, PlaneHeight DIV 2, White, TRUE);
-  Lib.Delay(60);
+  Lib.Delay(SoundDelay);
   NoSound;
   Lives := Lives + 1;
   IF (Lives=5) THEN

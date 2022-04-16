@@ -1,14 +1,14 @@
 IMPLEMENTATION MODULE Sprites;
 
-PROCEDURE DrawUbeed (x, y, Width : CARDINAL);
+PROCEDURE DrawBoomGuards (x, y, Width : CARDINAL);
 BEGIN
-  Disc (x + (Width*1 DIV 10), y + (Width DIV 2), Width*3 DIV 50, Black);
+  Disc (x + (Width   DIV 10), y + (Width DIV 2), Width*3 DIV 50, Black);
   Disc (x + (Width*3 DIV 5), y + (Width DIV 2), Width*3 DIV 50, Black);
-  Line (x + (Width*1 DIV 10), y + (Width DIV 2), x + (Width*1 DIV 10), y + (Width*4 DIV 5), Black);
+  Line (x + (Width   DIV 10), y + (Width DIV 2), x + (Width   DIV 10), y + (Width*4 DIV 5), Black);
   Line (x + (Width*3 DIV 5), y + (Width DIV 2), x + (Width*3 DIV 5), y + (Width*4 DIV 5), Black);
-  Line (x + (Width*1 DIV 10), y + (Width*4 DIV 5), x, y + Width, Black);
+  Line (x + (Width   DIV 10), y + (Width*4 DIV 5), x, y + Width, Black);
   Line (x + (Width*3 DIV 5), y + (Width*4 DIV 5), x + (Width DIV 2), y + Width, Black);
-  Line (x + (Width*1 DIV 10), y + (Width*4 DIV 5), x + (Width*1 DIV 5), y + Width, Black);
+  Line (x + (Width   DIV 10), y + (Width*4 DIV 5), x + (Width   DIV 5), y + Width, Black);
   Line (x + (Width*3 DIV 5), y + (Width*4 DIV 5), x + (Width*35 DIV 50), y + Width, Black);
   Rectangle (x + (Width*12 DIV 50), y + (Width*35 DIV 50), x + (Width*15 DIV 50), y + Width, Black, TRUE);
   Rectangle (x + (Width*37 DIV 50), y + (Width*35 DIV 50), x + (Width*4 DIV 5), y + Width, Black, TRUE);
@@ -28,7 +28,7 @@ BEGIN
      | 3 : Line (x + (Width*2 DIV 50), y + (Width*35 DIV 50), x + (Width*7 DIV 50), y + (Width*35 DIV 50), Black);
            Line (x + (Width*27 DIV 50), y + (Width*35 DIV 50), x + (Width*32 DIV 50), y + (Width*35 DIV 50), Black);
   END;
-END DrawUbeed;
+END DrawBoomGuards;
 
 PROCEDURE DrawSpinners (x, y, Width : CARDINAL);
 VAR
@@ -38,7 +38,7 @@ BEGIN
   Disc (x + (Width*26 DIV 50), y + (Width * 24 DIV 50), Width*7 DIV 50, DarkGreen);
   Disc (x + (Width*27 DIV 50), y + (Width * 23 DIV 50), Width*5 DIV 50, Green);
   Disc (x + (Width*28 DIV 50), y + (Width * 22 DIV 50), Width*3 DIV 50, LightGreen);
-  Disc (x + (Width*29 DIV 50), y + (Width * 21 DIV 50), Width*1 DIV 50, LightestGreen);
+  Disc (x + (Width*29 DIV 50), y + (Width * 21 DIV 50), Width   DIV 50, LightestGreen);
   CASE (y MOD 3) OF
      | 0 : DiskX := 9;
            DiskY := 25;
@@ -51,7 +51,7 @@ BEGIN
   Disc (x + (Width*(DiskX+1) DIV 50), y + (Width*(DiskY-1) DIV 50), Width*7 DIV 50, DarkBrown);
   Disc (x + (Width*(DiskX+2) DIV 50), y + (Width*(DiskY-2) DIV 50), Width*5 DIV 50, Brown);
   Disc (x + (Width*(DiskX+3) DIV 50), y + (Width*(DiskY-3) DIV 50), Width*3 DIV 50, LightBrown);
-  Disc (x + (Width*(DiskX+4) DIV 50), y + (Width*(DiskY-4) DIV 50), Width*1 DIV 50, LightestBrown);
+  Disc (x + (Width*(DiskX+4) DIV 50), y + (Width*(DiskY-4) DIV 50), Width   DIV 50, LightestBrown);
   CASE (y MOD 3) OF
      | 0 : DiskX := 25;
            DiskY := 9;
@@ -64,7 +64,7 @@ BEGIN
   Disc (x + (Width*(DiskX+1) DIV 50), y + (Width*(DiskY-1) DIV 50), Width*7 DIV 50, DarkBrown);
   Disc (x + (Width*(DiskX+2) DIV 50), y + (Width*(DiskY-2) DIV 50), Width*5 DIV 50, Brown);
   Disc (x + (Width*(DiskX+3) DIV 50), y + (Width*(DiskY-3) DIV 50), Width*3 DIV 50, LightBrown);
-  Disc (x + (Width*(DiskX+4) DIV 50), y + (Width*(DiskY-4) DIV 50), Width*1 DIV 50, LightestBrown);
+  Disc (x + (Width*(DiskX+4) DIV 50), y + (Width*(DiskY-4) DIV 50), Width   DIV 50, LightestBrown);
   CASE (y MOD 3) OF
      | 0 : DiskX := 41;
            DiskY := 25;
@@ -77,7 +77,7 @@ BEGIN
   Disc (x + (Width*(DiskX+1) DIV 50), y + (Width*(DiskY-1) DIV 50), Width*7 DIV 50, DarkBrown);
   Disc (x + (Width*(DiskX+2) DIV 50), y + (Width*(DiskY-2) DIV 50), Width*5 DIV 50, Brown);
   Disc (x + (Width*(DiskX+3) DIV 50), y + (Width*(DiskY-3) DIV 50), Width*3 DIV 50, LightBrown);
-  Disc (x + (Width*(DiskX+4) DIV 50), y + (Width*(DiskY-4) DIV 50), Width*1 DIV 50, LightestBrown);
+  Disc (x + (Width*(DiskX+4) DIV 50), y + (Width*(DiskY-4) DIV 50), Width   DIV 50, LightestBrown);
   CASE (y MOD 3) OF
      | 0 : DiskX := 25;
            DiskY := 41;
@@ -90,7 +90,7 @@ BEGIN
   Disc (x + (Width*(DiskX+1) DIV 50), y + (Width*(DiskY-1) DIV 50), Width*7 DIV 50, DarkBrown);
   Disc (x + (Width*(DiskX+2) DIV 50), y + (Width*(DiskY-2) DIV 50), Width*5 DIV 50, Brown);
   Disc (x + (Width*(DiskX+3) DIV 50), y + (Width*(DiskY-3) DIV 50), Width*3 DIV 50, LightBrown);
-  Disc (x + (Width*(DiskX+4) DIV 50), y + (Width*(DiskY-4) DIV 50), Width*1 DIV 50, LightestBrown);
+  Disc (x + (Width*(DiskX+4) DIV 50), y + (Width*(DiskY-4) DIV 50), Width   DIV 50, LightestBrown);
 END DrawSpinners;
 
 PROCEDURE DrawPlants (x, y, Width : CARDINAL);
@@ -154,7 +154,7 @@ BEGIN
   Ellipse (x + (Width*31 DIV 50), y + (Width*19 DIV 50), Width*8 DIV 50, Width*4 DIV 50, DarkWhite, TRUE);
   Ellipse (x + (Width*32 DIV 50), y + (Width*18 DIV 50), Width*6 DIV 50, Width*3 DIV 50, White, TRUE);
   Ellipse (x + (Width*33 DIV 50), y + (Width*17 DIV 50), Width*4 DIV 50, Width*2 DIV 50, LightWhite, TRUE);
-  Ellipse (x + (Width*34 DIV 50), y + (Width*16 DIV 50), Width*2 DIV 50, Width*1 DIV 50, LightestWhite, TRUE);
+  Ellipse (x + (Width*34 DIV 50), y + (Width*16 DIV 50), Width*2 DIV 50, Width   DIV 50, LightestWhite, TRUE);
   CASE (y MOD 2) OF
      | 0 : Line (x + (Width*25 DIV 50), y + (Width*34 DIV 50), x + (Width*25 DIV 50), y + Width, Black);
            Line (x + (Width*5 DIV 50), y + (Width*25 DIV 50), x, y + (Width*25 DIV 50), Black);
@@ -225,7 +225,7 @@ BEGIN
 	Disc (x + (Width*27 DIV 50), y + (Width*15 DIV 50), Width*5 DIV 50, White);
 	Disc (x + (Width*25 DIV 50), y + (Width*38 DIV 50), Width*12 DIV 50, DarkestWhite);
 	Disc (x + (Width*27 DIV 50), y + (Width*36 DIV 50), Width*10 DIV 50, White);
-	Disc (x + (Width*35 DIV 50), y + (Width*28 DIV 50), Width*1 DIV 50, LightestWhite);
+	Disc (x + (Width*35 DIV 50), y + (Width*28 DIV 50), Width   DIV 50, LightestWhite);
 	Line (x + (Width*15 DIV 50), y + (Width*28 DIV 50), x + (Width*5 DIV 50), y + (Width*25 DIV 50), Black);
 	Line (x + (Width*35 DIV 50), y + (Width*30 DIV 50), x + (Width*45 DIV 50), y + (Width*25 DIV 50), Black);
 	Graph.SetLinestyle (0AAAAH);

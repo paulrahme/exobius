@@ -10,4 +10,6 @@ PROCEDURE Intro4;
 
 PROCEDURE Intro5;
 
+PROCEDURE EndGame;
+
 END Intros1.

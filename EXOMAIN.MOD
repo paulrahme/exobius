@@ -37,7 +37,7 @@ FROM Intro IMPORT
      WriteThinks, PlaneToPlanet;
 
 FROM Intros1 IMPORT
-     Intro1, Intro2, Intro3, Intro4, Intro5;
+     Intro1, Intro2, Intro3, Intro4, Intro5, EndGame;
 
 FROM Screens IMPORT
      Screen1, Screen2, Screen3;
@@ -65,34 +65,14 @@ VAR
      f : FIO.File;
      OldCoords : Graph.TextCoords;
 
-PROCEDURE EndGame;
-BEGIN
-    ClearScreen(_GCLEARSCREEN);
-    Intro1;
-    Intro2;
-    Key := IO.RdKey();
-    ClearScreen(_GCLEARSCREEN);
-    Intro3;
-    OldCoords := SetTextPosition (1, 1);
-    OutText("''You're not a bad driver'', he says...");
-    Key := IO.RdKey();
-    OldCoords := SetTextPosition (1, 1);
-    OutText("''What you doing in a place like this''");
-    Key := IO.RdKey();
-    ClearScreen(_GCLEARSCREEN);
-    ClearScreen(_GCLEARSCREEN);
-    Intro5;
-    OldCoords := SetTextPosition (1, 1);
-    OutText("''...so just keep the car...''");
-    Key := IO.RdKey();
-    OldCoords := SetTextPosition (2, 1);
-    OutText("''...and go on home, okay?''");
-    Key := IO.RdKey();
-
-END EndGame;
-
 PROCEDURE Main;
 BEGIN
+   PlaneInMemory := FALSE;
+   Score := 0;
+   GameOver := FALSE;
+   ScreenComplete := FALSE;
+   Lives := 0;
+ 
   ClearScreen(_GCLEARSCREEN);
   Intro1;
   OldCoords := SetTextPosition (1, 1);
@@ -117,8 +97,6 @@ BEGIN
   Key := IO.RdKey();
 
   ClearScreen(_GCLEARSCREEN);
-  PlaneInMemory := FALSE;
-  Score := 0;
   Infinite_Software;
   Delay (12*NoteDelay);
   IF NOT (KeyPressed()) THEN
@@ -144,10 +122,6 @@ BEGIN
   END;
   ClearTheBuffer;
   PlaneToPlanet;
-  GameOver := FALSE;
-  ScreenComplete := FALSE;
-  ClearScreen (_GCLEARSCREEN);
-  Lives := 0;
   ClearScreen (_GCLEARSCREEN);
   Screen1;
   IF NOT GameOver THEN
