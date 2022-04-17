@@ -51,7 +51,6 @@ VAR
 PROCEDURE VgaInitialisation;
 PROCEDURE DrawPlane(x, y, Width, Height : CARDINAL);
 PROCEDURE DrawBullet;
-PROCEDURE CheckSpecialKeys;
 PROCEDURE CheckKeyboard;
 PROCEDURE ReadMouse;
 PROCEDURE CheckMouse;

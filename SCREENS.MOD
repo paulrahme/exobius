@@ -25,8 +25,8 @@ FROM Exobius IMPORT
   Count, Lives, EnemyY,  NegPlaneAddress, WritingAddress,  BkColour,
   OldBkColor,  Xs, Ys,  OneAlive, TwoAlive, ThreeAlive, FourAlive, FiveAlive,
   SixAlive, ScreenComplete, GameOver,  MouseButtons,  MouseMove, GameSpeed,
-  DrawBullet, DrawPlane, CheckMouse, ReadMouse, CheckKeyboard, Die, A, B,
-  C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z,
+  DrawBullet, DrawPlane, CheckMouse, ReadMouse, CheckKeyboard, Die,
+  A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z,
   FinishScreen1, Key, PlaneXMove, CheckDeath1, Score, Screen,
   PlaneAddress, BkAddress, BkSize, ClearTheBuffer, Cheat,
   MouseOrNot, GraphicsCard, HighDetail;
@@ -511,7 +511,7 @@ END CheckDeath2;
 
 PROCEDURE Screen2;
 VAR
-  RoofDots, RoofSize, RectY, EnemiesSize, EnemyMove, EnemyYStart : CARDINAL;
+  RoofDots, RoofSize, RectY, NewRectY, FadeCount, EnemiesSize, EnemyMove, EnemyYStart : CARDINAL;
   EnemiesAddress, RoofAddress : ADDRESS;
 
 BEGIN
@@ -536,36 +536,50 @@ BEGIN
   FOR RoofDots := 1 TO 200 DO
       Plot (Lib.RANDOM (20) + 150, Lib.RANDOM (40) + 80, DarkestGrey);
   END;
+
+  ReadMouse;
+
   Rectangle (158, 98, 162, 102, Black, TRUE);
   SetClipRgn (0, 0, 320, 199);
   BkSize := CARDINAL (Graph.ImageSize (0, 150, 320, 200));
   Storage.ALLOCATE(BkAddress, BkSize);
   GetImage (0, 150, 320, 200, BkAddress);
   FOR PlaneY := 200 TO 175 BY -1 DO
-      PlaneX := (200-PlaneY)*29 DIV 5;
-      Width := (160 - PlaneX)*2;
+      PlaneX := 145 - (PlaneY - 175);
+      Width := (PlaneY - 125);
       Height := Width DIV 2;
-      DrawPlane (PlaneX, PlaneY, Width, Height);
-      Lib.Delay (40);
+      DrawPlane(PlaneX, PlaneY, Width, Height);
+      Lib.Delay(50);
       Graph.PutImage (0, 150, BkAddress, Graph._GPSET);
   END;
   Storage.DEALLOCATE(BkAddress, BkSize);
+  CASE MouseOrNot OF
+      | 2 : CheckMouse;
+      | 1 : CheckKeyboard;
+  END;
 
   (* Darken cave *)
-  PlaneX := 145; PlaneY := 175; Width := 50; Height := 25; BulletY := 65520;
-  FOR RoofDots := 1 TO 3000 DO
-      Disc (Lib.RANDOM(320), Lib.RANDOM (200), 5,  Black);
-      IF (RoofDots MOD 20 = 0) THEN
-         DrawPlane (PlaneX, PlaneY, Width, Height);
+  PlaneX := 145; PlaneY := 175; Width := 50; Height := 25; BulletY := 65520; RectY := 100;
+  FOR FadeCount := 1 TO 4000 DO
+      NewRectY := 100 + (FadeCount DIV 40);
+      IF (NewRectY > RectY) THEN
+          RectY := NewRectY;
+          Rectangle(200 - RectY, 200 - RectY, 120 + RectY, RectY, Black, TRUE);
       END;
-  END;
-  FOR RectY := 100 TO 200 DO
-      Rectangle (200 - RectY, 200 - RectY, 120 + RectY, RectY, Black, TRUE);
-      IF (RectY > 175) AND (RectY MOD 5 = 0) THEN
-         DrawPlane (PlaneX, PlaneY, Width, Height);
+      IF (NewRectY < 175) THEN
+          Disc(Lib.RANDOM(320), Lib.RANDOM(200), 5,  Black);
+          IF (FadeCount MOD 20 = 0) THEN
+             DrawPlane(PlaneX, PlaneY, Width, Height);
+          END;
+      ELSE
+         IF (RectY MOD 5 = 0) THEN
+             DrawPlane(PlaneX, PlaneY, Width, Height);
+         END;          
       END;
   END;
   GetImage (145, 175, 195, 200, PlaneAddress);
+
+  (* Draw enemies *)
   FOR EnemyX := 30 TO 280 BY 30 DO
       FOR EnemyY := 0 TO 90 BY 30 DO
        DrawGlowWorms (EnemyX, EnemyY);

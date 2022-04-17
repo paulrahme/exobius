@@ -318,37 +318,37 @@ END CheckSpecialKeys;
 
 PROCEDURE ReadMouse;
 BEGIN
-   MsMouse.GetStatus (MouseButtons);
-   MsMouse.GetMotion (MouseMove);
+   MsMouse.GetStatus(MouseButtons);
+   MsMouse.GetMotion(MouseMove);
+   IF (IO.KeyPressed()) THEN
+      CheckSpecialKeys();
+   END;
 END ReadMouse;
 
 PROCEDURE CheckMouse;
 BEGIN
-IF MouseUsed THEN
-  ReadMouse();
-  IF (MouseButtons.left_pressed) OR (MouseButtons.right_pressed) OR (MouseButtons.middle_pressed) THEN
-     IF (Screen = 2) THEN
-        Rectangle (BulletX - 1, BulletY, BulletX + 1, BulletY + 11, Black, TRUE);
-     END;
-     BulletX := PlaneX + 25;
-     BulletY := 5;
-  END;
-  IF (MouseMove.horiz <> 0) AND (PlaneX + MouseMove.horiz >= 0) THEN
-     INC (PlaneX, MouseMove.horiz DIV PlaneMovement);
-  END;
-  IF (PlaneX + MouseMove.horiz < 0) THEN
-     PlaneX := 0;
-  END;
-  IF (PlaneX < PlaneXMin) THEN
-     PlaneX := PlaneXMin;
-  END;
-  IF (PlaneX > PlaneXMax) THEN
-     PlaneX := PlaneXMax;
-  END;
-  IF (IO.KeyPressed()) THEN
-    CheckSpecialKeys();
-  END;
-END;
+   IF MouseUsed THEN
+      ReadMouse();
+      IF (MouseButtons.left_pressed) OR (MouseButtons.right_pressed) OR (MouseButtons.middle_pressed) THEN
+         IF (Screen = 2) THEN
+            Rectangle (BulletX - 1, BulletY, BulletX + 1, BulletY + 11, Black, TRUE);
+         END;
+         BulletX := PlaneX + 25;
+         BulletY := 5;
+      END;
+      IF (MouseMove.horiz <> 0) AND (PlaneX + MouseMove.horiz >= 0) THEN
+         INC (PlaneX, MouseMove.horiz DIV PlaneMovement);
+      END;
+      IF (PlaneX + MouseMove.horiz < 0) THEN
+         PlaneX := 0;
+      END;
+      IF (PlaneX < PlaneXMin) THEN
+         PlaneX := PlaneXMin;
+      END;
+      IF (PlaneX > PlaneXMax) THEN
+         PlaneX := PlaneXMax;
+      END;
+   END;
 END CheckMouse;
 
 PROCEDURE CheckKeyboard;
