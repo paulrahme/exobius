@@ -316,23 +316,22 @@ BEGIN
   END;
 END CheckSpecialKeys;
 
-PROCEDURE ReadMouse;
+PROCEDURE CheckMouseAndSpecialKeys;
 BEGIN
-   MsMouse.GetStatus(MouseButtons);
-   MsMouse.GetMotion(MouseMove);
+   IF MouseUsed THEN
+      MsMouse.GetStatus(MouseButtons);
+      MsMouse.GetMotion(MouseMove);
+   END;
    IF (IO.KeyPressed()) THEN
       CheckSpecialKeys();
    END;
-END ReadMouse;
+END CheckMouseAndSpecialKeys;
 
 PROCEDURE CheckMouse;
 BEGIN
    IF MouseUsed THEN
-      ReadMouse();
+      CheckMouseAndSpecialKeys();
       IF (MouseButtons.left_pressed) OR (MouseButtons.right_pressed) OR (MouseButtons.middle_pressed) THEN
-         IF (Screen = 2) THEN
-            Rectangle (BulletX - 1, BulletY, BulletX + 1, BulletY + 11, Black, TRUE);
-         END;
          BulletX := PlaneX + 25;
          BulletY := 5;
       END;

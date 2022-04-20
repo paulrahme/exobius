@@ -52,7 +52,7 @@ PROCEDURE VgaInitialisation;
 PROCEDURE DrawPlane(x, y, Width, Height : CARDINAL);
 PROCEDURE DrawBullet;
 PROCEDURE CheckKeyboard;
-PROCEDURE ReadMouse;
+PROCEDURE CheckMouseAndSpecialKeys;
 PROCEDURE CheckMouse;
 PROCEDURE Die;
 PROCEDURE FinishScreen1;
