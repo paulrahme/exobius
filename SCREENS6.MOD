@@ -1,4 +1,3 @@
-
 IMPLEMENTATION MODULE Screens6;
 (*$I+,O+,R+,S+,Z+*)
 (*$S FF00*)
@@ -7,8 +6,7 @@ IMPORT
   Str, Graph, Lib, IO, Window, Storage, MsMouse, Exobius, Storage;
 
 FROM Graph IMPORT
-  SetClipRgn, SetVideoMode, Rectangle, GraphMode, TextMode, Polygon, Line,
-  HLine, Circle, Ellipse, Disc, Plot, Arc, Point, GetImage, ClearScreen;
+  SetClipRgn, SetVideoMode, Rectangle, GraphMode, TextMode, Polygon, Line, HLine, Circle, Ellipse, Disc, Plot, Arc, Point, GetImage;
 
 FROM Lib IMPORT
   Sound, NoSound, Delay, RANDOM;
@@ -31,131 +29,353 @@ FROM Exobius IMPORT
   C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z,
   FinishScreen1, Key, PlaneXMove, CheckDeath1, Score, Screen,
   PlaneInMemory, PlaneAddress, BkAddress, BkSize, ClearTheBuffer, Cheat,
-  GraphicsCard, MouseOrNot;
+  GraphicsCard, DrawGameOver;
 
-FROM Screens IMPORT
-     DrawGameOverSign;
+FROM Sprites IMPORT
+  DrawBoomGuards, DrawSpinners, DrawFlyTraps, DrawMaces, DrawPlants,
+  DrawIceRocks, DrawSnowMen, DrawSnowBalls, DrawSkiiers, DrawGlowWorms;
 
-FROM Screens4 IMPORT
-     DrawPillarBottom;
-
-FROM Screens5 IMPORT
-     DrawPlanet;
-
-CONST
-    PlanetX = 160;
-    PlanetY = 100;
-    PlanetRadius = 70;
-
-PROCEDURE DrawPartialSky (x : CARDINAL);
-BEGIN
-    Rectangle (x,0,x+27,6,0,TRUE);
-    Rectangle (x,7,x+27,13,184,TRUE);
-    Rectangle (x,14,x+27,20,183,TRUE);
-    Rectangle (x,21,x+27,28,182,TRUE);
-    Rectangle (x,28,x+27,34,181,TRUE);
-    Rectangle (x,35,x+27,41,180,TRUE);
-    Rectangle (x,42,x+27,48,179,TRUE);
-    Rectangle (x,49,x+27,55,178,TRUE);
-    Rectangle (x,56,x+27,62,177,TRUE);
-    Rectangle (x,63,x+27,69,176,TRUE);
-    Rectangle (x,70,x+27,76,177,TRUE);
-    Rectangle (x,77,x+27,83,178,TRUE);
-    Rectangle (x,84,x+27,90,179,TRUE);
-    Rectangle (x,91,x+27,97,180,TRUE);
-    Rectangle (x,98,x+27,104,181,TRUE);
-    Rectangle (x,105,x+27,200,DarkRed,TRUE);
-END DrawPartialSky;
-
-PROCEDURE Screen9;
-CONST
-    NoOfPillars = 16;
-    NoOfCircles = 200;
-    NewNoOfPillars = 35;
-(***) PlanetRadius = 50;
+PROCEDURE DrawBorders;
 VAR
-  PillarCount, Pillar1X, Pillar2X, Pillar3X, Pillar4X, Pillar5X, Pillar1Y,
-  Pillar2Y, Pillar3Y, Pillar4Y, Pillar5Y, Pillar6Y, OldPlaneX : CARDINAL;
+  TunnelDots : CARDINAL;
 BEGIN
-    Count := PlanetRadius;
-    WHILE (Count<100) DO
-        DrawPlanet (PlanetX, PlanetY, Count);
-        Count := Count + (Count DIV 15);
-    END;
-    FOR Count := 100 TO 250 BY 7 DO
-        Disc (PlanetX, PlanetY, Count, DarkRed);
-    END;
-    Rectangle (0, 0, 320, 200, DarkRed, TRUE);
-    FOR Count := 0 TO 100 DO
-        HLine (0, Count, 320, 178);
-        Delay (9);
-    END;
-    Rectangle (0,0,319,6,0,TRUE);
-    Rectangle (0,7,319,13,184,TRUE);
-    Rectangle (0,14,319,20,183,TRUE);
-    Rectangle (0,21,320,28,182,TRUE);
-    Rectangle (0,28,319,34,181,TRUE);
-    Rectangle (0,35,320,41,180,TRUE);
-    Rectangle (0,42,320,48,179,TRUE);
-    Rectangle (0,49,319,55,178,TRUE);
-    Rectangle (0,56,319,62,177,TRUE);
-    Rectangle (0,63,319,69,176,TRUE);
-    Rectangle (0,70,319,76,177,TRUE);
-    Rectangle (0,77,319,83,178,TRUE);
-    Rectangle (0,84,319,90,179,TRUE);
-    Rectangle (0,91,320,97,180,TRUE);
-    Rectangle (0,98,319,104,181,TRUE);
-    ClearTheBuffer;
-    PlaneX := 145; PlaneY := 175; PlaneInMemory := FALSE;
-    PillarCount := 0;
-    Pillar1X := (RANDOM(11)+1)*25; Pillar2X := (RANDOM(11)+1)*25;
-    Pillar3X := 325; Pillar4X := 325; Pillar5X := 325;
-    WHILE (PillarCount<NewNoOfPillars) AND NOT (GameOver) DO
-          PillarCount := PillarCount + 1;
-          Pillar5X := Pillar4X; Pillar4X := Pillar3X; Pillar3X := Pillar2X;
-          Pillar2X := Pillar1X; Pillar1X := (RANDOM(11)+1)*25;
-          IF (PillarCount>NewNoOfPillars-6) THEN
-             Pillar1X := 325;
-          END;
-          FOR Pillar1Y := 100 TO 118 BY 2 DO
-            IF NOT (GameOver) THEN
-              Delay (GameSpeed);
-              Pillar2Y := Pillar1Y + 20; Pillar3Y := Pillar2Y + 20;
-              Pillar4Y := Pillar3Y + 20; Pillar5Y := Pillar4Y + 20;
-              IF (Pillar1Y<105) THEN
-                    Rectangle (Pillar1X, 200 - Pillar1Y, Pillar1X + 1, Pillar1Y, DarkestGrey, TRUE);
-              ELSIF (Pillar1Y>104) AND (Pillar1Y<112) THEN
-                    Rectangle (Pillar1X, 200 - Pillar1Y, Pillar1X + 3, Pillar1Y, Grey, TRUE);
-              ELSIF (Pillar1Y>111) THEN
-                    DrawPillarBottom (Pillar1X, Pillar1Y);
-              END;
-              DrawPillarBottom (Pillar2X, Pillar2Y);
-              DrawPillarBottom (Pillar3X, Pillar3Y);
-              DrawPillarBottom (Pillar4X, Pillar4Y);
-              DrawPillarBottom (Pillar5X, Pillar5Y);
-              IF (Point (PlaneX + 25, PlaneY - 2) <> DarkRed) THEN
-                 OldPlaneX := PlaneX;
-                 Die;
-                 REPEAT
-                      PlaneX := Lib.RANDOM(250);
-                 UNTIL (Point(PlaneX + (PlaneWidth DIV 2), PlaneY - 1) = DarkRed);
-                 Rectangle (OldPlaneX, PlaneY, OldPlaneX+PlaneWidth, PlaneY+PlaneHeight, DarkRed, TRUE);
-              END;
-              OldPlaneX := PlaneX;
-              CASE MouseOrNot OF
-                   | 1 : CheckKeyboard;
-                   | 2 : CheckMouse;
-              END;
-              Rectangle (OldPlaneX, PlaneY, OldPlaneX + PlaneWidth, PlaneY + PlaneHeight, DarkRed, TRUE);
-              DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
-            END;
-          END;
-          DrawPartialSky (Pillar5X);
-    NoSound;
-    IF GameOver THEN
-       DrawGameOverSign;
-    END;
-    END;
-END Screen9;
+  Graph.ClearScreen (Graph._GCLEARSCREEN);
+  DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
+  FOR TunnelDots := 1 TO 40 DO
+      Plot (RANDOM(320), RANDOM(15), DarkBrown);
+      Plot (RANDOM(15), RANDOM(200), DarkBrown);
+      Plot (320-RANDOM(15), RANDOM(200), DarkBrown);
+      Plot (RANDOM(320), 200-RANDOM(15), DarkBrown);
+      IF (TunnelDots MOD 2 = 0) THEN
+         Plot (RANDOM(320), RANDOM(23), DarkestBrown);
+         Plot (RANDOM(23), RANDOM(200), DarkestBrown);
+         Plot (320-RANDOM(23), RANDOM(200), DarkestBrown);
+         Plot (RANDOM(320), 200-RANDOM(23), DarkestBrown);
+      END;
+  END;
+END DrawBorders;
 
-END Screens6.
+PROCEDURE GoStraight;
+VAR
+  GoingStraight : CARDINAL;
+BEGIN
+  FOR GoingStraight := 1 TO 100 DO
+      IF NOT (GameOver) AND NOT (ScreenComplete) THEN
+         CheckMouse;
+         DrawBorders;
+         CASE (GoingStraight MOD 9) OF
+              | 0 : Rectangle (20, 20, 300, 180, DarkestGrey, FALSE);
+              | 1 : Rectangle (17, 17, 302, 182, DarkestGrey, FALSE);
+              | 2 : Rectangle (15, 15, 305, 185, DarkestGrey, FALSE);
+              | 3 : Rectangle (12, 12, 307, 187, DarkestBrown, FALSE);
+              | 4 : Rectangle (10, 10, 310, 190, DarkestBrown, FALSE);
+              | 5 : Rectangle (7, 7, 312, 192, DarkestBrown, FALSE);
+              | 6 : Rectangle (5, 5, 315, 195, DarkBrown, FALSE);
+              | 7 : Rectangle (2, 2, 317, 197, DarkBrown, FALSE);
+              | 8 : Rectangle (0, 0, 319, 199, Brown, FALSE);
+         END;
+         DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
+         Delay (GameSpeed);
+      END;
+  END;
+END GoStraight;
+
+PROCEDURE SplitInTwo;
+VAR
+  BrownColour, Split : CARDINAL;
+BEGIN
+    FOR Split := 1 TO 9 DO
+        CASE Split OF
+             | 1,2,3 : BrownColour := DarkestGrey;
+             | 4,5,6 : BrownColour := DarkestBrown;
+             | 7,8,9 : BrownColour := DarkBrown;
+        END;
+        DrawBorders;
+        Line (160, 20 - Split*2, 160, 180 + Split*2, BrownColour);
+        CheckMouse;
+        DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
+        IF (Graph.Point (PlaneX + 25, PlaneY - 2) <> Black) THEN
+           Die;
+        END;
+        Delay (GameSpeed*5);
+    END;
+END SplitInTwo;
+
+PROCEDURE GoInTwo;
+VAR
+  TunnelDots, SplitMove : CARDINAL;
+BEGIN
+    FOR SplitMove := 1 TO 100 DO
+      IF NOT GameOver THEN
+        CheckMouse;
+        DrawBorders;
+        Line (160, 0, 160, 200, Brown);
+        FOR TunnelDots := 1 TO 80 DO
+            Plot (RANDOM(46) + 137, RANDOM(200), DarkestBrown);
+            Plot (RANDOM(20) + 150, RANDOM(200), DarkBrown);
+        END;
+        DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
+        Delay (GameSpeed);
+        IF (PlaneX>125) AND (PlaneX<185) THEN
+           Die;
+        END;
+      END;
+    END;
+END GoInTwo;
+
+PROCEDURE BlockOffRight;
+VAR
+  TheFall, TunnelDots : CARDINAL;
+BEGIN
+    FOR TheFall := 100 TO 200 BY 10 DO
+        DrawBorders;
+        Rectangle (320 - (TheFall*8 DIV 10), 200 - TheFall, 160 + (TheFall*8 DIV 10), TheFall, Brown, TRUE);
+        Line (160, 0, 160, 200, Brown);
+        FOR TunnelDots := 1 TO 80 DO
+            Plot (RANDOM(46) + 137, RANDOM(200), DarkestBrown);
+            Plot (RANDOM(20) + 150, RANDOM(200), DarkBrown);
+        END;
+        Rectangle (320 - (TheFall*8 DIV 10), 200 - TheFall, 160 + (TheFall*8 DIV 10), TheFall, Brown, TRUE);
+        DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
+        Delay (GameSpeed);
+        IF (PlaneX>125) AND (PlaneX<185) THEN
+           Die;
+        END;
+    END;
+END BlockOffRight;
+
+PROCEDURE LavaFall;
+VAR
+  FallingSound, TunnelDots, Lines, LineY : CARDINAL;
+BEGIN
+    FallingSound := 3500;
+    Rectangle (160, 0, 320, 200, Brown, TRUE);
+    Rectangle (0, 100, 159, 200, Black, TRUE);
+    FOR Lines := 1 TO 10 DO
+        FOR LineY := 200 TO 0 BY -3 DO
+            Sound (FallingSound);
+            IF (Lines=1) THEN
+               Rectangle (0, LineY, 160, LineY + 5, Brown, TRUE);
+            END;
+            IF (Lines=2) THEN
+               Rectangle (0, 0, 160, 50, Brown, TRUE);
+            END;
+            Rectangle (0, LineY, 320, LineY + 3, DarkGrey, TRUE);
+            Rectangle (0, LineY + 4, 320, LineY + 15, Brown, TRUE);
+            DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
+            IF (FallingSound>20) THEN
+               FallingSound := FallingSound - 8;
+            END;
+            Delay (2);
+            NoSound;
+        END;
+        Rectangle (0, 0, 320, 50, Brown, TRUE);
+    END;
+    FOR LineY := 200 TO 0 BY -3 DO
+        Rectangle (160, LineY, 320, LineY + 5, Red, TRUE);
+        Delay (2);
+    END;
+    Die;
+    FOR Lines := 1 TO 10 DO
+        FOR LineY := 1 TO 200 BY 3 DO
+            IF (Lines=10) THEN
+               Rectangle (0, 0, 160, LineY, Black, TRUE);
+            END;
+            Rectangle (0, LineY, 320, LineY + 3, DarkGrey, TRUE);
+            Rectangle (0, LineY + 4, 320, LineY + 15, Brown, TRUE);
+            DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
+        END;
+        Rectangle (0, 0, 320, 50, Brown, TRUE);
+    END;
+END LavaFall;
+
+PROCEDURE WindingTunnel;
+CONST
+    WindingTime = 100;
+VAR
+  TunnelDots, Wind, LeftSide : CARDINAL;
+BEGIN
+  LeftSide := 1;
+  WHILE (PlaneX <> 65) DO
+        Rectangle (PlaneX, PlaneY, PlaneX + PlaneWidth, PlaneY + PlaneHeight, Black, TRUE);
+        IF PlaneX < 65 THEN
+           PlaneX := PlaneX + INTEGER(RANDOM(3))
+        ELSIF (PlaneX > 65) THEN
+           PlaneX := PlaneX - INTEGER(RANDOM(3));
+        END;
+        DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
+  END;
+  PlaneX := 65;
+  ClearTheBuffer;
+  FOR Wind := 1 TO WindingTime DO
+    IF NOT GameOver THEN
+      Rectangle (0, 0, LeftSide, 200, Brown, TRUE);
+      Rectangle (LeftSide, 0, LeftSide + 160, 200, Black, TRUE);
+      Rectangle (LeftSide + 160, 0, 320, 200, Brown, TRUE);
+      FOR TunnelDots := 1 TO 40 DO
+          Plot (LeftSide + RANDOM(160), RANDOM(15), DarkBrown);
+          Plot (LeftSide + RANDOM(15), RANDOM(200), DarkBrown);
+          Plot (LeftSide + 160 - RANDOM(15), RANDOM(200), DarkBrown);
+          Plot (LeftSide + RANDOM(160), 200-RANDOM(15), DarkBrown);
+          IF (TunnelDots MOD 2 = 0) THEN
+             Plot (LeftSide + RANDOM(160), RANDOM(23), DarkestBrown);
+             Plot (LeftSide + RANDOM(23), RANDOM(200), DarkestBrown);
+             Plot (LeftSide + 160 - RANDOM(23), RANDOM(200), DarkestBrown);
+             Plot (LeftSide + RANDOM(320), 200-RANDOM(23), DarkestBrown);
+          END;
+      END;
+      CheckMouse;
+      DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
+      IF (LeftSide<10) THEN
+         LeftSide := LeftSide + 10
+      ELSIF (LeftSide>150) THEN
+         LeftSide := LeftSide - 10;
+      END;
+      LeftSide := LeftSide + RANDOM(20) - 10;
+      Delay (GameSpeed);
+      IF (PlaneX < INTEGER(LeftSide+15)) OR (PlaneX > INTEGER(LeftSide + 145)) THEN
+         Die;
+         PlaneX := LeftSide + 55;
+      END;
+    END;
+  END;
+  IF NOT GameOver THEN
+     WHILE (LeftSide<>80) DO
+        IF (LeftSide<80) THEN
+           LeftSide := LeftSide + RANDOM(3)
+        ELSIF (LeftSide>80) THEN
+           LeftSide := LeftSide - RANDOM(3);
+        END;
+        Rectangle (0, 0, LeftSide, 200, Brown, TRUE);
+        Rectangle (LeftSide, 0, LeftSide + 160, 200, Black, TRUE);
+        Rectangle (LeftSide + 160, 0, 320, 200, Brown, TRUE);
+        FOR Wind := 1 TO 40 DO
+            Plot (LeftSide + RANDOM(160), RANDOM(15), DarkBrown);
+            Plot (LeftSide + RANDOM(15), RANDOM(200), DarkBrown);
+            Plot (LeftSide + 160 - RANDOM(15), RANDOM(200), DarkBrown);
+            Plot (LeftSide + RANDOM(160), 200-RANDOM(15), DarkBrown);
+            IF (Wind MOD 2 = 0) THEN
+               Plot (LeftSide + RANDOM(160), RANDOM(23), DarkestBrown);
+               Plot (LeftSide + RANDOM(23), RANDOM(200), DarkestBrown);
+               Plot (LeftSide + 160 - RANDOM(23), RANDOM(200), DarkestBrown);
+               Plot (LeftSide + RANDOM(320), 200-RANDOM(23), DarkestBrown);
+            END;
+        END;
+        IF (PlaneX < 145) THEN
+           PlaneX := PlaneX + INTEGER(RANDOM(3))
+        ELSIF (PlaneX > 145) THEN
+           PlaneX := PlaneX - INTEGER(RANDOM(3));
+        END;
+        DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
+      END;
+    FOR LeftSide := 80 TO 0 BY -1 DO
+      Rectangle (LeftSide, 0, 320 - LeftSide, 200, Black, TRUE);
+        IF (PlaneX < 145) THEN
+           PlaneX := PlaneX + INTEGER(RANDOM(3))
+        ELSIF (PlaneX > 145) THEN
+           PlaneX := PlaneX - INTEGER(RANDOM(3));
+        END;
+      DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
+    END;
+  END;
+END WindingTunnel;
+
+PROCEDURE OpenUpTunnel;
+VAR
+  RectangleSize, GoingStraight, TunnelDots : CARDINAL;
+BEGIN
+  RectangleSize := 0;
+  FOR GoingStraight := 1 TO 50 DO
+      IF NOT (GameOver) AND NOT (ScreenComplete) THEN
+         CheckMouse;
+         DrawBorders;
+         CASE (GoingStraight MOD 9) OF
+              | 0 : Rectangle (20, 20, 300, 180, DarkestGrey, FALSE);
+              | 1 : Rectangle (17, 17, 302, 182, DarkestGrey, FALSE);
+              | 2 : Rectangle (15, 15, 305, 185, DarkestGrey, FALSE);
+              | 3 : Rectangle (12, 12, 307, 187, DarkestBrown, FALSE);
+              | 4 : Rectangle (10, 10, 310, 190, DarkestBrown, FALSE);
+              | 5 : Rectangle (7, 7, 312, 192, DarkestBrown, FALSE);
+              | 6 : Rectangle (5, 5, 315, 195, DarkBrown, FALSE);
+              | 7 : Rectangle (2, 2, 317, 197, DarkBrown, FALSE);
+              | 8 : Rectangle (0, 0, 319, 199, Brown, FALSE);
+         END;
+         DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
+         IF RectangleSize < 98 THEN
+            RectangleSize := GoingStraight*2;
+         END;
+         Rectangle (160 - (RectangleSize * 8 DIV 5), 100, 161 + (RectangleSize * 8 DIV 5), 101 + RectangleSize, DarkBrown, TRUE);
+         FOR TunnelDots := 1 TO GoingStraight DO
+             Plot (RANDOM(320), RANDOM(200), DarkestBrown);
+         END;
+         Delay (GameSpeed);
+      END;
+  END;
+  IF (GraphicsCard <> 1) THEN
+     Rectangle (0, 0, 320, 100, DarkestGrey, TRUE);
+     Rectangle (0, 100, 320, 200, DarkBrown, TRUE);
+  END;
+END OpenUpTunnel;
+
+PROCEDURE Screen6;
+VAR
+  RectY, Count, TunnelDots : CARDINAL;
+BEGIN
+  PlaneInMemory := FALSE;
+  Rectangle (0, 100, 320, 200, DarkBrown, TRUE);
+  FOR PlaneY := 200 TO 175 BY -1 DO
+      PlaneX := (200-PlaneY)*29 DIV 5;
+      Width := (160 - PlaneX)*3;
+      Height := Width DIV 2;
+      Rectangle (0, 170, 320, 200, DarkBrown, TRUE);
+      DrawPlane (PlaneX, PlaneY, Width, Height);
+      PlaneInMemory := FALSE;
+      Lib.Delay (40);
+  END;
+  PlaneX := 145; PlaneY := 175;
+  FOR RectY := 100 TO 0 BY (-10) DO
+      Rectangle (RectY, RectY, 320-RectY, 200-RectY, DarkestBrown, TRUE);
+      IF (RectY<90) THEN
+         Rectangle (RectY+10, RectY+10, 310-RectY, 190-RectY, Black, TRUE);
+      END;
+      DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
+  END;
+  Graph.ClearScreen (Graph._GCLEARSCREEN);
+  DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
+  Graph.GetImage (PlaneX, PlaneY, PlaneX+PlaneWidth, PlaneY+PlaneHeight, PlaneAddress);
+  PlaneInMemory := TRUE;
+  Graph.ClearScreen (Graph._GCLEARSCREEN);
+  FOR TunnelDots := 1 TO 50 DO
+      Plot (RANDOM(320), RANDOM(15), DarkBrown);
+      Plot (RANDOM(15), RANDOM(200), DarkBrown);
+      Plot (320-RANDOM(15), RANDOM(200), DarkBrown);
+      Plot (RANDOM(320), 200-RANDOM(15), DarkBrown);
+      Plot (RANDOM(320), RANDOM(23), DarkestBrown);
+      Plot (RANDOM(23), RANDOM(200), DarkestBrown);
+      Plot (320-RANDOM(23), RANDOM(200), DarkestBrown);
+      Plot (RANDOM(320), 200-RANDOM(23), DarkestBrown);
+  END;
+  DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
+  ClearTheBuffer;
+  ScreenComplete := FALSE;
+  GameOver := FALSE;
+  GoStraight;
+  SplitInTwo;
+  GoInTwo;
+  BlockOffRight;
+  IF (PlaneX>160) THEN
+     LavaFall;
+  END;
+  WindingTunnel;
+  GoStraight;
+  IF NOT GameOver THEN
+     OpenUpTunnel;
+  END;
+  IF GameOver THEN
+     DrawGameOver;
+  END;
+
+END Screen6;
+
+END Screens6.
+

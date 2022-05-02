@@ -1,0 +1,7 @@
+DEFINITION MODULE Screens7;
+
+PROCEDURE Screen7;
+
+PROCEDURE DrawPillarBottom(x,y:CARDINAL);
+
+END Screens7.

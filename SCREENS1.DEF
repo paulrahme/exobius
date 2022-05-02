@@ -1,0 +1,11 @@
+DEFINITION MODULE Screens1;
+
+VAR
+    GroundAddress : ADDRESS;
+    GroundSize : CARDINAL;
+
+PROCEDURE BlankGround1;
+PROCEDURE DrawEnemies1;
+PROCEDURE Screen1;
+
+END Screens1.

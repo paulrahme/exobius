@@ -1,6 +1,5 @@
 DEFINITION MODULE Screens6;
 
-PROCEDURE Screen9;
+PROCEDURE Screen6;
 
 END Screens6.
-

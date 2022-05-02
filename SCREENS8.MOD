@@ -1,4 +1,4 @@
-IMPLEMENTATION MODULE Screens5;
+IMPLEMENTATION MODULE Screens8;
 (*$I+,O+,R+,S+,Z+*)
 (*$S FF00*)
 
@@ -30,10 +30,7 @@ FROM Exobius IMPORT
   C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z,
   FinishScreen1, Key, PlaneXMove, CheckDeath1, Score, Screen,
   PlaneInMemory, PlaneAddress, BkAddress, BkSize, ClearTheBuffer, Cheat,
-  GraphicsCard, MouseOrNot, HighDetail;
-
-FROM Screens IMPORT
-     DrawGameOverSign;
+  GraphicsCard, HighDetail, DrawGameOver;
 
 CONST
     PlanetX = 160;
@@ -359,7 +356,6 @@ PROCEDURE CheckMouse8;
 VAR
   TextPos : Graph.TextCoords;
 BEGIN
-IF (MouseOrNot=2) THEN
   MsMouse.GetStatus (MouseButtons);
   MsMouse.GetMotion (MouseMove);
   IF (MouseButtons.left_pressed) THEN
@@ -397,54 +393,7 @@ IF (MouseOrNot=2) THEN
         HighDetail := NOT (HighDetail);
      END;
   END;
-END;
 END CheckMouse8;
-
-PROCEDURE CheckKeyboard8;
-VAR
-  TextPos : Graph.TextCoords;
-BEGIN
-  IF ( IO.KeyPressed() ) THEN
-     Key := IO.RdKey();
-     IF (Key=" ") THEN
-        BulletY := 5;
-        BulletX := PlaneX + 25;
-     END;
-     IF (Key="5") THEN
-        UpBulletX := PlaneX + (PlaneWidth DIV 2);
-        UpBulletY := 170;
-     END;
-     IF (Key="4") THEN
-        PlaneX := PlaneX -  PlaneXMove;
-     END;
-     IF (Key="6") THEN
-        PlaneX := PlaneX + PlaneXMove;
-     END;
-     IF (Key="7") THEN
-        PlaneX := PlaneXMin;
-     END;
-     IF (Key="9") THEN
-        PlaneX := PlaneXMax;
-     END;
-     IF (Key="q") OR (Key="Q") THEN
-        GameOver := TRUE;
-     END;
-     IF (PlaneX < PlaneXMin) THEN
-        PlaneX := PlaneXMin;
-     END;
-     IF (PlaneX > PlaneXMax) THEN
-        PlaneX := PlaneXMax;
-     END;
-     IF (Key="p") OR (Key="P") THEN
-        TextPos := Graph.SetTextPosition(25, 33);
-        Graph.OutText('PAUSED');
-        Key := IO.RdKey();
-     END;
-     IF (Key="d") OR (Key="D") THEN
-        HighDetail := NOT (HighDetail);
-     END;
-  END;
-END CheckKeyboard8;
 
 PROCEDURE CheckDeath8;
 BEGIN
@@ -510,10 +459,7 @@ BEGIN
           END;
           FOR TheStars := 1 TO 30 DO
               IF NOT (GameOver) AND NOT (ScreenComplete) THEN
-                 CASE MouseOrNot OF
-                      | 1 : CheckKeyboard8;
-                      | 2 : CheckMouse8;
-                 END;
+                 CheckMouse8;
                  ClearScreen (Graph._GCLEARSCREEN);
                  DrawPlanet (PlanetX, PlanetY, PlanetRadius);
                  DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
@@ -529,10 +475,7 @@ BEGIN
           OneDead := 0; TwoDead := 0; ThreeDead := 0; FourDead := 0; FiveDead := 0;
           FOR EnemyY := 2 TO 200 BY 3 DO
               IF NOT (GameOver) AND NOT (ScreenComplete) THEN
-                 CASE MouseOrNot OF
-                      | 1 : CheckKeyboard8;
-                      | 2 : CheckMouse8;
-                 END;
+                 CheckMouse8;
                  Graph.ClearScreen (Graph._GCLEARSCREEN);
                  IF (EnemyY MOD 7 = 0) THEN
                     PlanetRadius := PlanetRadius + 1;
@@ -552,8 +495,9 @@ BEGIN
           END;
     END;
     IF (GameOver) THEN
-       DrawGameOverSign;
+       DrawGameOver;
     END;
 END Screen8;
 
-END Screens5.
+END Screens8.
+

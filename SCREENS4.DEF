@@ -1,7 +1,11 @@
 DEFINITION MODULE Screens4;
 
-PROCEDURE Screen7;
+VAR
+  GroundAddress : ADDRESS;
+  GroundSize : CARDINAL;
 
-PROCEDURE DrawPillarBottom(x,y:CARDINAL);
+PROCEDURE Screen4;
 
-END Screens4.
+PROCEDURE Screen5;
+
+END Screens4.

@@ -28,18 +28,18 @@ FROM Exobius IMPORT
   DrawBullet, DrawPlane, CheckMouse, CheckKeyboard, Die, A, B,
   C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z,
   FinishScreen1, Key, PlaneXMove, Score, Screen, PlaneAddress,
-  BkAddress, BkSize, GraphicsCard, MouseOrNot;
+  BkAddress, BkSize, GraphicsCard, DrawGameOver;
 
 FROM Storage IMPORT
      ALLOCATE, DEALLOCATE;
 
-FROM Screens IMPORT
-  BlankGround1, GroundAddress, GroundSize, DrawGameOverSign;
-
 FROM Sprites IMPORT
   DrawSpinners;
 
-FROM Screens5 IMPORT
+FROM Screens1 IMPORT
+    BlankGround1, GroundAddress, GroundSize;
+
+FROM Screens8 IMPORT
   DrawStars8, DrawPlanet, PlanetRadius;
 
 CONST
@@ -568,10 +568,7 @@ BEGIN
                    | 2 : DrawBoss2B(Boss1X, Boss1Y, Boss2X, Boss2Y, Boss3X, Boss3Y);
                    | 0 : DrawBoss2C(Boss1X, Boss1Y, Boss2X, Boss2Y, Boss3X, Boss3Y);
               END;
-              CASE MouseOrNot OF
-                   | 1 : CheckKeyboard;
-                   | 2 : CheckMouse;
-              END;
+              CheckMouse;
               DrawBulletBoss2;
               BossFall := BossFall + BossMove;
               IF (BulletY=4) THEN
@@ -611,10 +608,7 @@ BEGIN
                    | 2 : DrawBoss2B(Boss1X, Boss1Y, Boss2X, Boss2Y, Boss3X, Boss3Y);
                    | 0 : DrawBoss2C(Boss1X, Boss1Y, Boss2X, Boss2Y, Boss3X, Boss3Y);
               END;
-              CASE MouseOrNot OF
-                   | 1 : CheckKeyboard;
-                   | 2 : CheckMouse;
-              END;
+              CheckMouse;
               DrawBulletBoss2;
               BossFall := BossFall - BossMove;
               IF (BulletY=4) THEN
@@ -637,7 +631,7 @@ BEGIN
           DrawBarGraphs2;
     END; (* ScreenComplete Check *)
     IF GameOver THEN
-       DrawGameOverSign;
+       DrawGameOver;
     END;
     IF ScreenComplete THEN
        FinishScreenBoss2;
@@ -794,10 +788,7 @@ BEGIN
                 Boss3X3 := Boss3X3 + Boss3Move;
              END;
              DrawBoss3 (Boss3X3, Boss3Y3);
-             CASE MouseOrNot OF
-                  | 1 : CheckKeyboard;
-                  | 2 : CheckMouse;
-             END;
+             CheckMouse;
              IF (BulletY=5) THEN
                 BulletY := 0;
                 DrawBullet8Boss;
@@ -812,10 +803,7 @@ BEGIN
                     Graph.PutImage (0, 0, BkAddress, Graph._GPSET);
                     DrawBoss3 (Boss3X3, Boss3Y3);
                     DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
-                    CASE MouseOrNot OF
-                         | 1 : CheckKeyboard;
-                         | 2 : CheckMouse;
-                    END;
+                    CheckMouse;
                     IF (BulletY=5) THEN
                        BulletY := 0;
                        DrawBullet8Boss;
@@ -834,10 +822,7 @@ BEGIN
                     Graph.PutImage (0, 0, BkAddress, Graph._GPSET);
                     DrawBoss3 (Boss3X3, Boss3Y3);
                     DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
-                    CASE MouseOrNot OF
-                         | 1 : CheckKeyboard;
-                         | 2 : CheckMouse;
-                    END;
+                    CheckMouse;
                     IF (BulletY=5) THEN
                        BulletY := 0;
                        DrawBullet8Boss;
@@ -857,7 +842,7 @@ BEGIN
        FinishScreenBoss3;
     END;
     IF (GameOver) THEN
-       DrawGameOverSign;
+       DrawGameOver;
     END;
     DEALLOCATE (BkAddress, MAX(CARDINAL));
     IF (ScreenComplete) AND (Lives>0) THEN
@@ -1012,10 +997,7 @@ BEGIN
         Graph.PutImage (0, 0, BkAddress, Graph._GPSET);
         DrawBoss4 ((160-Boss4Width DIV 2), (100-Boss4Width DIV 2), Boss4Width);
         DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
-        CASE MouseOrNot OF
-             | 1 : CheckKeyboard;
-             | 2 : CheckMouse;
-        END;
+        CheckMouse;
     END;
     Graph.PutImage (0, 0, BkAddress, Graph._GPSET);
     DrawBoss4 ((160-Boss4Width DIV 2), (100-Boss4Width DIV 2), Boss4Width);
@@ -1024,10 +1006,7 @@ BEGIN
 (****************************************************************)
 
         Graph.PutImage (0, 0, BkAddress, Graph._GPSET);
-        CASE MouseOrNot OF
-             | 1 : CheckKeyboard;
-             | 2 : CheckMouse;
-        END;
+        CheckMouse;
         DrawPlane (PlaneX, PlaneY, Width, Height);
         DrawBullet;
         IF (BulletY  > 99) THEN
@@ -1062,10 +1041,7 @@ BEGIN
                         IF (SpitY > SpitHitY) AND (PlaneX + (PlaneWidth DIV 2) > INTEGER(SpitX-30)) AND (PlaneX + (PlaneWidth DIV 2) < INTEGER(SpitX + 30)) THEN
                                 Die;
                         END;
-                        CASE MouseOrNot OF
-                             | 1 : CheckKeyboard;
-                             | 2 : CheckMouse;
-                        END;
+                        CheckMouse;
                         DrawPlane (PlaneX, PlaneY, Width, Height);
                         DrawBullet;
                         IF (BulletY  < 6) AND (BulletY > 0) THEN

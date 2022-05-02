@@ -3,13 +3,13 @@ IMPLEMENTATION MODULE Screens4;
 (*$S FF00*)
 
 IMPORT
-  Str, Graph, Lib, IO, Window, Storage, MsMouse, Exobius, Storage;
+  Str, Graph, Lib, IO, Window, Storage, MsMouse, Exobius;
 
 FROM Graph IMPORT
   SetClipRgn, SetVideoMode, Rectangle, GraphMode, TextMode, Polygon, Line, HLine, Circle, Ellipse, Disc, Plot, Arc, Point, GetImage;
 
 FROM Lib IMPORT
-  Sound, NoSound, Delay, RANDOM;
+  Sound, NoSound, Delay;
 
 FROM Exobius IMPORT
   NoteDelay, SolidFill, PlaneWidth, PlaneHeight, PlaneMovement,
@@ -21,7 +21,9 @@ FROM Exobius IMPORT
   Brown, LightBrown, LightestBrown, DarkestGreen, DarkGreen, Green, LightGreen,
   LightestGreen, DarkestYellow, DarkYellow, Yellow, LightYellow,
   LightestYellow, PlaneX,  Enemy1X, Enemy2X, Enemy3X, Enemy4X, Enemy5X,
-  Enemy6X, Enemies, BulletX, BulletY, PlaneY, Width, Height, CoverRectangleX,
+  Enemy6X, Enemies,
+  BulletX, BulletY, OldBulletX, OldBulletY,
+  PlaneY, Width, Height, CoverRectangleX,
   Count, Lives, EnemyY,  NegPlaneAddress, WritingAddress,  BkColour,
   OldBkColor,  Xs, Ys,  OneAlive, TwoAlive, ThreeAlive, FourAlive, FiveAlive,
   SixAlive, ScreenComplete, GameOver,  MouseButtons,  MouseMove, GameSpeed,
@@ -29,321 +31,317 @@ FROM Exobius IMPORT
   C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z,
   FinishScreen1, Key, PlaneXMove, CheckDeath1, Score, Screen,
   PlaneInMemory, PlaneAddress, BkAddress, BkSize, ClearTheBuffer, Cheat,
-  GraphicsCard, MouseOrNot;
+  GraphicsCard, HighDetail, DrawGameOver;
 
-FROM Screens IMPORT
-     DrawGameOverSign;
+FROM Sprites IMPORT
+  DrawBoomGuards, DrawSpinners, DrawFlyTraps, DrawMaces, DrawPlants,
+  DrawIceRocks, DrawSnowMen, DrawSnowBalls, DrawSkiiers, DrawGlowWorms;
 
-PROCEDURE DrawPillarBottom(x, y : CARDINAL);
 VAR
-  PillarX, PillarY, PillarColour : CARDINAL;
-BEGIN
-    FOR PillarX := 0 TO 27 DO
-        CASE PillarX OF
-             | 0, 1 : PillarColour := DarkestGrey;
-             | 2, 3 : PillarColour := DarkGrey;
-             | 4, 5 : PillarColour := Grey;
-             | 6, 7 : PillarColour := LightGrey;
-             | 8, 9 : PillarColour := LightestGrey;
-             | 10, 11 : PillarColour := DarkestWhite;
-             | 12, 13 : PillarColour := DarkWhite;
-             | 14, 15 : PillarColour := White;
-             | 16, 17 : PillarColour := LightWhite;
-             | 18, 19 : PillarColour := LightestWhite;
-             | 20, 21 : PillarColour := LightWhite;
-             | 22, 23 : PillarColour := White;
-             | 24, 25 : PillarColour := DarkWhite;
-             | 26, 27 : PillarColour := DarkestWhite;
-        END;
-        CASE PillarX OF
-             | 0, 27 : PillarY := y;
-             | 1, 26 : PillarY := y + 1;
-             | 2, 3, 25, 24 : PillarY := y + 2;
-             | 4, 5, 6, 7, 8, 23, 22, 21, 20, 19 : PillarY := y + 3;
-             | 9, 10, 11, 12, 13, 14, 15, 16, 17, 18 : PillarY := y + 4;
-        END;
-        IF (PillarY<200) THEN
-           Line (x + ((y-100)*PillarX DIV 100), 200-PillarY, x + ((y-100)*PillarX DIV 100), PillarY, PillarColour)
-        ELSE
-           Line (x + ((y-100)*PillarX DIV 100), 0, x + ((y-100)*PillarX DIV 100), 200, PillarColour);
-        END;
-    END;
-END DrawPillarBottom;
+  NumberOfWaterDots, RectY, HitCounts, EnemyX : CARDINAL;
+  TextPos : Graph.TextCoords;
+  RectX : INTEGER;
 
-PROCEDURE DrawPillarTop(x, y : CARDINAL);
-VAR
-  PillarX, PillarColour : CARDINAL;
+PROCEDURE RandomBrown(VAR BrownColour : CARDINAL);
 BEGIN
-    FOR PillarX := 0 TO 27 DO
-        CASE PillarX OF
-             | 0, 1 : PillarColour := DarkestGrey;
-             | 2, 3 : PillarColour := DarkGrey;
-             | 4, 5 : PillarColour := Grey;
-             | 6, 7 : PillarColour := LightGrey;
-             | 8, 9 : PillarColour := LightestGrey;
-             | 10, 11 : PillarColour := DarkestWhite;
-             | 12, 13 : PillarColour := DarkWhite;
-             | 14, 15 : PillarColour := White;
-             | 16, 17 : PillarColour := LightWhite;
-             | 18, 19 : PillarColour := LightestWhite;
-             | 20, 21 : PillarColour := LightWhite;
-             | 22, 23 : PillarColour := White;
-             | 24, 25 : PillarColour := DarkWhite;
-             | 26, 27 : PillarColour := DarkestWhite;
-        END;
-        Line (x + (y*PillarX DIV 200), y, x + (y*PillarX DIV 200), 200, PillarColour);
-    END;
-    Ellipse (x + (y*13 DIV 200), y, y*13 DIV 200, y*5 DIV 200, White, TRUE);
-END DrawPillarTop;
+   CASE Lib.RANDOM(5) OF
+      | 1 : BrownColour := LightestBrown;
+      | 2 : BrownColour := LightBrown;
+      | 3 : BrownColour := Brown;
+      | 4 : BrownColour := DarkBrown;
+      | 5 : BrownColour := DarkestBrown;
+   END;
+END RandomBrown;
 
-PROCEDURE Screen7;
-CONST
-    NoOfPillars = 16;
-    NoOfCircles = 200;
-    NewNoOfPillars = 35;
+PROCEDURE Die4;
 VAR
-  PillarCount, Pillar1X, Pillar2X, Pillar3X, Pillar4X, Pillar5X, Pillar1Y,
-  Pillar2Y, Pillar3Y, Pillar4Y, Pillar5Y, Pillar6Y, StarColour, CircleRadius,
-  Stars, BlueCircles, CircleColour, OldPlaneX : CARDINAL;
-  PlaneOnPillars : BOOLEAN;
+   Count : CARDINAL;
 BEGIN
-    ClearTheBuffer;
-    PlaneX := 145; PlaneY := 175; PlaneInMemory := FALSE;
-    IF (GraphicsCard=3) THEN
-       Rectangle (0, 0, 320, 100, DarkestGrey, TRUE);
-    END;
-    Rectangle (0, 100, 320, 200, DarkBrown, TRUE);
-    DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
-    Graph.GetImage (PlaneX, PlaneY, PlaneX + PlaneWidth, PlaneY + PlaneHeight, PlaneAddress);
-    PlaneInMemory := FALSE;
-    FOR PillarCount := 105 TO 200 DO
-        Rectangle (0, 100, 320, 200, DarkBrown, TRUE);
-        IF (PillarCount >150) THEN
-           DrawPillarTop (PlaneX, PillarCount);
-        ELSE
-           Rectangle (0, 0, 320, 100, Black, TRUE);
-           Ellipse (CARDINAL(PlaneX - 8) + (PillarCount*13 DIV 200), PillarCount, PillarCount*13 DIV 200, PillarCount*5 DIV 200, White, TRUE);
-        END;
-        DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
-        Delay (GameSpeed);
-    END;
-    FOR PillarCount := 90 TO 200 BY 8 DO
-        Rectangle (0, 98, 320, PillarCount, Black, TRUE);
-        DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
-        NoSound;
-        Sound (PillarCount*5);
-    END;
-    NoSound;
-    PillarCount := 0; PlaneOnPillars := TRUE;
-    Pillar1X := (RANDOM(11)+1)*25; Pillar2X := (RANDOM(11)+1)*25;
-    Pillar3X := (RANDOM(11)+1)*25; Pillar4X := (RANDOM(11)+1)*25;
-    Pillar5X := (RANDOM(11)+1)*25;
-    WHILE (PlaneOnPillars) AND (PillarCount<NoOfPillars) DO
-          PillarCount := PillarCount + 1;
-          Pillar5X := Pillar4X; Pillar4X := Pillar3X; Pillar3X := Pillar2X;
-          Pillar2X := Pillar1X; Pillar1X := (RANDOM(11)+1)*25;
-          FOR Pillar1Y := 80 TO 100 DO
-              CASE MouseOrNot OF
-                   | 1 : CheckKeyboard;
-                   | 2 : CheckMouse;
-              END;
-              Delay (CARDINAL(TRUNC(REAL(GameSpeed)*1.5)));
-              Pillar2Y := Pillar1Y + 20; Pillar3Y := Pillar2Y + 20;
-              Pillar4Y := Pillar3Y + 20; Pillar5Y := Pillar4Y + 20;
-              Graph.ClearScreen (Graph._GCLEARSCREEN);
-              FOR Stars := 1 TO 15 DO
-                  CASE (RANDOM(5)) OF
-                       | 1 : StarColour := Blue;
-                       | 2 : StarColour := White;
-                       | 3 : StarColour := Grey;
-                       | 4 : StarColour := Yellow;
-                       | 5 : StarColour := LightestWhite;
-                  END;
-                  Plot (RANDOM(320), RANDOM(200), StarColour);
-              END;
-              IF (Pillar1Y<85) THEN
-                    Rectangle (Pillar1X, Pillar1Y, Pillar1X + 1, 200, DarkestGrey, TRUE);
-              ELSIF (Pillar1Y>84) AND (Pillar1Y<92) THEN
-                    Rectangle (Pillar1X, Pillar1Y, Pillar1X + 3, 200, Grey, TRUE);
-              ELSIF (Pillar1Y>91) THEN
-                    DrawPillarTop (Pillar1X, Pillar1Y);
-              END;
-              DrawPillarTop (Pillar2X, Pillar2Y);
-              DrawPillarTop (Pillar3X, Pillar3Y);
-              DrawPillarTop (Pillar4X, Pillar4Y);
-              DrawPillarTop (Pillar5X, Pillar5Y);
-              IF (Pillar1Y<85) THEN
-                 PlaneY := PlaneY - 10;
-              END;
-              IF (Pillar1Y>84) AND (Pillar1Y<88) THEN
-                 PlaneY := PlaneY - 6;
-              END;
-              IF (Pillar1Y>87) AND (Pillar1Y<94) THEN
-                 PlaneY := PlaneY + 4;
-              END;
-              IF (Pillar1Y>93) AND (Pillar1Y<95) THEN
-                 PlaneY := PlaneY + 6;
-              END;
-              IF (Pillar1Y>95) AND (Pillar1Y<100) THEN
-                 PlaneY := PlaneY + 10;
-              END;
-              IF (Pillar1Y=100) THEN
-                 PlaneY := 175;
-                 IF (Point (PlaneX + 25, PlaneY + 8) <> White) THEN
-                    PlaneOnPillars := FALSE;
-                 END;
-              END;
-              DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
-          END;
-    END;
-    IF (PlaneOnPillars) THEN
-       FOR Pillar2Y := 120 TO 200 BY 5 DO
-           NoSound;
-           Sound ((Pillar2Y-100)*20);
-           Graph.ClearScreen (Graph._GCLEARSCREEN);
-           FOR Stars := 1 TO 15 DO
-               CASE (RANDOM(5)) OF
-                    | 1 : StarColour := Blue;
-                    | 2 : StarColour := White;
-                    | 3 : StarColour := Grey;
-                    | 4 : StarColour := Yellow;
-                    | 5 : StarColour := LightestWhite;
-               END;
-               Plot (RANDOM(320), RANDOM(200), StarColour);
-           END;
-           DrawPillarTop (Pillar2X, Pillar2Y);
-           DrawPillarTop (Pillar3X, Pillar2Y+20);
-           DrawPillarTop (Pillar4X, Pillar2Y+40);
-           DrawPillarTop (Pillar5X, Pillar2Y+60);
-           DrawPlane (PlaneX, PlaneY, PlaneWidth ,PlaneHeight);
-       END;
-       NoSound;
-       FOR BlueCircles := 1 TO NoOfCircles DO
-        IF NOT (GameOver) THEN
-           Graph.ClearScreen (Graph._GCLEARSCREEN);
-           FOR Stars := 1 TO 15 DO
-               CASE (RANDOM(5)) OF
-                    | 1 : StarColour := Blue;
-                    | 2 : StarColour := White;
-                    | 3 : StarColour := Grey;
-                    | 4 : StarColour := Yellow;
-                    | 5 : StarColour := LightestWhite;
-               END;
-               Plot (RANDOM(320), RANDOM(200), StarColour);
-           END;
-         CircleRadius := (BlueCircles + 20) MOD 10;
-         IF (CircleRadius=0) THEN
-            CircleRadius := 10;
+    Graph.GetImage (0, 190, 320, 200, BkAddress);
+    Rectangle (0, 190, 320, 200, Blue, TRUE);
+    Circle (PlaneX + 10, PlaneY + 5, 2, LightestBlue);
+    Circle (PlaneX + 10, PlaneY + 5, 4, LightestBlue);
+    TextPos := Graph.SetTextPosition (25, 25);
+    Graph.OutText ('PLOP!');
+    FOR Count := 1 TO 6 DO
+         CASE Count OF
+              | 1 : Sound (30);
+              | 2 : Sound (40);
+              | 3 : Sound (60);
+              | 4 : Sound (100);
+              | 5 : Sound (150);
+              | 6 : Sound (240);
          END;
-         WHILE (CircleRadius<200) DO
-               IF (CircleRadius<40) THEN
-                     CircleColour := DarkGrey
-               ELSIF (CircleRadius>39) AND (CircleRadius<80) THEN
-                     CircleColour := DarkestBlue
-               ELSIF (CircleRadius>79) AND (CircleRadius<120) THEN
-                     CircleColour := DarkBlue
-               ELSIF (CircleRadius>119) AND (CircleRadius<160) THEN
-                     CircleColour := Blue
-               ELSIF (CircleRadius>159) THEN
-                     CircleColour := LightBlue;
-               END;
-               Circle (160, 100, CircleRadius, CircleColour);
-               CircleRadius := CircleRadius*2;
-         END;
-         OldPlaneX := PlaneX;
-         CASE MouseOrNot OF
-              | 1 : CheckKeyboard;
-              | 2 : CheckMouse;
-         END;
-         PlaneX := OldPlaneX;
-         DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
-         IF (PlaneX<145) THEN
-            PlaneX := PlaneX + INTEGER(RANDOM(5))
-         ELSIF (PlaneX>145) THEN
-            PlaneX := PlaneX - INTEGER(RANDOM(5));
-         END;
-        END;
-     END;
-  END; (* Circle-Walkthrough *)
-  IF NOT (PlaneOnPillars) THEN
-     Graph.ClearScreen(Graph._GCLEARSCREEN);
-     FOR PillarCount := 200 TO 100 BY -8 DO
-         Rectangle (0, PillarCount, 320, 201, DarkBrown, TRUE);
-         DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
+         Delay (50);
          NoSound;
-         Sound (PillarCount*5);
+    END;
+    Graph.PutImage (0, 190, BkAddress, Graph._GPSET);
+    Lives := Lives + 1;
+    IF (Lives=3) THEN
+       Lives := 0;
+       IF (Cheat=FALSE) THEN
+          GameOver := TRUE;
+       END;
+    ELSE
+       PlaneX := 0;
+       CASE GraphicsCard OF
+            | 2,3 : WHILE (Point(PlaneX, 195)=Blue) OR (Point(PlaneX, 195)=LightestBlue) DO
+                          PlaneX := PlaneX + 1;
+                    END;
+            | 1 : WHILE (Point(PlaneX, 195)=Blue) DO
+                        PlaneX := PlaneX + 1;
+                  END;
+       END;
+       PlaneX := PlaneX + 9;
+    END;
+END Die4;
+
+PROCEDURE DrawBridgePiece4(x, y, BrownColour : CARDINAL);
+VAR
+  BridgeDots : CARDINAL;
+BEGIN
+     RandomBrown (BrownColour);
+     Rectangle (x, y, x + 20, y + 10, BrownColour, TRUE);
+     Rectangle (x, y, x + 20, y + 10, DarkGrey, FALSE);
+     HLine (x, y + 9, x + 20, DarkestGrey);
+     FOR BridgeDots := 1 TO 15 DO
+         Plot (Lib.RANDOM(20) + x, Lib.RANDOM(10) + y, DarkGrey);
      END;
-     NoSound;
-     Rectangle (0, 100, 320, 200, DarkBrown, TRUE);
-     PillarCount := 0;
-     Pillar1X := (RANDOM(11)+1)*25; Pillar2X := (RANDOM(11)+1)*25;
-     Pillar3X := (RANDOM(11)+1)*25; Pillar4X := (RANDOM(11)+1)*25;
-     Pillar5X := (RANDOM(11)+1)*25; PlaneInMemory := TRUE;
-     WHILE (PillarCount<NewNoOfPillars) AND NOT (GameOver) DO
-           PillarCount := PillarCount + 1;
-           Pillar5X := Pillar4X; Pillar4X := Pillar3X; Pillar3X := Pillar2X;
-           Pillar2X := Pillar1X; Pillar1X := (RANDOM(11)+1)*25;
-           FOR Stars := 1 TO 15 DO
-               CASE (RANDOM(5)) OF
-                    | 1 : StarColour := LightBlue;
-                    | 2 : StarColour := White;
-                    | 3 : StarColour := Grey;
-                    | 4 : StarColour := LightestYellow;
-                    | 5 : StarColour := LightestWhite;
-               END;
-               Plot (RANDOM(320), RANDOM(100), StarColour);
+END DrawBridgePiece4;
+
+PROCEDURE Screen4;
+CONST
+    NoOfBridges = 100;
+VAR
+  LineSpeed, LineXEnd, LineY, WaterDots, BrownColour, BridgesDrawn, DotX,
+     DotY, RectangleX : CARDINAL;
+  LineXStart : INTEGER;
+
+BEGIN
+     PlaneX := 150; PlaneY := 174; LineSpeed := 156; ScreenComplete := FALSE;
+     IF HighDetail THEN
+        NumberOfWaterDots := 250
+     ELSE
+        NumberOfWaterDots := 25;
+     END;
+     ClearTheBuffer;
+     LineXStart := 150; LineXEnd := 170;
+     Rectangle (0, 0, 320, 100, LightBlue, TRUE);
+     Rectangle (0, 100, 320, 200, LightestWhite, TRUE);
+     FOR LineY := 100 TO 200 DO
+          IF (LineY MOD 2 = 0) THEN
+           LineXStart := LineXStart - 3;
+           LineXEnd := LineXEnd + 3;
+           IF (LineXStart < 0) THEN
+              LineXStart := 0;
            END;
-           FOR Pillar1Y := 100 TO 118 BY 2 DO
-             IF NOT (GameOver) THEN
-               Delay (GameSpeed*2);
-               Pillar2Y := Pillar1Y + 20; Pillar3Y := Pillar2Y + 20;
-               Pillar4Y := Pillar3Y + 20; Pillar5Y := Pillar4Y + 20;
-               IF (Pillar1Y<105) THEN
-                     Rectangle (Pillar1X, 200 - Pillar1Y, Pillar1X + 1, Pillar1Y, DarkestGrey, TRUE);
-               ELSIF (Pillar1Y>104) AND (Pillar1Y<112) THEN
-                     Rectangle (Pillar1X, 200 - Pillar1Y, Pillar1X + 3, Pillar1Y, Grey, TRUE);
-               ELSIF (Pillar1Y>111) THEN
-                     DrawPillarBottom (Pillar1X, Pillar1Y);
-               END;
-               DrawPillarBottom (Pillar2X, Pillar2Y);
-               DrawPillarBottom (Pillar3X, Pillar3Y);
-               DrawPillarBottom (Pillar4X, Pillar4Y);
-               DrawPillarBottom (Pillar5X, Pillar5Y);
-               IF (Point (PlaneX + 25, PlaneY - 2) <> DarkBrown) THEN
-                  OldPlaneX := PlaneX;
-                  Die;
-                  Rectangle (OldPlaneX, PlaneY, OldPlaneX + PlaneWidth, PlaneY + PlaneHeight, DarkBrown, TRUE);
-               END;
-               OldPlaneX := PlaneX;
-               CASE MouseOrNot OF
-                    | 1 : CheckKeyboard;
-                    | 2 : CheckMouse;
-               END;
-               Rectangle (OldPlaneX, PlaneY, OldPlaneX + PlaneWidth, PlaneY + PlaneHeight, DarkBrown, TRUE);
-               IF (Graph.Point(315, 195)=Black) THEN
-                  Rectangle (250, 190, 320, 200, DarkBrown, TRUE);
-               END;
-               DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
-             END;
-           END;
-           Rectangle (Pillar5X, 0, Pillar5X + 27, 100, Black, TRUE);
-           Rectangle (Pillar5X, 100, Pillar5X + 27, 200, DarkBrown, TRUE);
-     END; (* PlaneOnGround *)
-     PlaneInMemory := FALSE;
-     IF NOT GameOver THEN
-        FOR PillarCount := 100 TO 300 BY 8 DO
-            Rectangle (0, 0, 320, PillarCount, Black, TRUE);
-            DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
-            NoSound;
-            Sound (PillarCount*5);
         END;
+        HLine (0, LineY, LineXStart, Blue);
+        HLine (LineXEnd, LineY, 320, Blue);
+        FOR WaterDots := 1 TO 5 DO
+            Plot (Lib.RANDOM(LineXStart), LineY, LightestBlue);
+            Plot (Lib.RANDOM(LineXStart) + LineXEnd, LineY, LightestBlue);
+        END;
+        RandomBrown(BrownColour);
+        HLine (LineXStart, LineY, LineXEnd, BrownColour);
+        DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
      END;
-     NoSound;
-  END;
-  IF GameOver THEN
-     DrawGameOverSign;
-  END;
-END Screen7;
+     Lib.Delay (50);
+     PlaneInMemory := FALSE;
+     FOR LineY := 100 TO 0 BY -1 DO
+         Rectangle (0, LineY, 320, 200, Blue, TRUE);
+         Xs[0] := 150; Xs[1] := 150 - (LineY*3 DIV 2); Xs[2] := 170 + (LineY*3 DIV 2); Xs[3] := 170;
+         Ys[0] := LineY; Ys[1] := 200; Ys[2] := 200; Ys[3] := LineY;
+         Polygon (4, Xs, Ys, DarkestBrown);
+         DrawPlane (PlaneX, PlaneY, (LineY*3 DIV 10) + 20, (LineY*3 DIV 20) + 10);
+     END;
+     RectangleX := 150;
+     FOR RectY := 0 TO 180 BY 10 DO
+         DrawBridgePiece4 (RectangleX, RectY, BrownColour);
+     END;
+     Line (RectangleX, 0, RectangleX, 200, DarkestGrey);
+     PlaneY := 190;
+     DrawPlane (PlaneX, PlaneY, 20, 10);
+     Storage.ALLOCATE (BkAddress, CARDINAL(Graph.ImageSize(0, 0, 320, 190)));
+     RectY := 0; BridgesDrawn := 0; PlaneX := 150;
+		WHILE NOT (GameOver OR ScreenComplete) DO
+		        FOR WaterDots := 1 TO NumberOfWaterDots DO
+		            DotX := Lib.RANDOM(320);
+		            DotY := Lib.RANDOM(150);
+                            IF (Point(DotX, DotY)=Blue) THEN
+                               Plot (DotX, DotY, LightestBlue);
+                            END;
+                        END;
+			Graph.GetImage (0, 0, 320, 190, BkAddress);
+			CheckMouse;
+			Graph.PutImage (0, 10, BkAddress, Graph._GPSET);
+                        Rectangle (0, 0, 320, 9, Blue, TRUE);
+                        RectangleX := RectangleX + Lib.RANDOM(10) - 5;
+                        DrawBridgePiece4 (RectangleX, RectY, BrownColour);
+			IF (BridgesDrawn = NoOfBridges) THEN
+				ScreenComplete := TRUE;
+			END;
+			DrawPlane (PlaneX, PlaneY, 20, 10);
+			BridgesDrawn := BridgesDrawn + 1;
+			CASE GraphicsCard OF
+			   | 1 : IF (Point(PlaneX+10, PlaneY-1) = Blue) THEN
+                                    Die4;
+                                 END;
+			   | 2, 3 : IF (Point(PlaneX+10, PlaneY-1) = Blue) OR (Point(PlaneX+10, PlaneY-1) = LightestBlue) THEN
+                                       Die4;
+                                    END;
+                        END;
+                        Delay (GameSpeed);
+		END;
+		IF GameOver THEN
+                   DrawGameOver;
+                END;
+                RectX := INTEGER(RectangleX);
+END Screen4;
+
+PROCEDURE DrawBridgePiece5 (x, y : CARDINAL);
+VAR
+  BridgeDots : CARDINAL;
+BEGIN
+    Rectangle (x, y, x+20, y+10, LightGrey, TRUE);
+    Rectangle (x, y, x+20, y+10, DarkGrey, FALSE);
+    HLine (x, y+9, x+20, DarkestGrey);
+    FOR BridgeDots := 1  TO 15 DO
+        Plot (x + Lib.RANDOM(19), y + Lib.RANDOM(9), White);
+    END;
+END DrawBridgePiece5;
+
+PROCEDURE Screen5;
+VAR
+  LineX, LineY, DotX, DotY, WaterDots, BridgesDrawn, BridgeDots : CARDINAL;
+BEGIN
+    ScreenComplete := FALSE; RectY := 0; BridgesDrawn := 0;
+    WHILE (RectX <> 150) AND (GameOver=FALSE) DO
+          IF (RectX < 150) THEN
+             RectX := RectX + 2
+          ELSE
+             RectX := RectX - 2;
+          END;
+          IF (RectX = 149) THEN
+             RectX := RectX + 1;
+          END;
+          Graph.GetImage (0, 0, 320, 190, BkAddress);
+          Rectangle (0, 0, 320, 9, Blue, TRUE);
+          DrawBridgePiece5 (RectX, RectY);
+          Graph.PutImage (0, 10, BkAddress, Graph._GPSET);
+          FOR WaterDots := 1 TO NumberOfWaterDots DO
+	      DotX := Lib.RANDOM(320);
+	      DotY := Lib.RANDOM(180);
+              IF (Point(DotX, DotY)=Blue) THEN
+                 Plot (DotX, DotY, LightestBlue);
+              END;
+          END;
+	  CheckMouse;
+	  DrawPlane (PlaneX, PlaneY, 20, 10);
+	  CASE GraphicsCard OF
+	       | 1 : IF (Point(PlaneX+10, PlaneY-1) = Blue) THEN
+                        Die4;
+                     END;
+	       | 2, 3 : IF (Point(PlaneX+10, PlaneY-1) = Blue) OR (Point(PlaneX+10, PlaneY-1) = LightestBlue) THEN
+                           Die4;
+                        END;
+          END;
+          Delay (GameSpeed);
+    END;
+    WHILE NOT (GameOver OR ScreenComplete) DO
+	  FOR WaterDots := 1 TO NumberOfWaterDots DO
+              DotX := Lib.RANDOM(320);
+	      DotY := Lib.RANDOM(180);
+              IF (Point(DotX, DotY)=Blue) THEN
+                 Plot (DotX, DotY, LightestBlue);
+              END;
+          END;
+	  Graph.GetImage (0, 0, 320, 190, BkAddress);
+	  CheckMouse;
+	  Graph.PutImage (0, 10, BkAddress, Graph._GPSET);
+          Rectangle (0, 0, 320, 9, Blue, TRUE);
+          DrawBridgePiece5 (RectX, RectY);
+	  IF (BridgesDrawn = 30) THEN
+	     ScreenComplete := TRUE;
+	  END;
+	  DrawPlane (PlaneX, PlaneY, 20, 10);
+	  BridgesDrawn := BridgesDrawn + 1;
+	  CASE GraphicsCard OF
+	       | 1 : IF (Point(PlaneX+10, PlaneY-1) = Blue) THEN
+                        Die4;
+                     END;
+	       | 2, 3 : IF (Point(PlaneX+10, PlaneY-1) = Blue) OR (Point(PlaneX+10, PlaneY-1) = LightestBlue) THEN
+                           Die4;
+                        END;
+          END;
+          Delay (GameSpeed);
+    END;
+    IF NOT GameOver THEN
+        PlaneInMemory := FALSE; PlaneY := 175;
+        FOR LineY := 2 TO 100 BY 2 DO
+            Rectangle (0, LineY, 320, 200, Blue, TRUE);
+            HLine (0, LineY - 1, 320, LightBlue);
+            HLine (0, LineY - 2, 320, LightBlue);
+            Xs[0] := 150; Xs[1] := 150 - (LineY*3 DIV 2); Xs[2] := 170 + (LineY*3 DIV 2); Xs[3] := 170;
+            Ys[0] := LineY; Ys[1] := 200; Ys[2] := 200; Ys[3] := LineY;
+            Polygon (4, Xs, Ys, DarkWhite);
+            DrawPlane (PlaneX, PlaneY, (LineY*3 DIV 10) + 20, (LineY*3 DIV 20) + 10);
+        END;
+        Polygon (4, Xs, Ys, LightGrey);
+        FOR BridgeDots := 1 TO 50 DO
+            DotX := Lib.RANDOM(320);
+            DotY := Lib.RANDOM (100) + 100;
+            IF Point(DotX, DotY) = LightGrey THEN
+               Plot (DotX, DotY, DarkGrey);
+            END;
+        END;
+        PlaneInMemory := TRUE;
+        FOR LineY := 100 TO 200 DO
+            HLine (0, LineY, 320, LightWhite);
+            DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
+            Plot (Lib.RANDOM(320), Lib.RANDOM(100)+100, DarkGrey);
+        END;
+    END;
+    Rectangle (0, 0, 320, 100, Blue, TRUE);
+    Rectangle (0, 100, 320, 200, White, TRUE);
+    DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
+    Delay (20);
+    Rectangle (0, 0, 320, 100, LightBlue, TRUE);
+    Rectangle (0, 100, 320, 200, DarkWhite, TRUE);
+    DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
+    Delay(20);
+    Rectangle (0, 0, 320, 100, Blue, TRUE);
+    Rectangle (0, 100, 320, 200, DarkestWhite, TRUE);
+    DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
+    Delay(20);
+    Rectangle (0, 0, 320, 100, DarkBlue, TRUE);
+    Rectangle (0, 100, 320, 200, LightestGrey, TRUE);
+    DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
+    Delay(20);
+    Rectangle (0, 0, 320, 100, Blue, TRUE);
+    Rectangle (0, 100, 320, 200, LightGrey, TRUE);
+    DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
+    Delay(20);
+    Rectangle (0, 0, 320, 100, DarkBlue, TRUE);
+    Rectangle (0, 100, 320, 200, Grey, TRUE);
+    DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
+    Delay(20);
+    Rectangle (0, 0, 320, 100, DarkestBlue, TRUE);
+    Rectangle (0, 100, 320, 200, DarkGrey, TRUE);
+    DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
+    Delay(20);
+    Rectangle (0, 0, 320, 100, Black, TRUE);
+    Rectangle (0, 100, 320, 200, DarkestGrey, TRUE);
+    DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
+    Delay(20);
+    Rectangle (0, 100, 320, 200, Black, TRUE);
+    DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
+    Delay(20);
+    IF GameOver THEN
+       DrawGameOver;
+    END;
+    Storage.DEALLOCATE (BkAddress,CARDINAL(Graph.ImageSize (0, 10, 320, 190)));
+END Screen5;
 
 END Screens4.
 
