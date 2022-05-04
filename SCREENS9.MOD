@@ -4,7 +4,7 @@ IMPLEMENTATION MODULE Screens9;
 (*$S FF00*)
 
 IMPORT
-  Str, Graph, Lib, IO, Window, Storage, MsMouse, Exobius, Storage;
+  Str, Graph, Lib, IO, Window, Storage, Exobius, Storage;
 
 FROM Graph IMPORT
   SetClipRgn, SetVideoMode, Rectangle, GraphMode, TextMode, Polygon, Line,
@@ -27,9 +27,9 @@ FROM Exobius IMPORT
   Count, Lives, EnemyY,  NegPlaneAddress, WritingAddress,  BkColour,
   OldBkColor,  Xs, Ys,  OneAlive, TwoAlive, ThreeAlive, FourAlive, FiveAlive,
   SixAlive, ScreenComplete, GameOver,  MouseButtons,  MouseMove, GameSpeed,
-  DrawBullet, DrawPlane, CheckMouse, CheckKeyboard, Die, A, B,
+  DrawBullet, DrawPlane, CheckMouse, Die, A, B,
   C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z,
-  FinishScreen1, Key, PlaneXMove, CheckDeath1, Score, Screen,
+  FinishScreen1, PlaneXMove, CheckDeath1, Score, Screen,
   PlaneInMemory, PlaneAddress, BkAddress, BkSize, ClearTheBuffer, Cheat,
   GraphicsCard, DrawGameOver;
 
@@ -152,4 +152,4 @@ BEGIN
     END;
 END Screen9;
 
-END Screens9.
+END Screens9.

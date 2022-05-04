@@ -25,7 +25,7 @@ FROM Exobius IMPORT
   Count, Lives, EnemyY,  NegPlaneAddress, WritingAddress,  BkColour,
   OldBkColor,  Xs, Ys,  OneAlive, TwoAlive, ThreeAlive, FourAlive, FiveAlive,
   SixAlive, ScreenComplete, GameOver,  MouseButtons,  MouseMove, GameSpeed,
-  DrawBullet, DrawPlane, CheckMouse, CheckKeyboard, Die, A, B,
+  DrawBullet, DrawPlane, CheckMouse, Die, A, B,
   C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z,
   FinishScreen1, Key, PlaneXMove, Score, Screen, PlaneAddress,
   BkAddress, BkSize, GraphicsCard, DrawGameOver;
@@ -206,7 +206,6 @@ BEGIN
         Disc (160, MouthY, 5, Black);   (* Open Boss' Mouth *)
         Graph.GetImage (0, 0, 320, 200, BkAddress);
         CheckMouse;
-        CheckKeyboard;
         IF (PlaneX < PlaneXMin) THEN
                 PlaneX := PlaneXMin;
         END;
@@ -232,7 +231,6 @@ BEGIN
                                 Die;
                         END;
                         CheckMouse;
-                        CheckKeyboard;
                         DrawPlane (PlaneX, PlaneY, Width, Height);
                         DrawBullet;
                         IF (BulletY  < 6) AND (BulletY > 0) THEN

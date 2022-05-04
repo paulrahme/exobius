@@ -1,15 +1,10 @@
 DEFINITION MODULE Intros1;
 
 PROCEDURE Intro1;
-
 PROCEDURE Intro2;
-
 PROCEDURE Intro3;
-
 PROCEDURE Intro4;
-
 PROCEDURE Intro5;
-
 PROCEDURE EndGame;
 
-END Intros1.
+END Intros1.

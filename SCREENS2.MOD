@@ -3,7 +3,7 @@ IMPLEMENTATION MODULE Screens2;
 (*$S FF00*)
 
 IMPORT
-    Str, Graph, Lib, IO, Window, Storage, MsMouse, Exobius;
+    Str, Graph, Lib, IO, Window, Storage, Exobius;
 
 FROM Graph IMPORT
     SetClipRgn, GetImage, PutImage,
@@ -13,6 +13,7 @@ FROM Lib IMPORT
     Sound, NoSound, Delay, RANDOM;
 
 FROM Exobius IMPORT
+    PutPixel, SetPixel,
     PlaneWidth, PlaneHeight,
     EnemyYStart, PlaneXMin, PlaneXMax, CollisionY,
     Black, DarkestGrey, DarkGrey, Grey, LightGrey, LightestGrey,
@@ -28,9 +29,9 @@ FROM Exobius IMPORT
     Enemies, Xs, Ys, Count, Lives, EnemyY,
     BkAddress, BkSize, PlaneAddress,
     Screen, ScreenComplete, GameOver,  MouseButtons,  MouseMove, GameSpeed,
-    DrawBullet, DrawPlane, CheckMouse, CheckMouseAndSpecialKeys, CheckKeyboard, Die, DrawGameOver,
+    DrawBullet, DrawPlane, CheckMouse, CheckMouseAndSpecialKeys, Die, DrawGameOver,
     FinishScreen1, Key, CheckDeath1,
-    ClearTheBuffer, DrawGameOver, HighDetail;
+    ClearTheBuffer, DrawGameOver;
 
 FROM Sprites IMPORT
     DrawGlowWorms;
@@ -124,29 +125,35 @@ VAR
     GlowAddress, RoofAddress : ADDRESS;
     GlowXs, GlowYs : ARRAY[0..GlowCount] OF CARDINAL;
     OldPlaneX : INTEGER;
+    DotColour : BYTE;
 BEGIN
     Screen := 2;
     ScreenComplete := FALSE;
     Graph.ClearScreen (Graph._GCLEARSCREEN);
 
     (* Draw cave interior *)
+    DotColour := BYTE(White);
     FOR RoofDots := 1 TO 60000 DO
-        Plot (Lib.RANDOM (320), Lib.RANDOM (200), White);
+        SetPixel(Lib.RANDOM(64000), DotColour);
     END;
+    DotColour := BYTE(DarkestWhite);
     FOR RoofDots := 1 TO 20000 DO
-        Plot (Lib.RANDOM (240) + 40, Lib.RANDOM (100) + 50, DarkestWhite);
+        PutPixel(40 + Lib.RANDOM(240), 50 + Lib.RANDOM(100), DotColour);
     END;
+    DotColour := BYTE(LightGrey);
     FOR RoofDots := 1 TO 5000 DO
-        Plot (Lib.RANDOM (180) + 70, Lib.RANDOM (100) + 50, LightGrey);
+        PutPixel(70 + Lib.RANDOM(180), 50 + Lib.RANDOM(100), DotColour);
     END;
+    DotColour := BYTE(DarkGrey);
     FOR RoofDots := 1 TO 500 DO
-        Plot (Lib.RANDOM (60) + 130, Lib.RANDOM (40) + 80, DarkGrey);
+        PutPixel(130 + Lib.RANDOM(60), 80 + Lib.RANDOM(40), DotColour);
     END;
+    DotColour := BYTE(DarkestGrey);
     FOR RoofDots := 1 TO 200 DO
-        Plot (Lib.RANDOM (20) + 150, Lib.RANDOM (40) + 80, DarkestGrey);
+        PutPixel(150 + Lib.RANDOM(20), 80 + Lib.RANDOM(40), DotColour);
     END;
 
-    CheckMouseAndSpecialKeys;
+    CheckMouseAndSpecialKeys();
 
     (* Fly in plane *)
     Rectangle (158, 98, 162, 102, Black, TRUE);
@@ -163,7 +170,7 @@ BEGIN
         Graph.PutImage(0, 150, BkAddress, Graph._GPSET);
     END;
     Storage.DEALLOCATE(BkAddress, BkSize);
-    CheckMouseAndSpecialKeys;
+    CheckMouseAndSpecialKeys();
 
     (* Darken cave *)
     PlaneX := 145; OldPlaneX := PlaneX; PlaneY := 175; Width := 50; Height := 25; BulletY := 65520; RectY := 100;
@@ -195,7 +202,7 @@ BEGIN
         END;
     END;
     GetImage(145, 175, 195, 200, PlaneAddress);
-    CheckMouseAndSpecialKeys;
+    CheckMouseAndSpecialKeys();
 
     (* Draw enemies *)
     GlowsAlive := GlowCount;
@@ -215,7 +222,7 @@ BEGIN
     WHILE NOT ScreenComplete AND NOT GameOver DO
        (* Update player *)
         OldPlaneX := PlaneX;
-        CheckMouse;
+        CheckMouse();
         Rectangle(CARDINAL(OldPlaneX), CARDINAL(PlaneY), CARDINAL(OldPlaneX) + CARDINAL(Width), CARDINAL(PlaneY) + CARDINAL(Height), Black, TRUE);
         DrawPlane(PlaneX, PlaneY, Width, Height);
         UpBullet;

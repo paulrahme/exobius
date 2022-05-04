@@ -14,10 +14,23 @@ FROM Lib IMPORT
 FROM Screens1 IMPORT
     BlankGround1;
 
+TYPE
+    BYTEPTR = POINTER TO BYTE;
+
 PROCEDURE VgaInitialisation;
 BEGIN
     Graph.SetFillMask(SolidFill);
 END VgaInitialisation;
+
+PROCEDURE PutPixel(x, y : CARDINAL; color : BYTE);
+BEGIN
+    [0A000H:x+y*320 BYTEPTR]^ := color;
+END PutPixel;
+
+PROCEDURE SetPixel(pixPos : CARDINAL; Color : BYTE);
+BEGIN
+    [0A000H:pixPos BYTEPTR]^ := Color;
+END SetPixel;
 
 PROCEDURE ClearTheBuffer;
 VAR
@@ -309,86 +322,46 @@ PROCEDURE CheckSpecialKeys;
 VAR
     TextPos : Graph.TextCoords;
 BEGIN
-    Key := IO.RdKey();
-    IF (Key="q") OR (Key="Q") THEN
-        GameOver := TRUE;
-    END;
-    IF (Key="p") OR (Key="P") THEN
-        TextPos := Graph.SetTextPosition(25, 33);
-        Graph.OutText('PAUSED');
+    IF (IO.KeyPressed()) THEN
         Key := IO.RdKey();
-        Rectangle (250, 190, 320, 200, Black, TRUE);
-    END;
-    IF (Key="d") OR (Key="D") THEN
-        HighDetail := NOT (HighDetail);
+        IF (Key="q") OR (Key="Q") THEN
+            GameOver := TRUE;
+        ELSIF (Key="p") OR (Key="P") THEN
+            TextPos := Graph.SetTextPosition(25, 33);
+            Graph.OutText('PAUSED');
+            Key := IO.RdKey();
+            Rectangle (250, 190, 320, 200, Black, TRUE);
+        END;
     END;
 END CheckSpecialKeys;
 
 PROCEDURE CheckMouseAndSpecialKeys;
 BEGIN
-    IF MouseUsed THEN
-        MsMouse.GetStatus(MouseButtons);
-        MsMouse.GetMotion(MouseMove);
-    END;
-    IF (IO.KeyPressed()) THEN
-        CheckSpecialKeys();
-    END;
+    MsMouse.GetStatus(MouseButtons);
+    MsMouse.GetMotion(MouseMove);
+    CheckSpecialKeys();
 END CheckMouseAndSpecialKeys;
 
 PROCEDURE CheckMouse;
 BEGIN
-    IF MouseUsed THEN
-        CheckMouseAndSpecialKeys();
-        IF (MouseButtons.left_pressed) OR (MouseButtons.right_pressed) OR (MouseButtons.middle_pressed) THEN
-            BulletX := PlaneX + 25;
-            BulletY := 5;
-        END;
-        IF (MouseMove.horiz <> 0) AND (PlaneX + MouseMove.horiz >= 0) THEN
-            INC (PlaneX, MouseMove.horiz DIV PlaneMovement);
-        END;
-        IF (PlaneX + MouseMove.horiz < 0) THEN
-            PlaneX := 0;
-        END;
-        IF (PlaneX < PlaneXMin) THEN
-            PlaneX := PlaneXMin;
-        END;
-        IF (PlaneX > PlaneXMax) THEN
-            PlaneX := PlaneXMax;
-        END;
+    CheckMouseAndSpecialKeys();
+    IF (MouseButtons.left_pressed) OR (MouseButtons.right_pressed) OR (MouseButtons.middle_pressed) THEN
+        BulletX := PlaneX + 25;
+        BulletY := 5;
+    END;
+    IF (MouseMove.horiz <> 0) AND (PlaneX + MouseMove.horiz >= 0) THEN
+        INC (PlaneX, MouseMove.horiz DIV PlaneMovement);
+    END;
+    IF (PlaneX + MouseMove.horiz < 0) THEN
+        PlaneX := 0;
+    END;
+    IF (PlaneX < PlaneXMin) THEN
+        PlaneX := PlaneXMin;
+    END;
+    IF (PlaneX > PlaneXMax) THEN
+        PlaneX := PlaneXMax;
     END;
 END CheckMouse;
-
-PROCEDURE CheckKeyboard;
-VAR
-    TextPos : Graph.TextCoords;
-BEGIN
-    IF ( IO.KeyPressed() ) THEN
-        Key := IO.RdKey();
-        IF (Key=" ") AND ((BulletY=0) OR (BulletY>5)) THEN
-            BulletY := 5;
-            BulletX := PlaneX + 25;
-        END;
-        IF (Key="4") THEN
-            PlaneX := PlaneX -  PlaneXMove;
-        END;
-        IF (Key="6") THEN
-            PlaneX := PlaneX + PlaneXMove;
-        END;
-        IF (Key="7") THEN
-            PlaneX := PlaneXMin;
-        END;
-        IF (Key="9") THEN
-            PlaneX := PlaneXMax;
-        END;
-        IF (PlaneX < PlaneXMin) THEN
-            PlaneX := PlaneXMin;
-        END;
-        IF (PlaneX > PlaneXMax) THEN
-            PlaneX := PlaneXMax;
-        END;
-        CheckSpecialKeys();
-    END;
-END CheckKeyboard;
 
 PROCEDURE BlowUpEnemy;
 CONST

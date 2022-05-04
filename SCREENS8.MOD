@@ -3,7 +3,7 @@ IMPLEMENTATION MODULE Screens8;
 (*$S FF00*)
 
 IMPORT
-  Str, Graph, Lib, IO, Window, Storage, MsMouse, Exobius, Storage;
+  Str, Graph, Lib, IO, Window, Storage, Exobius, MsMouse, Storage;
 
 FROM Graph IMPORT
   SetClipRgn, SetVideoMode, Rectangle, GraphMode, TextMode, Polygon, Line,
@@ -26,11 +26,11 @@ FROM Exobius IMPORT
   Count, Lives, EnemyY,  NegPlaneAddress, WritingAddress,  BkColour,
   OldBkColor,  Xs, Ys,  OneAlive, TwoAlive, ThreeAlive, FourAlive, FiveAlive,
   SixAlive, ScreenComplete, GameOver,  MouseButtons,  MouseMove, GameSpeed,
-  DrawBullet, DrawPlane, CheckMouse, CheckKeyboard, Die, A, B,
-  C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z,
-  FinishScreen1, Key, PlaneXMove, CheckDeath1, Score, Screen,
+  DrawBullet, DrawPlane, CheckSpecialKeys, Die,
+  A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z,
+  FinishScreen1, PlaneXMove, CheckDeath1, Score, Screen,
   PlaneInMemory, PlaneAddress, BkAddress, BkSize, ClearTheBuffer, Cheat,
-  GraphicsCard, HighDetail, DrawGameOver;
+  GraphicsCard, DrawGameOver;
 
 CONST
     PlanetX = 160;
@@ -378,21 +378,7 @@ BEGIN
   IF (PlaneX > PlaneXMax) THEN
      PlaneX := PlaneXMax;
   END;
-  IF (IO.KeyPressed()) THEN
-     Key := IO.RdKey();
-     IF (Key="q") OR (Key="Q") THEN
-        GameOver := TRUE;
-     END;
-     IF (Key="p") OR (Key="P") THEN
-        TextPos := Graph.SetTextPosition(25, 33);
-        Graph.OutText('PAUSED');
-        Key := IO.RdKey();
-        Rectangle (250, 190, 320, 200, Black, TRUE);
-     END;
-     IF (Key="d") OR (Key="D") THEN
-        HighDetail := NOT (HighDetail);
-     END;
-  END;
+  CheckSpecialKeys;
 END CheckMouse8;
 
 PROCEDURE CheckDeath8;
@@ -432,15 +418,13 @@ BEGIN
        Line ((x-Radius)+Radius*86 DIV 50,(y-Radius)+Radius*80 DIV 50,(x-Radius)+Radius*71 DIV 50,(y-Radius)+Radius*81 DIV 50,Black);
        Line ((x-Radius)+Radius*8 DIV 50, (y-Radius)+Radius*21 DIV 50,(x-Radius)+Radius*45 DIV 50,(y-Radius)+Radius*26 DIV 50,Black);
     END;
-    IF (HighDetail) THEN
-       FOR PlanetDots := 1 TO (PlanetRadius*35) DO
-           DotX := (x - Radius) + RANDOM(Radius*2);
-           DotY := (y - Radius) + RANDOM(Radius*2);
-           IF (Point(DotX, DotY)<>Black) THEN
-              Plot (DotX, DotY, Red);
-           END;
-       END;
+    FOR PlanetDots := 1 TO (PlanetRadius*35) DO
+    DotX := (x - Radius) + RANDOM(Radius*2);
+    DotY := (y - Radius) + RANDOM(Radius*2);
+    IF (Point(DotX, DotY)<>Black) THEN
+    Plot (DotX, DotY, Red);
     END;
+END;
 END DrawPlanet;
 
 PROCEDURE Screen8;

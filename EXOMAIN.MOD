@@ -15,7 +15,7 @@ FROM Lib IMPORT
     Delay;
 
 FROM Exobius IMPORT
-    VgaInitialisation, GameSpeed, Cheat, MouseUsed, HighDetail, Key, NoteDelay,
+    VgaInitialisation, Cheat, Key, NoteDelay,
     GameOver, ScreenComplete, PlaneInMemory, Score, ClearTheBuffer, Lives, GraphicsCard,
     Black, DarkestGrey, DarkGrey, Grey, LightGrey, LightestGrey,
     DarkestBlue, DarkBlue, Blue, LightBlue, LightestBlue,
@@ -146,66 +146,21 @@ BEGIN
     END;
 END Main;
 
-PROCEDURE ReadConfigFromFile;
-VAR
-    f : FIO.File;
-    MouseOrNot : CARDINAL;
+(* Main loop*)
 BEGIN
-    WrStr("Reading Setup..."); WrLn;
-    f := FIO.Open ("exobius.cfg");
-    GameSpeed := FIO.RdCard(f);
-    WrStr("GameSpeed="); IO.WrCard(GameSpeed, 0); WrLn;
-    MouseOrNot := FIO.RdCard(f);
-    WrStr("Keyboard/Mouse="); IO.WrCard(MouseOrNot, 0); WrLn;
-    GraphicsCard := FIO.RdCard(f);
-    WrStr("GraphicsCard="); IO.WrCard(GraphicsCard, 0); WrLn;
-    DetailCard := FIO.RdCard(f); HighDetail := (DetailCard = 1);
-    WrStr("Detail H/L="); IO.WrCard(DetailCard, 0); WrLn;
-    WrLn;
-    FIO.Close(f);
-END ReadConfigFromFile;
-
-PROCEDURE ReadConfigManually;
-VAR
-    MouseOrNot : CARDINAL;
-BEGIN
-    WrStr("Note : EXOBIUS.CFG not found - Can put the 4 values (spaces in between) in it."); WrLn;
-    WrStr("Enter GameSpeed...0 for fastest, etc.");
-    GameSpeed := RdCard();
-    
-    WrStr("Please select controlling device:"); WrLn; WrLn;
-    WrStr("1) Keyboard   (N.B. Use NUMLOCK!!)"); WrLn;
-    WrStr("2) Mouse"); WrLn;
-    MouseOrNot := RdCard();
-    MouseUsed := (MouseOrNot = 2);
-    
+    VgaInitialisation;
     WrStr("Please select video mode:"); WrLn; WrLn;
     WrStr("1) CGA ( 4  colours)"); WrLn;
     WrStr("2) EGA ( 16 colours)"); WrLn;
     WrStr("3) VGA (256 colours)"); WrLn;
     GraphicsCard := RdCard();
     WrLn;
-
-    WrStr("Please enter detail level:"); WrLn; WrLn;
-    WrStr("1) High Detail"); WrLn;
-    WrStr("2) Low Detail"); WrLn;
-    DetailCard := RdCard();
-    HighDetail := (DetailCard = 1);
-END ReadConfigManually;
-
-(* Main loop*)
-BEGIN
-    VgaInitialisation;
-    IF (FIO.Exists("exobius.cfg")) THEN
-        ReadConfigFromFile;
-    ELSE
-       ReadConfigManually;
-    END;
     WrStr("Enjoy...Press a key to continue");
     Key := RdKey();
     Cheat := (Key = CHR(235));
 
     CASE GraphicsCard OF
+        (* CGA 4 Colour *)
         | 1 : VideoMode := SetVideoMode(_MRES4COLOR);
             Black := 0;
             DarkestGrey := 3; DarkGrey := 3; Grey := 2; LightGrey := 3; LightestGrey := 3;
@@ -215,6 +170,7 @@ BEGIN
             DarkestBrown := 2; DarkBrown := 2; Brown := 2; LightBrown := 2; LightestBrown := 2;
             DarkestGreen := 1; DarkGreen := 1; Green := 1; LightGreen := 1; LightestGreen := 3;
             DarkestYellow := 2; DarkYellow := 2; Yellow := 1; LightYellow := 3; LightestYellow := 3;
+        (* EGA 16 Colour *)
         | 2 : VideoMode := SetVideoMode(_MRES16COLOR);
             Black := 0;
             DarkestGrey := 8; DarkGrey := 8; Grey := 8; LightGrey := 7; LightestGrey := 7;
@@ -224,6 +180,7 @@ BEGIN
             DarkestBrown := 6; DarkBrown := 6; Brown := 6; LightBrown := 12; LightestBrown := 12;
             DarkestGreen := 2; DarkGreen := 2; Green := 2; LightGreen := 10; LightestGreen := 10;
             DarkestYellow := 14; DarkYellow := 14; Yellow := 14; LightYellow := 14; LightestYellow := 14;
+        (* VGA 256 Colour *)
         | 3 : VideoMode := SetVideoMode(_MRES256COLOR);
             Black := 0;
             DarkestGrey := 17; DarkGrey := 19; Grey := 21; LightGrey := 23; LightestGrey := 25;

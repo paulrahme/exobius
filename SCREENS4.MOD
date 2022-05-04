@@ -3,7 +3,7 @@ IMPLEMENTATION MODULE Screens4;
 (*$S FF00*)
 
 IMPORT
-  Str, Graph, Lib, IO, Window, Storage, MsMouse, Exobius;
+  Str, Graph, Lib, IO, Window, Storage, Exobius;
 
 FROM Graph IMPORT
   SetClipRgn, SetVideoMode, Rectangle, GraphMode, TextMode, Polygon, Line, HLine, Circle, Ellipse, Disc, Plot, Arc, Point, GetImage;
@@ -27,11 +27,11 @@ FROM Exobius IMPORT
   Count, Lives, EnemyY,  NegPlaneAddress, WritingAddress,  BkColour,
   OldBkColor,  Xs, Ys,  OneAlive, TwoAlive, ThreeAlive, FourAlive, FiveAlive,
   SixAlive, ScreenComplete, GameOver,  MouseButtons,  MouseMove, GameSpeed,
-  DrawBullet, DrawPlane, CheckMouse, CheckKeyboard, Die, A, B,
-  C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z,
-  FinishScreen1, Key, PlaneXMove, CheckDeath1, Score, Screen,
+  DrawBullet, DrawPlane, CheckMouse, Die,
+  A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z,
+  FinishScreen1, PlaneXMove, CheckDeath1, Score, Screen,
   PlaneInMemory, PlaneAddress, BkAddress, BkSize, ClearTheBuffer, Cheat,
-  GraphicsCard, HighDetail, DrawGameOver;
+  GraphicsCard, DrawGameOver;
 
 FROM Sprites IMPORT
   DrawBoomGuards, DrawSpinners, DrawFlyTraps, DrawMaces, DrawPlants,
@@ -119,11 +119,7 @@ VAR
 
 BEGIN
      PlaneX := 150; PlaneY := 174; LineSpeed := 156; ScreenComplete := FALSE;
-     IF HighDetail THEN
-        NumberOfWaterDots := 250
-     ELSE
-        NumberOfWaterDots := 25;
-     END;
+     NumberOfWaterDots := 250;
      ClearTheBuffer;
      LineXStart := 150; LineXEnd := 170;
      Rectangle (0, 0, 320, 100, LightBlue, TRUE);

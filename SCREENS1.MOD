@@ -3,7 +3,7 @@ IMPLEMENTATION MODULE Screens1;
 (*$S FF00*)
 
 IMPORT
-    Str, Graph, Lib, IO, Window, Storage, MsMouse, Exobius;
+    Str, Graph, Lib, IO, Window, Storage, Exobius;
 
 FROM Graph IMPORT
     SetClipRgn, GetImage, PutImage,
@@ -28,9 +28,9 @@ FROM Exobius IMPORT
     Enemies, Xs, Ys,
     Count, Lives, EnemyY,
     Screen, ScreenComplete, GameOver,  MouseButtons,  MouseMove, GameSpeed,
-    DrawBullet, DrawPlane, CheckMouse, CheckMouseAndSpecialKeys, CheckKeyboard, Die, DrawGameOver,
-    FinishScreen1, Key, CheckDeath1,
-    ClearTheBuffer, DrawGameOver, HighDetail;
+    DrawBullet, DrawPlane, CheckMouse, CheckMouseAndSpecialKeys, Die, DrawGameOver,
+    FinishScreen1, CheckDeath1,
+    ClearTheBuffer, DrawGameOver;
 
 FROM Sprites IMPORT
     DrawBoomGuards, DrawSpinners, DrawFlyTraps, DrawMaces, DrawPlants,
@@ -302,10 +302,7 @@ BEGIN
 
     (* Main Program Starts *)
 
-    MsMouse.Cursor (MsMouse._MS_HIDE);
-    MsMouse.GetStatus (MouseButtons);
-    MsMouse.GetMotion (MouseMove);
-    MouseMove.horiz := 0;
+    CheckMouseAndSpecialKeys();
     WHILE NOT GameOver AND NOT ScreenComplete DO
         FOR GroundDots := 1 TO 20 DO
             DotX := Lib.RANDOM (70) + 125;
@@ -323,25 +320,23 @@ BEGIN
                 PlaneX := PlaneXMax;
             END;
             BlankGround1;
-            IF (HighDetail) THEN
-                FOR GroundLines := 1 TO 30 DO
-                    GroundLineX := RANDOM(80);
-                    Line (GroundLineX DIV 16 + 150, 100, GroundLineX, 200, LightestBrown);
-                    Line (GroundLineX DIV 16 + 155, 100, GroundLineX+80, 200, LightestBrown);
-                    Line (GroundLineX DIV 16 + 160, 100, GroundLineX+160, 200, LightestBrown);
-                    Line (GroundLineX DIV 16 + 165, 100, GroundLineX+240, 200, LightestBrown);
-                    GroundLineX := RANDOM(150);
-                    Line (GroundLineX, 100, 0, 100 + GroundLineX*3 DIV 5, LightestGreen);
-                    Line (320-GroundLineX, 100, 320, 100 + GroundLineX*3 DIV 5, LightestGreen);
-                    GroundLineX := RANDOM(150);
-                    Line (GroundLineX, 100, 0, 100 + GroundLineX*3 DIV 5, Green);
-                    Line (320-GroundLineX, 100, 320, 100 + GroundLineX*3 DIV 5, Green);
-                    GroundLineX := RANDOM(80);
-                    Line (GroundLineX DIV 16 + 150, 100, GroundLineX, 200, Brown);
-                    Line (GroundLineX DIV 16 + 155, 100, GroundLineX+80, 200, Brown);
-                    Line (GroundLineX DIV 16 + 160, 100, GroundLineX+160, 200, Brown);
-                    Line (GroundLineX DIV 16 + 165, 100, GroundLineX+240, 200, Brown);
-                END;
+            FOR GroundLines := 1 TO 30 DO
+                GroundLineX := RANDOM(80);
+                Line (GroundLineX DIV 16 + 150, 100, GroundLineX, 200, LightestBrown);
+                Line (GroundLineX DIV 16 + 155, 100, GroundLineX+80, 200, LightestBrown);
+                Line (GroundLineX DIV 16 + 160, 100, GroundLineX+160, 200, LightestBrown);
+                Line (GroundLineX DIV 16 + 165, 100, GroundLineX+240, 200, LightestBrown);
+                GroundLineX := RANDOM(150);
+                Line (GroundLineX, 100, 0, 100 + GroundLineX*3 DIV 5, LightestGreen);
+                Line (320-GroundLineX, 100, 320, 100 + GroundLineX*3 DIV 5, LightestGreen);
+                GroundLineX := RANDOM(150);
+                Line (GroundLineX, 100, 0, 100 + GroundLineX*3 DIV 5, Green);
+                Line (320-GroundLineX, 100, 320, 100 + GroundLineX*3 DIV 5, Green);
+                GroundLineX := RANDOM(80);
+                Line (GroundLineX DIV 16 + 150, 100, GroundLineX, 200, Brown);
+                Line (GroundLineX DIV 16 + 155, 100, GroundLineX+80, 200, Brown);
+                Line (GroundLineX DIV 16 + 160, 100, GroundLineX+160, 200, Brown);
+                Line (GroundLineX DIV 16 + 165, 100, GroundLineX+240, 200, Brown);
             END;
             DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
             DrawBullet;
@@ -360,26 +355,24 @@ BEGIN
             IF (GameOver=FALSE) AND (ScreenComplete=FALSE) THEN
                 CheckMouse;
                 BlankGround1;
-                IF (HighDetail) THEN
-                    DrawEnemies1;
-                    FOR GroundLines := 1 TO 30 DO
-                        GroundLineX := RANDOM(80);
-                        Line (GroundLineX DIV 16 + 150, 100, GroundLineX, 200, LightestBrown);
-                        Line (GroundLineX DIV 16 + 155, 100, GroundLineX+80, 200, LightestBrown);
-                        Line (GroundLineX DIV 16 + 160, 100, GroundLineX+160, 200, LightestBrown);
-                        Line (GroundLineX DIV 16 + 165, 100, GroundLineX+240, 200, LightestBrown);
-                        GroundLineX := RANDOM(150);
-                        Line (GroundLineX, 100, 0, 100 + GroundLineX*2 DIV 3, Green);
-                        Line (320-GroundLineX, 100, 320, 100 + GroundLineX*2 DIV 3, Green);
-                        GroundLineX := RANDOM(150);
-                        Line (GroundLineX, 100, 0, 100 + GroundLineX*2 DIV 3, LightestGreen);
-                        Line (320-GroundLineX, 100, 320, 100 + GroundLineX*2 DIV 3, LightestGreen);
-                        GroundLineX := RANDOM(80);
-                        Line (GroundLineX DIV 16 + 150, 100, GroundLineX, 200, Brown);
-                        Line (GroundLineX DIV 16 + 155, 100, GroundLineX+80, 200, Brown);
-                        Line (GroundLineX DIV 16 + 160, 100, GroundLineX+160, 200, Brown);
-                        Line (GroundLineX DIV 16 + 165, 100, GroundLineX+240, 200, Brown);
-                    END;
+                DrawEnemies1;
+                FOR GroundLines := 1 TO 30 DO
+                    GroundLineX := RANDOM(80);
+                    Line (GroundLineX DIV 16 + 150, 100, GroundLineX, 200, LightestBrown);
+                    Line (GroundLineX DIV 16 + 155, 100, GroundLineX+80, 200, LightestBrown);
+                    Line (GroundLineX DIV 16 + 160, 100, GroundLineX+160, 200, LightestBrown);
+                    Line (GroundLineX DIV 16 + 165, 100, GroundLineX+240, 200, LightestBrown);
+                    GroundLineX := RANDOM(150);
+                    Line (GroundLineX, 100, 0, 100 + GroundLineX*2 DIV 3, Green);
+                    Line (320-GroundLineX, 100, 320, 100 + GroundLineX*2 DIV 3, Green);
+                    GroundLineX := RANDOM(150);
+                    Line (GroundLineX, 100, 0, 100 + GroundLineX*2 DIV 3, LightestGreen);
+                    Line (320-GroundLineX, 100, 320, 100 + GroundLineX*2 DIV 3, LightestGreen);
+                    GroundLineX := RANDOM(80);
+                    Line (GroundLineX DIV 16 + 150, 100, GroundLineX, 200, Brown);
+                    Line (GroundLineX DIV 16 + 155, 100, GroundLineX+80, 200, Brown);
+                    Line (GroundLineX DIV 16 + 160, 100, GroundLineX+160, 200, Brown);
+                    Line (GroundLineX DIV 16 + 165, 100, GroundLineX+240, 200, Brown);
                 END;
                 DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
                 DrawBullet;

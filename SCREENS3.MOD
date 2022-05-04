@@ -3,7 +3,7 @@ IMPLEMENTATION MODULE Screens3;
 (*$S FF00*)
 
 IMPORT
-    Str, Graph, Lib, IO, Window, Storage, MsMouse, Exobius;
+    Str, Graph, Lib, IO, Window, Storage, Exobius;
 
 FROM Graph IMPORT
     SetClipRgn, GetImage, PutImage,
@@ -23,10 +23,9 @@ FROM Exobius IMPORT
     Enemies, Xs, Ys,
     Count, Lives, EnemyY,
     Screen, ScreenComplete, GameOver,  MouseButtons,  MouseMove, GameSpeed,
-    DrawBullet, DrawPlane, CheckMouse, CheckMouseAndSpecialKeys, CheckKeyboard, Die, DrawGameOver,
-    FinishScreen1, Key, CheckDeath1,
-    BkAddress, ClearTheBuffer, DrawGameOver,
-    HighDetail;
+    DrawBullet, DrawPlane, CheckMouse, CheckMouseAndSpecialKeys, Die, DrawGameOver,
+    FinishScreen1, CheckDeath1,
+    BkAddress, ClearTheBuffer, DrawGameOver;
 
 FROM Sprites IMPORT
     DrawBoomGuards, DrawSpinners, DrawFlyTraps, DrawMaces, DrawPlants,
@@ -140,14 +139,10 @@ PROCEDURE BlankGround3;
 VAR
     SnowFlakes : CARDINAL;
 BEGIN
-    IF HighDetail THEN
-       Graph.PutImage (0, 0, BkAddress, Graph._GPSET);
-       FOR SnowFlakes := 1 TO 50 DO
-           DrawSnowFlake (Lib.RANDOM(320), Lib.RANDOM(200), Lib.RANDOM(10));
-       END
-    ELSE
-       Rectangle (0, 100, 320, 200, LightestWhite, TRUE);
-    END;
+    Graph.PutImage(0, 0, BkAddress, Graph._GPSET);
+    FOR SnowFlakes := 1 TO 50 DO
+        DrawSnowFlake (Lib.RANDOM(320), Lib.RANDOM(200), Lib.RANDOM(10));
+    END
 END BlankGround3;
 
 PROCEDURE DrawCloud(CloudX, CloudY, Width : CARDINAL);
@@ -168,7 +163,6 @@ END DrawCloud;
 PROCEDURE Screen3;
 VAR
     DotX, DotY, GroundDots, RectY, CloudCount : CARDINAL;
-
 BEGIN
    DrawPlane (PlaneX, PlaneY, Width, Height);
    FOR RectY := 100 TO 0 BY -10 DO
@@ -199,14 +193,11 @@ BEGIN
    ScreenComplete := FALSE;
    Enemies := 1;
    EnemyY := 100;
-   Storage.ALLOCATE (BkAddress, MAX(CARDINAL));
+   Storage.ALLOCATE(BkAddress, 320*200);
 
    (* Main Program Starts *)
 
-   MsMouse.Cursor (MsMouse._MS_HIDE);
-   MsMouse.GetStatus (MouseButtons);
-   MsMouse.GetMotion (MouseMove);
-   MouseMove.horiz := 0;
+   CheckMouseAndSpecialKeys;
    FOR CloudCount := 1 TO 5 DO
        DrawCloud (Lib.RANDOM(290), Lib.RANDOM(70), Lib.RANDOM(30));
    END;
@@ -262,10 +253,8 @@ BEGIN
      END;                          (* This "END" From GameOver/ScreenComplete Check. *)
      IF GameOver THEN
         DrawGameOver;
-        Key := IO.RdKey();
      END;
-     Storage.DEALLOCATE (BkAddress, MAX(CARDINAL));
+     Storage.DEALLOCATE(BkAddress, 320*200);
 END Screen3;
 
 END Screens3.
-

@@ -3,7 +3,7 @@ IMPLEMENTATION MODULE Intros1;
 (*$S FF00*)
 
 IMPORT
-  Str, Graph, Lib, IO, Window, Storage, MsMouse, Exobius, Storage;
+  Str, Graph, Lib, IO, Window, Storage, Exobius, Storage;
 
 FROM Graph IMPORT
   SetClipRgn, SetVideoMode, Rectangle, GraphMode, TextMode, Polygon, Line,
@@ -1492,5 +1492,4 @@ BEGIN
 
 END EndGame;
 
-END Intros1.
-
+END Intros1.

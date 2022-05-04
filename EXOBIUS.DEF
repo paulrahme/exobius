@@ -9,7 +9,8 @@ TYPE
     CoordArray = ARRAY[0..10] OF CARDINAL;
 
 CONST
-    NoteDelay = (125);
+    GameSpeed = 25;
+    NoteDelay = 125;
     SolidFill = Graph.FillMaskType(0FFH,0FFH,0FFH,0FFH,0FFH,0FFH,0FFH,0FFH);
     PlaneWidth = 50;
     PlaneHeight = 25;
@@ -25,7 +26,7 @@ VAR
     Width, Height, PlaneX : INTEGER;
     Enemy1X, Enemy2X, Enemy3X, Enemy4X, Enemy5X, Enemy6X, Enemies,
     BulletX, BulletY, OldBulletX, OldBulletY, PlaneY, CoverRectangleX, Count, Lives, EnemyY,
-    GameSpeed, NegPlaneSize, Score, Screen, BkSize, GraphicsCard,
+     NegPlaneSize, Score, Screen, BkSize, GraphicsCard,
     Black, DarkestGrey, DarkGrey, Grey, LightGrey, LightestGrey,
     DarkestBlue, DarkBlue, Blue, LightBlue, LightestBlue,
     DarkestBrown, DarkBrown, Brown, LightBrown, LightestBrown,
@@ -37,14 +38,16 @@ VAR
     BkColour, OldBkColor : LONGCARD;
     Xs, Ys : CoordArray;
     OneAlive, TwoAlive, ThreeAlive, FourAlive, FiveAlive, SixAlive,
-    MouseUsed, ScreenComplete, GameOver, Cheat, PlaneInMemory, HighDetail : BOOLEAN;
+    ScreenComplete, GameOver, Cheat, PlaneInMemory : BOOLEAN;
     MouseButtons : MsMouse.MsData;
     MouseMove : MsMouse.MsMotion;
 
 PROCEDURE VgaInitialisation;
+PROCEDURE PutPixel(x, y : CARDINAL; color : BYTE);
+PROCEDURE SetPixel(pixPos : CARDINAL; Color : BYTE);
 PROCEDURE DrawPlane(x, y, Width, Height : CARDINAL);
 PROCEDURE DrawBullet;
-PROCEDURE CheckKeyboard;
+PROCEDURE CheckSpecialKeys;
 PROCEDURE CheckMouseAndSpecialKeys;
 PROCEDURE CheckMouse;
 PROCEDURE Die;
