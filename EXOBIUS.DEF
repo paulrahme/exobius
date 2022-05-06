@@ -9,7 +9,7 @@ TYPE
     CoordArray = ARRAY[0..10] OF CARDINAL;
 
 CONST
-    GameSpeed = 25;
+    GameSpeed = 5;
     NoteDelay = 125;
     SolidFill = Graph.FillMaskType(0FFH,0FFH,0FFH,0FFH,0FFH,0FFH,0FFH,0FFH);
     PlaneWidth = 50;
@@ -43,6 +43,7 @@ VAR
     MouseMove : MsMouse.MsMotion;
 
 PROCEDURE VgaInitialisation;
+PROCEDURE SwapPages;
 PROCEDURE PutPixel(x, y : CARDINAL; color : BYTE);
 PROCEDURE SetPixel(pixPos : CARDINAL; Color : BYTE);
 PROCEDURE DrawPlane(x, y, Width, Height : CARDINAL);
@@ -83,3 +84,4 @@ PROCEDURE Z (x, y : CARDINAL);
 PROCEDURE ClearTheBuffer;
 
 END Exobius.
+

@@ -6,7 +6,7 @@ IMPORT
     Str, Lib, IO, Graph, Window, Storage, MsMouse, Bosses;
 
 FROM Graph IMPORT
-    Line, Polygon, Circle, Disc, Ellipse, Rectangle;
+    SetActivePage, SetVisualPage, Line, Polygon, Circle, Disc, Ellipse, Rectangle;
 
 FROM Lib IMPORT
     Sound, NoSound, Delay;
@@ -17,10 +17,25 @@ FROM Screens1 IMPORT
 TYPE
     BYTEPTR = POINTER TO BYTE;
 
+VAR
+    ActivePage, VisualPage : CARDINAL;
+
 PROCEDURE VgaInitialisation;
 BEGIN
+    ActivePage := 0;
     Graph.SetFillMask(SolidFill);
 END VgaInitialisation;
+
+PROCEDURE SwapPages;
+VAR
+    PrevPage : CARDINAL;
+BEGIN
+    IF (GraphicsCard = 3) THEN
+        PrevPage := SetVisualPage(ActivePage);
+        ActivePage := 1 - ActivePage;
+        PrevPage := SetActivePage(ActivePage);
+    END;
+END SwapPages;
 
 PROCEDURE PutPixel(x, y : CARDINAL; color : BYTE);
 BEGIN

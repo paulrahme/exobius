@@ -13,7 +13,7 @@ FROM Lib IMPORT
     Sound, NoSound, Delay, RANDOM;
 
 FROM Exobius IMPORT
-    PutPixel, SetPixel,
+    PutPixel, SetPixel, SwapPages,
     PlaneWidth, PlaneHeight,
     EnemyYStart, PlaneXMin, PlaneXMax, CollisionY,
     Black, DarkestGrey, DarkGrey, Grey, LightGrey, LightestGrey,
@@ -220,7 +220,9 @@ BEGIN
 
     (* Main game loop *)
     WHILE NOT ScreenComplete AND NOT GameOver DO
-       (* Update player *)
+        SwapPages;
+
+        (* Update player *)
         OldPlaneX := PlaneX;
         CheckMouse();
         Rectangle(CARDINAL(OldPlaneX), CARDINAL(PlaneY), CARDINAL(OldPlaneX) + CARDINAL(Width), CARDINAL(PlaneY) + CARDINAL(Height), Black, TRUE);
