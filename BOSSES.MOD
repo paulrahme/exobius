@@ -28,7 +28,7 @@ FROM Exobius IMPORT
   DrawBullet, DrawPlane, CheckMouse, Die, A, B,
   C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z,
   FinishScreen1, Key, PlaneXMove, Score, Screen, PlaneAddress,
-  BkAddress, BkSize, GraphicsCard, DrawGameOver;
+  BkAddress, BkSize, DrawGameOver;
 
 FROM Storage IMPORT
      ALLOCATE, DEALLOCATE;

@@ -29,7 +29,7 @@ FROM Exobius IMPORT
   A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z,
   FinishScreen1, PlaneXMove, CheckDeath1, Score, Screen,
   PlaneInMemory, PlaneAddress, BkAddress, BkSize, ClearTheBuffer, Cheat,
-  GraphicsCard, DrawGameOver;
+  DrawGameOver;
 
 PROCEDURE DrawPillarBottom(x, y : CARDINAL);
 VAR
@@ -106,9 +106,7 @@ VAR
 BEGIN
     ClearTheBuffer;
     PlaneX := 145; PlaneY := 175; PlaneInMemory := FALSE;
-    IF (GraphicsCard=3) THEN
-       Rectangle (0, 0, 320, 100, DarkestGrey, TRUE);
-    END;
+    Rectangle (0, 0, 320, 100, DarkestGrey, TRUE);
     Rectangle (0, 100, 320, 200, DarkBrown, TRUE);
     DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
     Graph.GetImage (PlaneX, PlaneY, PlaneX + PlaneWidth, PlaneY + PlaneHeight, PlaneAddress);

@@ -356,11 +356,7 @@ BEGIN
      FOR LetterX := 33 TO 300 BY 5 DO
         CASE LetterString[PieceX] OF
            | '0' : Colour := Black;
-           | '1' : CASE GraphicsCard OF
-                        | 1 : Colour := Lib.RANDOM (3) + 1;
-                        | 2 : Colour := Lib.RANDOM(16) + 1;
-                        | 3 : Colour := Lib.RANDOM (7) + 104;
-                   END;
+           | '1' : Colour := Lib.RANDOM (7) + 104;
            HLine (LetterX, 199, LetterX + 5, Colour);
         END;
      PieceX := PieceX + 1;
@@ -1335,15 +1331,7 @@ BEGIN
   Graph.ClearScreen(Graph._GCLEARSCREEN);
   NegPlaneSize := CARDINAL (Graph.ImageSize (249, 59, 319, 151));
   Storage.ALLOCATE (NegPlaneAddress, NegPlaneSize);
-  IF (GraphicsCard<>3) THEN
-     Ellipse (319, 210, 300, 100, DarkestRed ,TRUE);
-     Ellipse (319, 210, 240, 80, DarkRed ,TRUE);
-     Ellipse (319, 210, 180, 60, Red ,TRUE);
-     Ellipse (319, 210, 120, 40, LightRed ,TRUE);
-     Ellipse (319, 210, 60, 20, LightestRed ,TRUE)
-  ELSE
-     DrawVGAPlanet;
-  END;
+  DrawVGAPlanet;
   FOR Count := 1 TO 100 DO
      RandomRed := Lib.RANDOM(4) + 109;
      Plot (Lib.RANDOM(220) + 100, Lib.RANDOM(80) + 120, RandomRed);

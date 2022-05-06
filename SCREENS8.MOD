@@ -30,7 +30,7 @@ FROM Exobius IMPORT
   A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z,
   FinishScreen1, PlaneXMove, CheckDeath1, Score, Screen,
   PlaneInMemory, PlaneAddress, BkAddress, BkSize, ClearTheBuffer, Cheat,
-  GraphicsCard, DrawGameOver;
+  DrawGameOver;
 
 CONST
     PlanetX = 160;
@@ -113,13 +113,6 @@ BEGIN
                EnemyColour3 := Brown;
                EnemyColour4 := LightBrown;
                EnemyColour5 := LightestBrown;
-    END;
-    IF (GraphicsCard=1) THEN
-       EnemyColour1 := DarkestWhite;
-       EnemyColour2 := DarkWhite;
-       EnemyColour3 := White;
-       EnemyColour4 := LightWhite;
-       EnemyColour5 := LightestWhite;
     END;
     IF (EnemyY<90) THEN
        EnemyRadius := EnemyY DIV 10;

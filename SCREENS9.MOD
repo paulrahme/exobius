@@ -31,7 +31,7 @@ FROM Exobius IMPORT
   C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z,
   FinishScreen1, PlaneXMove, CheckDeath1, Score, Screen,
   PlaneInMemory, PlaneAddress, BkAddress, BkSize, ClearTheBuffer, Cheat,
-  GraphicsCard, DrawGameOver;
+  DrawGameOver;
 
 FROM Screens7 IMPORT
      DrawPillarBottom;

@@ -31,7 +31,7 @@ FROM Exobius IMPORT
   A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z,
   FinishScreen1, PlaneXMove, CheckDeath1, Score, Screen,
   PlaneInMemory, PlaneAddress, BkAddress, BkSize, ClearTheBuffer, Cheat,
-  GraphicsCard, DrawGameOver;
+  DrawGameOver;
 
 FROM Sprites IMPORT
   DrawBoomGuards, DrawSpinners, DrawFlyTraps, DrawMaces, DrawPlants,
@@ -84,13 +84,8 @@ BEGIN
        END;
     ELSE
        PlaneX := 0;
-       CASE GraphicsCard OF
-            | 2,3 : WHILE (Point(PlaneX, 195)=Blue) OR (Point(PlaneX, 195)=LightestBlue) DO
-                          PlaneX := PlaneX + 1;
-                    END;
-            | 1 : WHILE (Point(PlaneX, 195)=Blue) DO
-                        PlaneX := PlaneX + 1;
-                  END;
+       WHILE (Point(PlaneX, 195)=Blue) OR (Point(PlaneX, 195)=LightestBlue) DO
+          PlaneX := PlaneX + 1;
        END;
        PlaneX := PlaneX + 9;
     END;
@@ -179,15 +174,10 @@ BEGIN
 			END;
 			DrawPlane (PlaneX, PlaneY, 20, 10);
 			BridgesDrawn := BridgesDrawn + 1;
-			CASE GraphicsCard OF
-			   | 1 : IF (Point(PlaneX+10, PlaneY-1) = Blue) THEN
-                                    Die4;
-                                 END;
-			   | 2, 3 : IF (Point(PlaneX+10, PlaneY-1) = Blue) OR (Point(PlaneX+10, PlaneY-1) = LightestBlue) THEN
-                                       Die4;
-                                    END;
-                        END;
-                        Delay (GameSpeed);
+			IF (Point(PlaneX+10, PlaneY-1) = Blue) OR (Point(PlaneX+10, PlaneY-1) = LightestBlue) THEN
+            Die4;
+         END;
+         Delay (GameSpeed);
 		END;
 		IF GameOver THEN
                    DrawGameOver;
@@ -234,15 +224,10 @@ BEGIN
           END;
 	  CheckMouse;
 	  DrawPlane (PlaneX, PlaneY, 20, 10);
-	  CASE GraphicsCard OF
-	       | 1 : IF (Point(PlaneX+10, PlaneY-1) = Blue) THEN
-                        Die4;
-                     END;
-	       | 2, 3 : IF (Point(PlaneX+10, PlaneY-1) = Blue) OR (Point(PlaneX+10, PlaneY-1) = LightestBlue) THEN
-                           Die4;
-                        END;
-          END;
-          Delay (GameSpeed);
+	  IF (Point(PlaneX+10, PlaneY-1) = Blue) OR (Point(PlaneX+10, PlaneY-1) = LightestBlue) THEN
+        Die4;
+     END;
+     Delay (GameSpeed);
     END;
     WHILE NOT (GameOver OR ScreenComplete) DO
 	  FOR WaterDots := 1 TO NumberOfWaterDots DO
@@ -262,15 +247,10 @@ BEGIN
 	  END;
 	  DrawPlane (PlaneX, PlaneY, 20, 10);
 	  BridgesDrawn := BridgesDrawn + 1;
-	  CASE GraphicsCard OF
-	       | 1 : IF (Point(PlaneX+10, PlaneY-1) = Blue) THEN
-                        Die4;
-                     END;
-	       | 2, 3 : IF (Point(PlaneX+10, PlaneY-1) = Blue) OR (Point(PlaneX+10, PlaneY-1) = LightestBlue) THEN
-                           Die4;
-                        END;
-          END;
-          Delay (GameSpeed);
+	  IF (Point(PlaneX+10, PlaneY-1) = Blue) OR (Point(PlaneX+10, PlaneY-1) = LightestBlue) THEN
+        Die4;
+     END;
+     Delay (GameSpeed);
     END;
     IF NOT GameOver THEN
         PlaneInMemory := FALSE; PlaneY := 175;

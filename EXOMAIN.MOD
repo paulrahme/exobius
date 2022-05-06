@@ -5,8 +5,7 @@ MODULE Exomain;
 IMPORT Storage, Graph, IO, FIO, Process;
 
 FROM Graph IMPORT
-    SetVideoMode, ClearScreen, OutText, SetTextPosition,
-    _MRES256COLOR, _MRES16COLOR, _MRES4COLOR, _GCLEARSCREEN, _DEFAULTMODE;
+    ClearScreen, OutText, SetTextPosition, _GCLEARSCREEN;
 
 FROM IO IMPORT
     WrLn, RdKey, RdCard, WrStr, KeyPressed, WrCard;
@@ -15,8 +14,8 @@ FROM Lib IMPORT
     Delay;
 
 FROM Exobius IMPORT
-    VgaInitialisation, Cheat, Key, NoteDelay,
-    GameOver, ScreenComplete, PlaneInMemory, Score, ClearTheBuffer, Lives, GraphicsCard,
+    SetVGAMode, SetTextMode, Cheat, Key, NoteDelay,
+    GameOver, ScreenComplete, PlaneInMemory, Score, ClearTheBuffer, Lives,
     Black, DarkestGrey, DarkGrey, Grey, LightGrey, LightestGrey,
     DarkestBlue, DarkBlue, Blue, LightBlue, LightestBlue,
     DarkestBrown, DarkBrown, Brown, LightBrown, LightestBrown,
@@ -42,12 +41,11 @@ FROM Screens9 IMPORT Screen9;
 FROM Bosses IMPORT Boss1, Boss2, Boss3, Boss4;
 
 VAR
-   DetailCard : CARDINAL;
    OldCoords : Graph.TextCoords;
-   VideoMode : BOOLEAN;
 
-PROCEDURE Main;
+(* Main loop *)
 BEGIN
+    SetVGAMode;
     PlaneInMemory := FALSE;
     Score := 0;
     GameOver := FALSE;
@@ -144,54 +142,7 @@ BEGIN
     IF NOT GameOver THEN
         EndGame;
     END;
-END Main;
 
-(* Main loop*)
-BEGIN
-    VgaInitialisation;
-    WrStr("Please select video mode:"); WrLn; WrLn;
-    WrStr("1) CGA ( 4  colours)"); WrLn;
-    WrStr("2) EGA ( 16 colours)"); WrLn;
-    WrStr("3) VGA (256 colours)"); WrLn;
-    GraphicsCard := RdCard();
-    WrLn;
-    WrStr("Enjoy...Press a key to continue");
-    Key := RdKey();
-    Cheat := (Key = CHR(235));
-
-    CASE GraphicsCard OF
-        (* CGA 4 Colour *)
-        | 1 : VideoMode := SetVideoMode(_MRES4COLOR);
-            Black := 0;
-            DarkestGrey := 3; DarkGrey := 3; Grey := 2; LightGrey := 3; LightestGrey := 3;
-            DarkestWhite := 2; DarkWhite := 3; White := 3; LightWhite := 3; LightestWhite := 3;
-            DarkestBlue := 1; DarkBlue := 1; Blue := 1; LightBlue := 1; LightestBlue := 3;
-            DarkestRed := 2; DarkRed := 2; Red := 1; LightRed := 1; LightestRed := 1;
-            DarkestBrown := 2; DarkBrown := 2; Brown := 2; LightBrown := 2; LightestBrown := 2;
-            DarkestGreen := 1; DarkGreen := 1; Green := 1; LightGreen := 1; LightestGreen := 3;
-            DarkestYellow := 2; DarkYellow := 2; Yellow := 1; LightYellow := 3; LightestYellow := 3;
-        (* EGA 16 Colour *)
-        | 2 : VideoMode := SetVideoMode(_MRES16COLOR);
-            Black := 0;
-            DarkestGrey := 8; DarkGrey := 8; Grey := 8; LightGrey := 7; LightestGrey := 7;
-            DarkestWhite := 7; DarkWhite := 7; White := 7; LightWhite := 15; LightestWhite := 15;
-            DarkestBlue := 1; DarkBlue := 1; Blue := 3; LightBlue := 9; LightestBlue := 11;
-            DarkestRed := 4; DarkRed := 4; Red := 4; LightRed := 12; LightestRed := 12;
-            DarkestBrown := 6; DarkBrown := 6; Brown := 6; LightBrown := 12; LightestBrown := 12;
-            DarkestGreen := 2; DarkGreen := 2; Green := 2; LightGreen := 10; LightestGreen := 10;
-            DarkestYellow := 14; DarkYellow := 14; Yellow := 14; LightYellow := 14; LightestYellow := 14;
-        (* VGA 256 Colour *)
-        | 3 : VideoMode := SetVideoMode(_MRES256COLOR);
-            Black := 0;
-            DarkestGrey := 17; DarkGrey := 19; Grey := 21; LightGrey := 23; LightestGrey := 25;
-            DarkestWhite := 26; DarkWhite := 27; White := 28; LightWhite := 29; LightestWhite := 30;
-            DarkestBlue := 175; DarkBlue := 104; Blue := 1; LightBlue := 55; LightestBlue := 80;
-            DarkestRed := 184; DarkRed := 112; Red := 4; LightRed := 40; LightestRed := 41;
-            DarkestBrown := 185; DarkBrown := 186; Brown := 114; LightBrown := 6; LightestBrown := 42;
-            DarkestGreen := 187; DarkGreen := 190; Green := 120; LightGreen := 2; LightestGreen := 48;
-            DarkestYellow := 42; DarkYellow := 43; Yellow := 44; LightYellow := 14; LightestYellow := 68;
-    END;
-    Main;
-    VideoMode := SetVideoMode(_DEFAULTMODE);
+    SetTextMode;
 END Exomain.
 

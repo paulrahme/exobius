@@ -29,7 +29,7 @@ FROM Exobius IMPORT
   C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z,
   FinishScreen1, PlaneXMove, CheckDeath1, Score, Screen,
   PlaneInMemory, PlaneAddress, BkAddress, BkSize, ClearTheBuffer, Cheat,
-  GraphicsCard, DrawGameOver;
+  DrawGameOver;
 
 FROM Sprites IMPORT
   DrawBoomGuards, DrawSpinners, DrawFlyTraps, DrawMaces, DrawPlants,
@@ -311,10 +311,8 @@ BEGIN
          Delay (GameSpeed);
       END;
   END;
-  IF (GraphicsCard <> 1) THEN
-     Rectangle (0, 0, 320, 100, DarkestGrey, TRUE);
-     Rectangle (0, 100, 320, 200, DarkBrown, TRUE);
-  END;
+  Rectangle (0, 0, 320, 100, DarkestGrey, TRUE);
+  Rectangle (0, 100, 320, 200, DarkBrown, TRUE);
 END OpenUpTunnel;
 
 PROCEDURE Screen6;

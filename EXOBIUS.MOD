@@ -6,7 +6,7 @@ IMPORT
     Str, Lib, IO, Graph, Window, Storage, MsMouse, Bosses;
 
 FROM Graph IMPORT
-    SetActivePage, SetVisualPage, Line, Polygon, Circle, Disc, Ellipse, Rectangle;
+    SetVideoMode, _MRES256COLOR, _DEFAULTMODE, SetActivePage, SetVisualPage, Line, Polygon, Circle, Disc, Ellipse, Rectangle;
 
 FROM Lib IMPORT
     Sound, NoSound, Delay;
@@ -18,23 +18,29 @@ TYPE
     BYTEPTR = POINTER TO BYTE;
 
 VAR
-    ActivePage, VisualPage : CARDINAL;
+    ActivePage, PrevPage : CARDINAL;
 
-PROCEDURE VgaInitialisation;
+PROCEDURE SetVGAMode;
+VAR
+    VideoMode : BOOLEAN;
 BEGIN
+    VideoMode := SetVideoMode(_MRES256COLOR);
     ActivePage := 0;
     Graph.SetFillMask(SolidFill);
-END VgaInitialisation;
+END SetVGAMode;
+
+PROCEDURE SetTextMode;
+VAR
+    VideoMode : BOOLEAN;
+BEGIN
+    VideoMode := SetVideoMode(_DEFAULTMODE);
+END SetTextMode;
 
 PROCEDURE SwapPages;
-VAR
-    PrevPage : CARDINAL;
 BEGIN
-    IF (GraphicsCard = 3) THEN
-        PrevPage := SetVisualPage(ActivePage);
-        ActivePage := 1 - ActivePage;
-        PrevPage := SetActivePage(ActivePage);
-    END;
+    PrevPage := SetVisualPage(ActivePage);
+    ActivePage := 1 - ActivePage;
+    PrevPage := SetActivePage(ActivePage);
 END SwapPages;
 
 PROCEDURE PutPixel(x, y : CARDINAL; color : BYTE);

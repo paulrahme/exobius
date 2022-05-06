@@ -9,31 +9,26 @@ TYPE
     CoordArray = ARRAY[0..10] OF CARDINAL;
 
 CONST
-    GameSpeed = 5;
-    NoteDelay = 125;
     SolidFill = Graph.FillMaskType(0FFH,0FFH,0FFH,0FFH,0FFH,0FFH,0FFH,0FFH);
-    PlaneWidth = 50;
-    PlaneHeight = 25;
-    PlaneMovement = 5;
+    GameSpeed = 5; NoteDelay = 125;
+    PlaneWidth = 50; PlaneHeight = 25;
     EnemyYStart = 87;  (* 200 - EnemyYStart is actually the y-coordinate *)
-    PlaneXMin = 15;
-    PlaneXMax = 255;
-    CollisionY = 158;
-    PlaneXMove = 25;
+    PlaneXMin = 15; PlaneXMax = 255; PlaneMovement = 5; PlaneXMove = 25; CollisionY = 158;
+    Black = 0;
+    DarkestGrey = 17; DarkGrey = 19; Grey = 21; LightGrey = 23; LightestGrey = 25;
+    DarkestWhite = 26; DarkWhite = 27; White = 28; LightWhite = 29; LightestWhite = 30;
+    DarkestBlue = 175; DarkBlue = 104; Blue = 1; LightBlue = 55; LightestBlue = 80;
+    DarkestRed = 184; DarkRed = 112; Red = 4; LightRed = 40; LightestRed = 41;
+    DarkestBrown = 185; DarkBrown = 186; Brown = 114; LightBrown = 6; LightestBrown = 42;
+    DarkestGreen = 187; DarkGreen = 190; Green = 120; LightGreen = 2; LightestGreen = 48;
+    DarkestYellow = 42; DarkYellow = 43; Yellow = 44; LightYellow = 14; LightestYellow = 68;
 
 VAR
     Key : CHAR;
     Width, Height, PlaneX : INTEGER;
     Enemy1X, Enemy2X, Enemy3X, Enemy4X, Enemy5X, Enemy6X, Enemies,
     BulletX, BulletY, OldBulletX, OldBulletY, PlaneY, CoverRectangleX, Count, Lives, EnemyY,
-     NegPlaneSize, Score, Screen, BkSize, GraphicsCard,
-    Black, DarkestGrey, DarkGrey, Grey, LightGrey, LightestGrey,
-    DarkestBlue, DarkBlue, Blue, LightBlue, LightestBlue,
-    DarkestBrown, DarkBrown, Brown, LightBrown, LightestBrown,
-    DarkestRed, DarkRed, Red, LightRed, LightestRed,
-    DarkestYellow, DarkYellow, Yellow, LightYellow, LightestYellow,
-    DarkestWhite, DarkWhite, White, LightWhite, LightestWhite,
-    DarkestGreen, DarkGreen, Green, LightGreen, LightestGreen : CARDINAL;
+    NegPlaneSize, Score, Screen, BkSize : CARDINAL;
     NegPlaneAddress, WritingAddress, PlaneAddress, BkAddress : ADDRESS;
     BkColour, OldBkColor : LONGCARD;
     Xs, Ys : CoordArray;
@@ -42,7 +37,8 @@ VAR
     MouseButtons : MsMouse.MsData;
     MouseMove : MsMouse.MsMotion;
 
-PROCEDURE VgaInitialisation;
+PROCEDURE SetVGAMode;
+PROCEDURE SetTextMode;
 PROCEDURE SwapPages;
 PROCEDURE PutPixel(x, y : CARDINAL; color : BYTE);
 PROCEDURE SetPixel(pixPos : CARDINAL; Color : BYTE);

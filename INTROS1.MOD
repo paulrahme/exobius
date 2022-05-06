@@ -21,7 +21,7 @@ FROM Exobius IMPORT
   Brown, LightBrown, LightestBrown, DarkestGreen, DarkGreen, Green, LightGreen,
   LightestGreen, DarkestYellow, DarkYellow, Yellow, LightYellow,
   LightestYellow, Count, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R,
-  S, T, U, V, W, X, Y, Z, Key, GraphicsCard;
+  S, T, U, V, W, X, Y, Z, Key;
 
 VAR
   Xs, Ys : ARRAY[0..20] OF CARDINAL;
