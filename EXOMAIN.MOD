@@ -42,6 +42,7 @@ FROM Bosses IMPORT Boss1, Boss2, Boss3, Boss4;
 
 VAR
    OldCoords : Graph.TextCoords;
+   IntroNotSkipped : BOOLEAN;
 
 (* Main loop *)
 BEGIN
@@ -51,8 +52,8 @@ BEGIN
     GameOver := FALSE;
     ScreenComplete := FALSE;
     Lives := 0;
-
-(*   ClearScreen(_GCLEARSCREEN);
+(*
+   ClearScreen(_GCLEARSCREEN);
    Intro1;
    OldCoords := SetTextPosition (1, 1);
    OutText("Working at Le Grande Pizzeria");
@@ -74,45 +75,46 @@ BEGIN
    ClearScreen(_GCLEARSCREEN);
    Intro4;
    Key := IO.RdKey();
-
+*)
    ClearScreen(_GCLEARSCREEN);
-   Infinite_Software;
+   Infinite_Software();
    Delay (12*NoteDelay);
-   IF NOT (KeyPressed()) THEN
-      FlashScreen;
+   IntroNotSkipped := NOT KeyPressed();
+   IF (IntroNotSkipped) THEN
+      IntroNotSkipped := FlashScreen();
    END;
-   IF NOT (KeyPressed()) THEN
-      SpinRectangle;
+   IF (IntroNotSkipped) THEN
+      IntroNotSkipped := SpinRectangle();
    END;
-   IF NOT (KeyPressed()) THEN
-      MakeDiamond;
+   IF (IntroNotSkipped) THEN
+      IntroNotSkipped := MakeDiamond();
    END;
-   IF NOT (KeyPressed()) THEN
-       ExoLogo;
+   IF (IntroNotSkipped) THEN
+       IntroNotSkipped := ExoLogo();
     END;
-    IF NOT (KeyPressed()) THEN
-       WriteMyName;
+    IF (IntroNotSkipped) THEN
+       IntroNotSkipped := WriteMyName();
     END;
-    IF NOT (KeyPressed()) THEN
-       WriteAtmosFear;
+    IF (IntroNotSkipped) THEN
+       IntroNotSkipped := WriteAtmosFear();
     END;
-    IF NOT (KeyPressed()) THEN
-       WriteThinks;
+    IF (IntroNotSkipped) THEN
+       IntroNotSkipped := WriteThinks();
     END;
     ClearTheBuffer;
     PlaneToPlanet;
-*)    ClearScreen (_GCLEARSCREEN);
-(*    Screen1;
+    ClearScreen (_GCLEARSCREEN);
+    Screen1;
     IF NOT GameOver THEN
         Boss1;
     END;
-*)    IF NOT GameOver THEN
+    IF NOT GameOver THEN
         Screen2;
     END;
     IF NOT GameOver THEN
         Screen3;
     END;
-(*    IF NOT GameOver THEN
+    IF NOT GameOver THEN
         Screen4;
     END;
     IF NOT GameOver THEN
@@ -136,7 +138,7 @@ BEGIN
     IF NOT GameOver THEN
         Screen9;
     END;
-*)    IF NOT GameOver THEN
+    IF NOT GameOver THEN
         Boss4;
     END;
     IF NOT GameOver THEN

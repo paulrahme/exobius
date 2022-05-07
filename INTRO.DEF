@@ -1,9 +1,11 @@
 DEFINITION MODULE Intro;
 
-IMPORT Exobius, Graph, Lib, Window, Str, IO, Storage;
+IMPORT Graph, IO, Lib, Exobius, Storage;
 
 FROM Graph IMPORT
      SetClipRgn, SetVideoMode, Rectangle, GraphMode, TextMode, Polygon, Line, HLine, Circle, Ellipse, Disc, Plot, Arc;
+
+FROM IO IMPORT KeyPressed;
 
 FROM Lib IMPORT
      Sound, NoSound, Delay;
@@ -30,18 +32,16 @@ TYPE
      CoordArray = ARRAY [0..10] OF CARDINAL;
 
 PROCEDURE Infinite_Software;
-PROCEDURE FlashScreen;
-PROCEDURE SpinRectangle;
+PROCEDURE FlashScreen() : BOOLEAN;
+PROCEDURE SpinRectangle() : BOOLEAN;
 PROCEDURE DrawStars;
-PROCEDURE MakeDiamond;
-PROCEDURE ExoLogo;
-PROCEDURE WriteMyName;
+PROCEDURE MakeDiamond() : BOOLEAN;
+PROCEDURE ExoLogo() : BOOLEAN;
+PROCEDURE WriteMyName() : BOOLEAN;
 PROCEDURE FillAtmosFear (TenNos : ARRAY OF CHAR; AtmosX : CARDINAL);
-PROCEDURE WriteAtmosFear;
-PROCEDURE ReadyForWriting (LetterString : ARRAY OF CHAR);
-PROCEDURE WriteThinks;
+PROCEDURE WriteAtmosFear() : BOOLEAN;
+PROCEDURE ReadyForWriting (LetterString : ARRAY OF CHAR) : BOOLEAN;
+PROCEDURE WriteThinks() : BOOLEAN;
 PROCEDURE PlaneToPlanet;
 
 END Intro.
-
-
