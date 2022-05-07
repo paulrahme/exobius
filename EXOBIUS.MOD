@@ -36,12 +36,19 @@ BEGIN
     VideoMode := SetVideoMode(_DEFAULTMODE);
 END SetTextMode;
 
-PROCEDURE SwapPages;
+PROCEDURE SwapVGAPages;
 BEGIN
     PrevPage := SetVisualPage(ActivePage);
     ActivePage := 1 - ActivePage;
     PrevPage := SetActivePage(ActivePage);
-END SwapPages;
+END SwapVGAPages;
+
+PROCEDURE DisableVGAPageSwapping;
+BEGIN
+    ActivePage := 0;
+    PrevPage := SetVisualPage(ActivePage);
+    PrevPage := SetActivePage(ActivePage);
+END DisableVGAPageSwapping;
 
 PROCEDURE PutPixel(x, y : CARDINAL; color : BYTE);
 BEGIN
@@ -109,11 +116,12 @@ END E;
 
 PROCEDURE F (x, y : CARDINAL);
 BEGIN
-    E (x,y);
-    Rectangle (x, y+13, x+19, y+19, Black, TRUE);
-    Xs[0] := x; Xs[1] := x; Xs[2] := x+9;
-    Ys[0] := y+13; Ys[1] := y+19; Ys[2] := y+13;
-    Polygon (3, Xs, Ys, LightGrey);
+    Xs [0] := x; Xs[1] := x+19; Xs[2] := x+9; Xs[3] := x+19; Xs[4] := x;
+    Ys [0] := y; Ys[1] := y+3; Ys[2] := y+6; Ys[3] := y+9; Ys[4] := y+9;
+    Polygon (5, Xs, Ys, LightGrey);
+    Xs [0] := x; Xs[1] := x+19; Xs[2] := x+9; Xs[3] := x;
+    Ys [0] := y+9; Ys[1] := y+9; Ys[2] := y+13; Ys[3] := y+19;
+    Polygon (4, Xs, Ys, Grey);
 END F;
 
 PROCEDURE G (x, y : CARDINAL);

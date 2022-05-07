@@ -14,7 +14,7 @@ FROM Lib IMPORT
     Delay;
 
 FROM Exobius IMPORT
-    SetVGAMode, SetTextMode, Cheat, Key, NoteDelay,
+    SetVGAMode, SetTextMode, Cheat, Key,
     GameOver, ScreenComplete, PlaneInMemory, Score, ClearTheBuffer, Lives,
     Black, DarkestGrey, DarkGrey, Grey, LightGrey, LightestGrey,
     DarkestBlue, DarkBlue, Blue, LightBlue, LightestBlue,
@@ -24,12 +24,8 @@ FROM Exobius IMPORT
     DarkestWhite, DarkWhite, White, LightWhite, LightestWhite,
     DarkestGreen, DarkGreen, Green, LightGreen, LightestGreen;
 
-FROM Intro IMPORT
-    Infinite_Software, FlashScreen, SpinRectangle, MakeDiamond, ExoLogo,
-    WriteMyName, FillAtmosFear, WriteAtmosFear, ReadyForWriting,
-    WriteThinks, PlaneToPlanet;
-
-FROM Intros1 IMPORT Intro1, Intro2, Intro3, Intro4, Intro5, EndGame;
+FROM Intro IMPORT PlayTitleSequence, PlaneToPlanet;
+FROM Intros1 IMPORT Intro1, Intro2, Intro3, Intro4, Intro5, PlayIntroSequence, PlayEndSequence;
 FROM Screens1 IMPORT Screen1;
 FROM Screens2 IMPORT Screen2;
 FROM Screens3 IMPORT Screen3;
@@ -40,10 +36,6 @@ FROM Screens8 IMPORT Screen8;
 FROM Screens9 IMPORT Screen9;
 FROM Bosses IMPORT Boss1, Boss2, Boss3, Boss4;
 
-VAR
-   OldCoords : Graph.TextCoords;
-   IntroNotSkipped : BOOLEAN;
-
 (* Main loop *)
 BEGIN
     SetVGAMode;
@@ -52,99 +44,53 @@ BEGIN
     GameOver := FALSE;
     ScreenComplete := FALSE;
     Lives := 0;
-(*
-   ClearScreen(_GCLEARSCREEN);
-   Intro1;
-   OldCoords := SetTextPosition (1, 1);
-   OutText("Working at Le Grande Pizzeria");
-   OldCoords := SetTextPosition (2, 1);
-   OutText("Has bad days...");
-   Key := IO.RdKey();
-   ClearScreen(_GCLEARSCREEN);
-   Intro2;
-   OldCoords := SetTextPosition (23, 1);
-   OutText("But does this look like your dream");
-   OldCoords := SetTextPosition (24, 1);
-   OutText("ship?...");
-   Key := IO.RdKey();
-   ClearScreen(_GCLEARSCREEN);
-   Intro3;
-   OldCoords := SetTextPosition (1, 1);
-   OutText("''Park it well'', he says...");
-   Key := IO.RdKey();
-   ClearScreen(_GCLEARSCREEN);
-   Intro4;
-   Key := IO.RdKey();
-*)
-   ClearScreen(_GCLEARSCREEN);
-   Infinite_Software();
-   Delay (12*NoteDelay);
-   IntroNotSkipped := NOT KeyPressed();
-   IF (IntroNotSkipped) THEN
-      IntroNotSkipped := FlashScreen();
-   END;
-   IF (IntroNotSkipped) THEN
-      IntroNotSkipped := SpinRectangle();
-   END;
-   IF (IntroNotSkipped) THEN
-      IntroNotSkipped := MakeDiamond();
-   END;
-   IF (IntroNotSkipped) THEN
-       IntroNotSkipped := ExoLogo();
-    END;
-    IF (IntroNotSkipped) THEN
-       IntroNotSkipped := WriteMyName();
-    END;
-    IF (IntroNotSkipped) THEN
-       IntroNotSkipped := WriteAtmosFear();
-    END;
-    IF (IntroNotSkipped) THEN
-       IntroNotSkipped := WriteThinks();
-    END;
+
+    PlayIntroSequence();
+    PlayTitleSequence();
     ClearTheBuffer;
     PlaneToPlanet;
     ClearScreen (_GCLEARSCREEN);
     Screen1;
     IF NOT GameOver THEN
-        Boss1;
+        Boss1();
     END;
     IF NOT GameOver THEN
-        Screen2;
+        Screen2();
     END;
     IF NOT GameOver THEN
-        Screen3;
+        Screen3();
     END;
     IF NOT GameOver THEN
-        Screen4;
+        Screen4();
     END;
     IF NOT GameOver THEN
-       Screen5;
+       Screen5();
     END;
     IF NOT GameOver THEN
-       Boss2;
+       Boss2();
     END;
     IF NOT GameOver THEN
-       Screen6;
+       Screen6();
     END;
     IF NOT GameOver THEN
-       Screen7;
+       Screen7();
     END;
     IF NOT GameOver THEN
-        Screen8;
+        Screen8();
     END;
     IF NOT GameOver THEN
-        Boss3;
+        Boss3();
     END;
     IF NOT GameOver THEN
-        Screen9;
+        Screen9();
     END;
     IF NOT GameOver THEN
-        Boss4;
+        Boss4();
     END;
     IF NOT GameOver THEN
-        EndGame;
+        PlayEndSequence();
     END;
 
-    SetTextMode;
+    SetTextMode();
 END Exomain.
 

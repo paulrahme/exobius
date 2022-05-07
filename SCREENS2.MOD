@@ -13,7 +13,7 @@ FROM Lib IMPORT
     Sound, NoSound, Delay, RANDOM;
 
 FROM Exobius IMPORT
-    PutPixel, SetPixel, SwapPages,
+    PutPixel, SetPixel, SwapVGAPages,
     PlaneWidth, PlaneHeight,
     EnemyYStart, PlaneXMin, PlaneXMax, CollisionY,
     Black, DarkestGrey, DarkGrey, Grey, LightGrey, LightestGrey,
@@ -220,7 +220,7 @@ BEGIN
 
     (* Main game loop *)
     WHILE NOT ScreenComplete AND NOT GameOver DO
-        SwapPages;
+        SwapVGAPages;
 
         (* Update player *)
         OldPlaneX := PlaneX;

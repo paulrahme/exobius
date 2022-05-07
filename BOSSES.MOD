@@ -12,7 +12,7 @@ FROM Lib IMPORT
      Sound, NoSound, Delay, RANDOM;
 
 FROM Exobius IMPORT
-  NoteDelay, SolidFill, PlaneWidth, PlaneHeight, PlaneMovement,
+  SolidFill, PlaneWidth, PlaneHeight, PlaneMovement,
   EnemyYStart, PlaneXMin, PlaneXMax, CollisionY, NegPlaneSize,
   Black, DarkestGrey, DarkGrey, Grey, LightGrey, LightestGrey,
   DarkestWhite, DarkWhite, White, LightWhite, LightestWhite,
@@ -22,8 +22,8 @@ FROM Exobius IMPORT
   LightestGreen, DarkestYellow, DarkYellow, Yellow, LightYellow,
   LightestYellow, PlaneX,  Enemy1X, Enemy2X, Enemy3X, Enemy4X, Enemy5X,
   Enemy6X, Enemies, BulletX, BulletY, PlaneY, Width, Height, CoverRectangleX,
-  Count, Lives, EnemyY,  NegPlaneAddress, WritingAddress,  BkColour,
-  OldBkColor,  Xs, Ys,  OneAlive, TwoAlive, ThreeAlive, FourAlive, FiveAlive,
+  Count, Lives, EnemyY, BkColour,
+  OldBkColor,  Xs, Ys, OneAlive, TwoAlive, ThreeAlive, FourAlive, FiveAlive,
   SixAlive, ScreenComplete, GameOver,  MouseButtons,  MouseMove, GameSpeed,
   DrawBullet, DrawPlane, CheckMouse, Die, A, B,
   C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z,

@@ -1,69 +1,85 @@
 IMPLEMENTATION MODULE Intro;
 
+IMPORT Graph, IO, Lib, Exobius, Storage;
+
+FROM Graph IMPORT
+    ClearScreen, _GCLEARSCREEN,
+    Rectangle, Polygon, Line, HLine, Circle, Ellipse, Disc, Plot, Arc;
+
+FROM IO IMPORT KeyPressed;
+
+FROM Lib IMPORT
+    Delay;
+
+FROM Exobius IMPORT
+    SwapVGAPages, DisableVGAPageSwapping, PutPixel,
+    Black,
+    DarkestGrey, DarkGrey, Grey, LightGrey, LightestGrey,
+    DarkestWhite, DarkWhite, White, LightWhite, LightestWhite,
+    DarkestBlue, DarkBlue, Blue, LightBlue, LightestBlue,
+    DarkestRed, DarkRed, Red, LightRed, LightestRed,
+    DarkestBrown, DarkBrown, Brown, LightBrown, LightestBrown,
+    DarkestGreen, DarkGreen, Green, LightGreen, LightestGreen,
+    DarkestYellow, DarkYellow, Yellow, LightYellow, LightestYellow,
+    DrawPlane, PlaneX, PlaneY, Width, Height,
+    Count, GameSpeed,
+    A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z;
+
+CONST
+    NoteDelay = 125;
+
 PROCEDURE Infinite_Software;
 BEGIN
-  FOR Count := 40 TO 265 BY 30 DO
-     CASE Count OF
-        | 40 : I (Count, 40);
-              S (Count, 120);
-        | 70 : N (Count, 40);
-              O (Count, 120);
-        | 100 : F (Count, 40);
-              F (Count, 120);
-        | 130 : I (Count, 40);
-              T (Count, 120);
-        | 160 : N (Count, 40);
-              W (Count, 120);
-        | 190 : I (Count, 40);
-              A (Count, 120);
-        | 220 : T (Count, 40);
-              R (Count, 120);
-        | 250 : E (Count, 40);
-              E (Count, 120);
+    DisableVGAPageSwapping;
+    FOR Count := 40 TO 265 BY 30 DO
+        CASE Count OF
+            |40: I(Count, 40);
+                S(Count, 120);
+            |70: N(Count, 40);
+                O(Count, 120);
+            |100: F(Count, 40);
+                F(Count, 120);
+            |130: I(Count, 40);
+                T(Count, 120);
+            |160: N(Count, 40);
+                W(Count, 120);
+            |190: I(Count, 40);
+                A(Count, 120);
+            |220: T(Count, 40);
+                R(Count, 120);
+            |250: E(Count, 40);
+                E(Count, 120);
+         END;
      END;
-  END;
 END Infinite_Software;
 
 PROCEDURE FlashScreen() : BOOLEAN;
+VAR
+    Colors : ARRAY[0..9] OF CARDINAL;
+    FlashIdx, FlashDelay : CARDINAL;
 BEGIN
-  Rectangle (0, 0, 320, 200, DarkestGrey, TRUE);
-  Infinite_Software;
-  IF (KeyPressed()) THEN RETURN FALSE; END;
-  Rectangle (0, 0, 320, 200, DarkGrey, TRUE);
-  Infinite_Software;
-  IF (KeyPressed()) THEN RETURN FALSE; END;
-  Rectangle (0, 0, 320, 200, Grey, TRUE);
-  Infinite_Software;
-  IF (KeyPressed()) THEN RETURN FALSE; END;
-  Rectangle (0, 0, 320, 200, LightGrey, TRUE);
-  Infinite_Software;
-  IF (KeyPressed()) THEN RETURN FALSE; END;
-  Rectangle (0, 0, 320, 200, LightestGrey, TRUE);
-  Infinite_Software;
-  IF (KeyPressed()) THEN RETURN FALSE; END;
-  Rectangle (0, 0, 320, 200, DarkestWhite, TRUE);
-  Infinite_Software;
-  IF (KeyPressed()) THEN RETURN FALSE; END;
-  Rectangle (0, 0, 320, 300, DarkWhite, TRUE);
-  Infinite_Software;
-  IF (KeyPressed()) THEN RETURN FALSE; END;
-  Rectangle (0, 0, 320, 200, White, TRUE);
-  Infinite_Software;
-  IF (KeyPressed()) THEN RETURN FALSE; END;
-  Rectangle (0, 0, 320, 200, LightWhite, TRUE);
-  Infinite_Software;
-  IF (KeyPressed()) THEN RETURN FALSE; END;
-  Rectangle (0, 0, 320, 200, LightestWhite, TRUE);
-  IF (KeyPressed()) THEN RETURN FALSE; END;
-  RETURN TRUE;
+    Colors[0] := DarkestGrey; Colors[1] := DarkGrey; Colors[2] := Grey; Colors[3] := LightGrey; Colors[4] := LightestGrey;
+    Colors[5] := DarkestWhite; Colors[6] := DarkWhite; Colors[7] := White; Colors[8] := LightWhite; Colors[9] := LightestWhite;
+    FlashDelay := NoteDelay DIV 4;
+
+    SwapVGAPages();
+    FOR FlashIdx := 0 TO 9 DO
+        Rectangle(0, 0, 320, 200, Colors[FlashIdx], TRUE);
+        Infinite_Software;
+        SwapVGAPages();
+        Lib.Delay(FlashDelay);
+        IF (KeyPressed()) THEN RETURN FALSE; END;
+    END;
+
+    RETURN TRUE;
 END FlashScreen;
 
 PROCEDURE SpinRectangle() : BOOLEAN;
 CONST
-  SpinningDelay = 3;
+    SpinningDelay = 3;
 VAR
-  Width, HalfHeight, ScaledHalfHeight, PrevScaledHalfHeight, Left, Right, Top, Bottom : CARDINAL;
-  Growing : BOOLEAN;
+    Width, HalfHeight, ScaledHalfHeight, PrevScaledHalfHeight, Left, Right, Top, Bottom : CARDINAL;
+    Growing : BOOLEAN;
 BEGIN
     HalfHeight := 100; Top := 0; Bottom := 200; Growing := FALSE;
     ScaledHalfHeight := HalfHeight;
@@ -108,377 +124,418 @@ END SpinRectangle;
 
 PROCEDURE DrawStars;
 BEGIN
-  FOR Count := 1 TO 35 DO
-     Plot (Lib.RANDOM (320), Lib.RANDOM(200) , (Lib.RANDOM(15))+15);
-  END;
+    FOR Count := 1 TO 35 DO
+        Plot (Lib.RANDOM (320), Lib.RANDOM(200) , (Lib.RANDOM(15))+15);
+    END;
 END DrawStars;
 
 PROCEDURE MakeDiamond() : BOOLEAN;
 CONST
-  DiamondDelay = 1;
+    DiamondDelay = 1;
 BEGIN
-  Lib.Delay (NoteDelay * 11);
-  DrawStars;
-  FOR Count := 160 TO 320 DO
-     Plot (Count, 100, LightestWhite);
-     Plot (Count-2, 99, LightWhite);
-     Plot (Count-2, 101, LightWhite);
-     Plot (Count-4, 98, White);
-     Plot (Count-4, 102, White);
-     Plot (Count-6, 97, LightestBlue);
-     Plot (Count-6, 103, LightestBlue);
-     Plot (Count-8, 96, DarkWhite);
-     Plot (Count-8, 104, DarkWhite);
-     Plot (Count-10, 95, DarkestWhite);
-     Plot (Count-10, 105, DarkestWhite);
-     Plot (320-Count, 100, LightestWhite);
-     Plot (320-Count+2, 99, LightWhite);
-     Plot (320-Count+2, 101, LightWhite);
-     Plot (320-Count+4, 98, White);
-     Plot (320-Count+4, 102, White);
-     Plot (320-Count+6, 97, LightestBlue);
-     Plot (320-Count+6, 103, LightestBlue);
-     Plot (320-Count+8, 96, DarkWhite);
-     Plot (320-Count+8, 104, DarkWhite);
-     Plot (320-Count+10, 95, DarkestWhite);
-     Plot (320-Count+10, 105, DarkestWhite);
-     Lib.Delay(DiamondDelay);
-  END;
-  RETURN (NOT KeyPressed());
+    DrawStars;
+    FOR Count := 160 TO 320 DO
+        Plot (Count, 100, LightestWhite);   Plot (320-Count, 100, LightestWhite);
+        Plot (Count-2, 99, LightWhite);     Plot (320-Count+2, 99, LightWhite);
+        Plot (Count-2, 101, LightWhite);    Plot (320-Count+2, 101, LightWhite);
+        Plot (Count-4, 98, White);          Plot (320-Count+4, 98, White);
+        Plot (Count-4, 102, White);         Plot (320-Count+4, 102, White);
+        Plot (Count-6, 97, LightestBlue);   Plot (320-Count+6, 97, LightestBlue);
+        Plot (Count-6, 103, LightestBlue);  Plot (320-Count+6, 103, LightestBlue);
+        Plot (Count-8, 96, DarkWhite);      Plot (320-Count+8, 96, DarkWhite);
+        Plot (Count-8, 104, DarkWhite);     Plot (320-Count+8, 104, DarkWhite);
+        Plot (Count-10, 95, DarkestWhite);  Plot (320-Count+10, 95, DarkestWhite);
+        Plot (Count-10, 105, DarkestWhite); Plot (320-Count+10, 105, DarkestWhite);
+        Plot (Count-12, 94, DarkGrey);      Plot (320-Count+12, 94, DarkGrey);
+        Plot (Count-12, 106, DarkGrey);     Plot (320-Count+12, 106, DarkGrey);
+        Plot (Count-12, 93, DarkestGrey);   Plot (320-Count+12, 93, DarkestGrey);
+        Plot (Count-12, 107, DarkestGrey);  Plot (320-Count+12, 107, DarkestGrey);
+        Lib.Delay(DiamondDelay);
+    END;
+    RETURN (NOT KeyPressed());
 END MakeDiamond;
 
 PROCEDURE ExoLogo() : BOOLEAN;
-VAR
-  RectangleX, RectangleY : CARDINAL;
+CONST
+    LineDelay = 3;
 BEGIN
-  FOR RectangleX := 160 TO 265 DO
-     IF (265-RectangleX) MOD 10 = 0 THEN
-        RectangleY:= RectangleY + 1;
-     END;
-  END;
-  FOR Count := 50 TO 270 DO
-     E(60, 90); X(90, 90); O(120, 90); B(150, 90); I(180, 90); U(210, 90); S(240, 90);
-     Line (Count, 50, Count, 150, Black);
-  END;
-  FOR Count := 1 TO 5 DO
-     IF (KeyPressed()) THEN RETURN FALSE; END;
-     Lib.Delay(1000);
-  END;
-  RETURN (NOT KeyPressed());
+    E(60, 90); X(90, 90); O(120, 90); B(150, 90); I(180, 90); U(210, 90); S(240, 90);
+    FOR Count := 50 TO 270 DO
+        Rectangle(Count - 1, 70, Count, 130, Black, TRUE);
+        PutPixel(Count, 70 + Lib.RANDOM(19), Yellow);
+        PutPixel(Count, 130 - Lib.RANDOM(19), Yellow);
+        IF (Count < 80) THEN E(60, 90);
+        ELSIF (Count < 110) THEN X(90, 90);
+        ELSIF (Count < 140) THEN O(120, 90);
+        ELSIF (Count < 170) THEN B(150, 90);
+        ELSIF (Count < 200) THEN I(180, 90);
+        ELSIF (Count < 230) THEN U(210, 90);
+        ELSE S(240, 90);
+        END;
+        Lib.Delay(LineDelay);
+        IF (KeyPressed()) THEN RETURN FALSE; END;
+    END;
+    Rectangle(269, 70, 270, 130, Black, FALSE);
+
+    FOR Count := 1 TO 5 DO
+        Lib.Delay(1000);
+        IF (KeyPressed()) THEN RETURN FALSE; END;
+    END;
+
+    RETURN TRUE;
 END ExoLogo;
 
 PROCEDURE WriteMyName() : BOOLEAN;
 CONST
-  NameDelay = 5000;
+    NameDelay = 5000;
 VAR
-  NameY : CARDINAL;
-  NameAddress : ADDRESS;
+    NameY : CARDINAL;
+    NameAddress : ADDRESS;
 BEGIN
-  NameY := 1;
-  Storage.ALLOCATE (NameAddress, CARDINAL(Graph.ImageSize (95, 0, 235, 51)));
-  Graph.ClearScreen(Graph._GCLEARSCREEN);
-  DrawStars;
-  Rectangle (95, NameY - 1, 235, NameY + 50, Black, TRUE);
-  P(105, NameY); A(135, NameY); U(165, NameY); L(195, NameY);
-  R(95, NameY+30); A(125, NameY+30); H(155, NameY+30); M(185, NameY+30); E(215, NameY+30);
-  Graph.GetImage (95, NameY-1, 235, NameY + 50, NameAddress);
-  FOR NameY := 1 TO 125 DO
-      HLine (95, NameY-1, 235, Black);
-      B(135 ,95); Y(165, 95);
-      Graph.PutImage (95, NameY, NameAddress, Graph._GPSET);
-      Lib.Delay (GameSpeed);
-  END;
-  FOR NameY := 125 TO 110 BY -2 DO
-      HLine (95, NameY+52, 235, Black);
-      B(135 ,95); Y(165, 95);
-      Graph.PutImage (95, NameY, NameAddress, Graph._GPSET);
-      Lib.Delay (GameSpeed);
-  END;
-  FOR NameY := 110 TO 100 BY -1 DO
-      HLine (95, NameY+52, 235, Black);
-      B(135 ,95); Y(165, 95);
-      Graph.PutImage (95, NameY, NameAddress, Graph._GPSET);
-      Lib.Delay (GameSpeed);
-  END;
-  FOR NameY := 100 TO 110 DO
-      HLine (95, NameY-1, 235, Black);
-      B(135 ,95); Y(165, 95);
-      Graph.PutImage (95, NameY, NameAddress, Graph._GPSET);
-      Lib.Delay (GameSpeed);
-  END;
-  FOR NameY := 110 TO 125 BY 2 DO
-      HLine (95, NameY-1, 235, Black);
-      B(135 ,95); Y(165, 95);
-      Graph.PutImage (95, NameY, NameAddress, Graph._GPSET);
-      Lib.Delay (GameSpeed);
-  END;
-  FOR NameY := 125 TO 120 BY -2 DO
-      HLine (95, NameY+52, 235, Black);
-      B(135 ,95); Y(165, 95);
-      Graph.PutImage (95, NameY, NameAddress, Graph._GPSET);
-      Lib.Delay (GameSpeed);
-  END;
-  FOR NameY := 120 TO 115 BY -1 DO
-      HLine (95, NameY+52, 235, Black);
-      B(135 ,95); Y(165, 95);
-      Graph.PutImage (95, NameY, NameAddress, Graph._GPSET);
-      Lib.Delay (GameSpeed);
-  END;
-  FOR NameY := 115 TO 120 DO
-      HLine (95, NameY-1, 235, Black);
-      B(135 ,95); Y(165, 95);
-      Graph.PutImage (95, NameY, NameAddress, Graph._GPSET);
-      Lib.Delay (GameSpeed);
-  END;
-  FOR NameY := 120 TO 125 BY 2 DO
-      HLine (95, NameY-1, 235, Black);
-      B(135 ,95); Y(165, 95);
-      Graph.PutImage (95, NameY, NameAddress, Graph._GPSET);
-      Lib.Delay (GameSpeed);
-  END;
-  DrawStars;
-  Lib.Delay (NameDelay);
-  Storage.DEALLOCATE (NameAddress, CARDINAL(Graph.ImageSize (95, 0, 235, 51)));
-  RETURN TRUE;
+    NameY := 1;
+    Storage.ALLOCATE (NameAddress, CARDINAL(Graph.ImageSize (95, 0, 235, 51)));
+    Graph.ClearScreen(Graph._GCLEARSCREEN);
+    DrawStars;
+    Rectangle (95, NameY - 1, 235, NameY + 50, Black, TRUE);
+    P(105, NameY); A(135, NameY); U(165, NameY); L(195, NameY);
+    R(95, NameY+30); A(125, NameY+30); H(155, NameY+30); M(185, NameY+30); E(215, NameY+30);
+    Graph.GetImage (95, NameY-1, 235, NameY + 50, NameAddress);
+    FOR NameY := 1 TO 125 DO
+        HLine (95, NameY-1, 235, Black);
+        B(135 ,95); Y(165, 95);
+        Graph.PutImage (95, NameY, NameAddress, Graph._GPSET);
+        Lib.Delay (GameSpeed);
+    END;
+    IF (KeyPressed()) THEN RETURN FALSE; END;
+    FOR NameY := 125 TO 110 BY -2 DO
+        HLine (95, NameY+52, 235, Black);
+        B(135 ,95); Y(165, 95);
+        Graph.PutImage (95, NameY, NameAddress, Graph._GPSET);
+        Lib.Delay (GameSpeed);
+    END;
+    FOR NameY := 110 TO 100 BY -1 DO
+        HLine (95, NameY+52, 235, Black);
+        B(135 ,95); Y(165, 95);
+        Graph.PutImage (95, NameY, NameAddress, Graph._GPSET);
+        Lib.Delay (GameSpeed);
+    END;
+    FOR NameY := 100 TO 110 DO
+        HLine (95, NameY-1, 235, Black);
+        B(135 ,95); Y(165, 95);
+        Graph.PutImage (95, NameY, NameAddress, Graph._GPSET);
+        Lib.Delay (GameSpeed);
+    END;
+    FOR NameY := 110 TO 125 BY 2 DO
+        HLine (95, NameY-1, 235, Black);
+        B(135 ,95); Y(165, 95);
+        Graph.PutImage (95, NameY, NameAddress, Graph._GPSET);
+        Lib.Delay (GameSpeed);
+    END;
+    FOR NameY := 125 TO 120 BY -2 DO
+        HLine (95, NameY+52, 235, Black);
+        B(135 ,95); Y(165, 95);
+        Graph.PutImage (95, NameY, NameAddress, Graph._GPSET);
+        Lib.Delay (GameSpeed);
+    END;
+    FOR NameY := 120 TO 115 BY -1 DO
+        HLine (95, NameY+52, 235, Black);
+        B(135 ,95); Y(165, 95);
+        Graph.PutImage (95, NameY, NameAddress, Graph._GPSET);
+        Lib.Delay (GameSpeed);
+    END;
+    FOR NameY := 115 TO 120 DO
+        HLine (95, NameY-1, 235, Black);
+        B(135 ,95); Y(165, 95);
+        Graph.PutImage (95, NameY, NameAddress, Graph._GPSET);
+        Lib.Delay (GameSpeed);
+    END;
+    FOR NameY := 120 TO 125 BY 2 DO
+        HLine (95, NameY-1, 235, Black);
+        B(135 ,95); Y(165, 95);
+        Graph.PutImage (95, NameY, NameAddress, Graph._GPSET);
+        Lib.Delay (GameSpeed);
+    END;
+    DrawStars;
+    Lib.Delay (NameDelay);
+    Storage.DEALLOCATE (NameAddress, CARDINAL(Graph.ImageSize (95, 0, 235, 51)));
+    IF (KeyPressed()) THEN RETURN FALSE; END;
+    RETURN TRUE;
 END WriteMyName;
 
 PROCEDURE FillAtmosFear (TenNos : ARRAY OF CHAR; AtmosX : CARDINAL);
 VAR
-  AtmosY, Colour : CARDINAL;
+    AtmosY, Colour : CARDINAL;
 BEGIN
-  FOR AtmosY := 133 TO 124 BY -1 DO
-     CASE (TenNos[133-AtmosY]) OF
-        | '0' : Colour := Black;
-        | '1' : Colour := White;
-     END;
-     Plot (AtmosX, AtmosY, Colour);
-     Lib.Delay (5);
-  END;
+    FOR AtmosY := 133 TO 124 BY -1 DO
+        CASE (TenNos[133-AtmosY]) OF
+            |'0': Colour := Black;
+            |'1': Colour := White;
+        END;
+        Plot(AtmosX, AtmosY, Colour);
+        Lib.Delay (5);
+    END;
 END FillAtmosFear;
 
 PROCEDURE WriteAtmosFear() : BOOLEAN;
 VAR
-  BandUX, _andSX, CandIX, RectangleX, RectangleY, RectY2, AtmosX : CARDINAL;
+    BandUX, _andSX, CandIX, RectangleX, RectangleY, RectY2, AtmosX : CARDINAL;
 BEGIN
-  BandUX := 80; _andSX := 90; CandIX := 140;
-  Graph.ClearScreen(Graph._GCLEARSCREEN);
-  DrawStars;
-  FOR Count := 60 TO 260 DO
-     Rectangle (58, 93, 292, 114, Black, TRUE);
-     Y(Count, 95); M(320-Count, 95);
-     IF Count MOD 4 <> 2 THEN
-        BandUX := BandUX + 1;
-     END;
-     B(BandUX, 95); U(320-BandUX, 95);
-     IF Count MOD 20 < 11 THEN
-        _andSX := _andSX + 1;
-     END;
-     S(320-_andSX, 95);
-     IF Count MOD 100 < 15 THEN
-        CandIX := CandIX + 1;
-     END;
-     C(CandIX, 95); I(320-CandIX, 95);
-  END;
-  Lib.Delay (1000);
+    BandUX := 80; _andSX := 90; CandIX := 140;
+    Graph.ClearScreen(Graph._GCLEARSCREEN);
+    DrawStars;
+    FOR Count := 60 TO 260 DO
+        Rectangle (58, 93, 292, 114, Black, TRUE);
+        Y(Count, 95); M(320-Count, 95);
+        IF Count MOD 4 <> 2 THEN
+            BandUX := BandUX + 1;
+        END;
+        B(BandUX, 95); U(320-BandUX, 95);
+        IF Count MOD 20 < 11 THEN
+            _andSX := _andSX + 1;
+        END;
+        S(320-_andSX, 95);
+        IF Count MOD 100 < 15 THEN
+            CandIX := CandIX + 1;
+        END;
+        C(CandIX, 95); I(320-CandIX, 95);
+    END;
+    Lib.Delay (1000);
 
-  RectangleY := 112; RectY2 := 112;
-  FOR RectangleX := 160 TO 135 BY -1 DO
-     Rectangle (RectangleX, RectangleY, 320-RectangleX, RectY2, White, FALSE);
-     Lib.Delay (10);
-     IF (160-RectangleX)*2 MOD 5 = 0 THEN
-        RectangleY := RectangleY + 1;
-        RectY2 := RectY2 + 2;
-     END;
-     Rectangle (90, 112, 230, 150, Black, TRUE);
-  END;
-  Rectangle (135, 123, 185, 134, White, FALSE);
+    RectangleY := 112; RectY2 := 112;
+    FOR RectangleX := 160 TO 135 BY -1 DO
+      Rectangle (RectangleX, RectangleY, 320-RectangleX, RectY2, White, FALSE);
+      Lib.Delay (10);
+      IF (160-RectangleX)*2 MOD 5 = 0 THEN
+          RectangleY := RectangleY + 1;
+          RectY2 := RectY2 + 2;
+      END;
+      Rectangle (90, 112, 230, 150, Black, TRUE);
+    END;
+    Rectangle (135, 123, 185, 134, White, FALSE);
 
-  Rectangle (135, 123, 139, 133, Black, TRUE);
-  Rectangle (181, 123, 185, 133, Black, TRUE);
-  Line (140, 123, 135, 134, White);
-  Line (180, 123, 185, 134, White);
-  Lib.Delay (200);
-  Line (140, 123, 145, 134, White);
-  Line (180, 123, 175, 134 ,White);
-  Lib.Delay (500);
-  Line (145, 134, 150 ,123, White);
-  Line (175, 134, 170, 123, White);
-  Lib.Delay (500);
-  Line (150, 123, 155, 134, White);
-  Line (170, 123, 165, 134, White);
-  Lib.Delay (500);
-  Line (155, 134, 160, 123, White);
-  Line (165, 134, 160, 123 ,White);
-  Lib.Delay (500);
+    Rectangle (135, 123, 139, 133, Black, TRUE);
+    Rectangle (181, 123, 185, 133, Black, TRUE);
+    Line (140, 123, 135, 134, White);
+    Line (180, 123, 185, 134, White);
+    Lib.Delay (200);
+    Line (140, 123, 145, 134, White);
+    Line (180, 123, 175, 134 ,White);
+    Lib.Delay (500);
+    Line (145, 134, 150 ,123, White);
+    Line (175, 134, 170, 123, White);
+    Lib.Delay (500);
+    Line (150, 123, 155, 134, White);
+    Line (170, 123, 165, 134, White);
+    Lib.Delay (500);
+    Line (155, 134, 160, 123, White);
+    Line (165, 134, 160, 123 ,White);
+    IF (KeyPressed()) THEN RETURN FALSE; END;
+    Lib.Delay (500);
+    IF (KeyPressed()) THEN RETURN FALSE; END;
 
-  FOR AtmosX := 135 TO 185 DO
-     Line (AtmosX + 2, 120, AtmosX + 2, 137, LightestWhite);
-     Line (AtmosX + 1, 121, AtmosX + 1, 136, Grey);
-     Line (AtmosX, 120, AtmosX, 137, Black);
-     Plot (AtmosX, 123, White);
-     Plot (AtmosX, 134, White);
-     CASE (AtmosX - 134) OF
-        | 1  : FillAtmosFear("1100000000", AtmosX);
-        | 2  : FillAtmosFear("0011000000", AtmosX);
-        | 3  : FillAtmosFear("0000110000", AtmosX);
-        | 4  : FillAtmosFear("0000001100", AtmosX);
-        | 5  : FillAtmosFear("1111101111", AtmosX);
-               Line (135, 123, 139, 123, Black);
-        | 6  : FillAtmosFear("1111101111", AtmosX);
-        | 7  : FillAtmosFear("0000001100", AtmosX);
-        | 8  : FillAtmosFear("0000111100", AtmosX);
-        | 9  : FillAtmosFear("0011001100", AtmosX);
-        | 10 : FillAtmosFear("1100000000", AtmosX);
-        | 11 : FillAtmosFear("1100000000", AtmosX);
-        | 12 : FillAtmosFear("0011001100", AtmosX);
-        | 13 : FillAtmosFear("0000111100", AtmosX);
-        | 14 : FillAtmosFear("1111001100", AtmosX);
-        | 15 : FillAtmosFear("0000011111", AtmosX);
-        | 16 : FillAtmosFear("0000011111", AtmosX);
-        | 17 : FillAtmosFear("1111001100", AtmosX);
-        | 18 : FillAtmosFear("0000110000", AtmosX);
-        | 19 : FillAtmosFear("0011000100", AtmosX);
-        | 20 : FillAtmosFear("1100011100", AtmosX);
-        | 21 : FillAtmosFear("1100011100", AtmosX);
-        | 22 : FillAtmosFear("0111000100", AtmosX);
-        | 23 : FillAtmosFear("0111110000", AtmosX);
-        | 24 : FillAtmosFear("0111111100", AtmosX);
-        | 25 : FillAtmosFear("0111100011", AtmosX);
-        | 26 : FillAtmosFear("0111011011", AtmosX);
-        | 27 : FillAtmosFear("0100111100", AtmosX);
-        | 28 : FillAtmosFear("0001110000", AtmosX);
-        | 29 : FillAtmosFear("0011000000", AtmosX);
-        | 30 : FillAtmosFear("1100010100", AtmosX);
-        | 31 : FillAtmosFear("1111110100", AtmosX);
-        | 32 : FillAtmosFear("0011110100", AtmosX);
-        | 33 : FillAtmosFear("0000110100", AtmosX);
-        | 34 : FillAtmosFear("0000001110", AtmosX);
-        | 35 : FillAtmosFear("0010000011", AtmosX);
-        | 36 : FillAtmosFear("0010010011", AtmosX);
-        | 37 : FillAtmosFear("0010011100", AtmosX);
-        | 38 : FillAtmosFear("0010110000", AtmosX);
-        | 39 : FillAtmosFear("0011000000", AtmosX);
-        | 40 : FillAtmosFear("1111110100", AtmosX);
-        | 41 : FillAtmosFear("1111110100", AtmosX);
-        | 42 : FillAtmosFear("0011000000", AtmosX);
-        | 43 : FillAtmosFear("0000110000", AtmosX);
-        | 44 : FillAtmosFear("0000001100", AtmosX);
-        | 45 : FillAtmosFear("1111001011", AtmosX);
-        | 46 : FillAtmosFear("1110101011", AtmosX);
-        | 47 : FillAtmosFear("1101101100", AtmosX);
-        | 48 : FillAtmosFear("0011110000", AtmosX);
-        | 49 : FillAtmosFear("0011000000", AtmosX);
-        | 50 : FillAtmosFear("1100000000", AtmosX);
-     END;
-  END;
-  Line (181, 123, 185, 123, Black);
-  Rectangle (186, 120, 187, 137, Black, TRUE);
-  Delay (2000);
-  RETURN TRUE;
+    FOR AtmosX := 135 TO 185 DO
+        Line (AtmosX + 2, 120, AtmosX + 2, 137, LightestWhite);
+        Line (AtmosX + 1, 121, AtmosX + 1, 136, Grey);
+        Line (AtmosX, 120, AtmosX, 137, Black);
+        Plot (AtmosX, 123, White);
+        Plot (AtmosX, 134, White);
+        CASE (AtmosX - 134) OF
+            |1: FillAtmosFear("1100000000", AtmosX);
+            |2: FillAtmosFear("0011000000", AtmosX);
+            |3: FillAtmosFear("0000110000", AtmosX);
+            |4: FillAtmosFear("0000001100", AtmosX);
+            |5: FillAtmosFear("1111101111", AtmosX); Line(135, 123, 139, 123, Black);
+            |6: FillAtmosFear("1111101111", AtmosX);
+            |7: FillAtmosFear("0000001100", AtmosX);
+            |8: FillAtmosFear("0000111100", AtmosX);
+            |9: FillAtmosFear("0011001100", AtmosX);
+            |10: FillAtmosFear("1100000000", AtmosX);
+            |11: FillAtmosFear("1100000000", AtmosX);
+            |12: FillAtmosFear("0011001100", AtmosX);
+            |13: FillAtmosFear("0000111100", AtmosX);
+            |14: FillAtmosFear("1111001100", AtmosX);
+            |15: FillAtmosFear("0000011111", AtmosX);
+            |16: FillAtmosFear("0000011111", AtmosX);
+            |17: FillAtmosFear("1111001100", AtmosX);
+            |18: FillAtmosFear("0000110000", AtmosX);
+            |19: FillAtmosFear("0011000100", AtmosX);
+            |20: FillAtmosFear("1100011100", AtmosX);
+            |21: FillAtmosFear("1100011100", AtmosX);
+            |22: FillAtmosFear("0111000100", AtmosX);
+            |23: FillAtmosFear("0111110000", AtmosX);
+            |24: FillAtmosFear("0111111100", AtmosX);
+            |25: FillAtmosFear("0111100011", AtmosX);
+            |26: FillAtmosFear("0111011011", AtmosX);
+            |27: FillAtmosFear("0100111100", AtmosX);
+            |28: FillAtmosFear("0001110000", AtmosX);
+            |29: FillAtmosFear("0011000000", AtmosX);
+            |30: FillAtmosFear("1100010100", AtmosX);
+            |31: FillAtmosFear("1111110100", AtmosX);
+            |32: FillAtmosFear("0011110100", AtmosX);
+            |33: FillAtmosFear("0000110100", AtmosX);
+            |34: FillAtmosFear("0000001110", AtmosX);
+            |35: FillAtmosFear("0010000011", AtmosX);
+            |36: FillAtmosFear("0010010011", AtmosX);
+            |37: FillAtmosFear("0010011100", AtmosX);
+            |38: FillAtmosFear("0010110000", AtmosX);
+            |39: FillAtmosFear("0011000000", AtmosX);
+            |40: FillAtmosFear("1111110100", AtmosX);
+            |41: FillAtmosFear("1111110100", AtmosX);
+            |42: FillAtmosFear("0011000000", AtmosX);
+            |43: FillAtmosFear("0000110000", AtmosX);
+            |44: FillAtmosFear("0000001100", AtmosX);
+            |45: FillAtmosFear("1111001011", AtmosX);
+            |46: FillAtmosFear("1110101011", AtmosX);
+            |47: FillAtmosFear("1101101100", AtmosX);
+            |48: FillAtmosFear("0011110000", AtmosX);
+            |49: FillAtmosFear("0011000000", AtmosX);
+            |50: FillAtmosFear("1100000000", AtmosX);
+        END;
+    END;
+    Line (181, 123, 185, 123, Black);
+    Rectangle (186, 120, 187, 137, Black, TRUE);
+    IF (KeyPressed()) THEN RETURN FALSE; END;
+    Delay (1000);
+    IF (KeyPressed()) THEN RETURN FALSE; END;
+    Delay (1000);
+    IF (KeyPressed()) THEN RETURN FALSE; END;
+    RETURN TRUE;
 END WriteAtmosFear;
 
 PROCEDURE ReadyForWriting (LetterString : ARRAY OF CHAR) : BOOLEAN;
 VAR
-  NoOfPieces, WriteX, WriteY, LetterX, LetterY, WritingSize, PieceX,
-     Colour, BitMapCount : CARDINAL;
+    NoOfPieces, WriteX, WriteY, LetterX, LetterY, WritingSize, PieceX,
+    Colour, BitMapCount : CARDINAL;
+    WritingAddress : ADDRESS;
 BEGIN
- IF (IO.KeyPressed()) THEN
-   RETURN FALSE;
- END;
-  Storage.ALLOCATE (WritingAddress, CARDINAL(Graph.ImageSize(0, 0, 320, 0)));
-  FOR Count := 1 TO 5 DO
-     PieceX := 0;
-     FOR LetterX := 33 TO 300 BY 5 DO
-        CASE LetterString[PieceX] OF
-           | '0' : Colour := Black;
-           | '1' : Colour := Lib.RANDOM (7) + 104;
-           HLine (LetterX, 199, LetterX + 5, Colour);
+    IF (IO.KeyPressed()) THEN
+        RETURN FALSE;
+    END;
+    Storage.ALLOCATE (WritingAddress, CARDINAL(Graph.ImageSize(0, 0, 320, 0)));
+    FOR Count := 1 TO 5 DO
+        PieceX := 0;
+        FOR LetterX := 33 TO 300 BY 5 DO
+            CASE LetterString[PieceX] OF
+                |'0': Colour := Black;
+                |'1': Colour := Lib.RANDOM (7) + 104;
+                HLine (LetterX, 199, LetterX + 5, Colour);
+            END;
+            PieceX := PieceX + 1;
         END;
-     PieceX := PieceX + 1;
-     END;
-     FOR WriteY := 161 TO 199 DO
-         Graph.GetImage (0, WriteY, 320, WriteY, WritingAddress);
-         Graph.PutImage (0, WriteY-1, WritingAddress, Graph._GPSET);
-     END;
-     HLine (0, 199, 320, Black);
-     FOR BitMapCount := 1 TO 2 DO
-         FOR WriteY := 2 TO 160 DO
-             WriteX := Lib.RANDOM(320);
-             IF (WriteY MOD 2=1) THEN
-                Graph.GetImage (0, WriteY, WriteX, WriteY, WritingAddress);
-                Graph.PutImage (1, WriteY-1, WritingAddress, Graph._GPSET);
-                Graph.GetImage (WriteX+1, WriteY, 320, WriteY, WritingAddress);
-                Graph.PutImage (WriteX+1, WriteY-1, WritingAddress, Graph._GPSET)
-             ELSE
-                Graph.GetImage (WriteX, WriteY, 320, WriteY, WritingAddress);
-                Graph.PutImage (WriteX-1, WriteY-1, WritingAddress, Graph._GPSET);
-                Graph.GetImage (0, WriteY, WriteX-1, WriteY, WritingAddress);
-                Graph.PutImage (0, WriteY-1, WritingAddress, Graph._GPSET);
-             END;
-         END;
-     END;
-  END;
- Storage.DEALLOCATE (WritingAddress, CARDINAL(Graph.ImageSize(0, 0, 320, 0)));
- RETURN TRUE;
+        FOR WriteY := 161 TO 199 DO
+            Graph.GetImage (0, WriteY, 320, WriteY, WritingAddress);
+            Graph.PutImage (0, WriteY-1, WritingAddress, Graph._GPSET);
+        END;
+        HLine (0, 199, 320, Black);
+        FOR BitMapCount := 1 TO 2 DO
+            FOR WriteY := 2 TO 160 DO
+                WriteX := Lib.RANDOM(320);
+                IF (WriteY MOD 2=1) THEN
+                    Graph.GetImage(0, WriteY, WriteX, WriteY, WritingAddress);
+                    Graph.PutImage(1, WriteY-1, WritingAddress, Graph._GPSET);
+                    Graph.GetImage(WriteX+1, WriteY, 320, WriteY, WritingAddress);
+                    Graph.PutImage(WriteX+1, WriteY-1, WritingAddress, Graph._GPSET)
+                ELSE
+                    Graph.GetImage(WriteX, WriteY, 320, WriteY, WritingAddress);
+                    Graph.PutImage(WriteX-1, WriteY-1, WritingAddress, Graph._GPSET);
+                    Graph.GetImage(0, WriteY, WriteX-1, WriteY, WritingAddress);
+                    Graph.PutImage(0, WriteY-1, WritingAddress, Graph._GPSET);
+                END;
+            END;
+        END;
+    END;
+    Storage.DEALLOCATE (WritingAddress, CARDINAL(Graph.ImageSize(0, 0, 320, 0)));
+    RETURN TRUE;
 END ReadyForWriting;
 
 PROCEDURE WriteThinks() : BOOLEAN;
 BEGIN
-  Graph.ClearScreen (Graph._GCLEARSCREEN);
+    Graph.ClearScreen (Graph._GCLEARSCREEN);
 
-  IF (ReadyForWriting("000000000011111001000100111110011001001000100000000000") = FALSE) THEN RETURN FALSE; END;
-  IF (ReadyForWriting("000000000000100001000100001000010101001001000000000000") = FALSE) THEN RETURN FALSE; END;
-  IF (ReadyForWriting("000000000000100001111100001000010101001110000000000000") = FALSE) THEN RETURN FALSE; END;
-  IF (ReadyForWriting("000000000000100001000100001000010101001001000000000000") = FALSE) THEN RETURN FALSE; END;
-  IF (ReadyForWriting("000000000000100001000100111110010011001000100000000000") = FALSE) THEN RETURN FALSE; END;
-  IF (ReadyForWriting("000000000000000000000000000000000000000000000000000000") = FALSE) THEN RETURN FALSE; END;
-  IF (ReadyForWriting("000000000000000000000000000000000000000000000000000000") = FALSE) THEN RETURN FALSE; END;
-  IF (ReadyForWriting("000000000011111001000100111110011111001000100000000000") = FALSE) THEN RETURN FALSE; END;
-  IF (ReadyForWriting("000000000010001001000100001000010000001001000000000000") = FALSE) THEN RETURN FALSE; END;
-  IF (ReadyForWriting("000000000010101001000100001000010000001110000000000000") = FALSE) THEN RETURN FALSE; END;
-  IF (ReadyForWriting("000000000010011001000100001000010000001001000000000000") = FALSE) THEN RETURN FALSE; END;
-  IF (ReadyForWriting("000000000011111001111100111110011111001000100000000000") = FALSE) THEN RETURN FALSE; END;
-  IF (ReadyForWriting("000000000000000000000000000000000000000000000000000000") = FALSE) THEN RETURN FALSE; END;
-  IF (ReadyForWriting("000000000000000000000000000000000000000000000000000000") = FALSE) THEN RETURN FALSE; END;
-  IF (ReadyForWriting("000000000000000000000000000000000000000000000000000000") = FALSE) THEN RETURN FALSE; END;
-  IF (ReadyForWriting("000000000011111001000100111110011001001000100000000000") = FALSE) THEN RETURN FALSE; END;
-  IF (ReadyForWriting("000000000000100001000100001000010101001001000000000000") = FALSE) THEN RETURN FALSE; END;
-  IF (ReadyForWriting("000000000000100001111100001000010101001110000000000000") = FALSE) THEN RETURN FALSE; END;
-  IF (ReadyForWriting("000000000000100001000100001000010101001001000000000000") = FALSE) THEN RETURN FALSE; END;
-  IF (ReadyForWriting("000000000000100001000100111110010011001000100000000000") = FALSE) THEN RETURN FALSE; END;
-  IF (ReadyForWriting("000000000000000000000000000000000000000000000000000000") = FALSE) THEN RETURN FALSE; END;
-  IF (ReadyForWriting("000000000000000000000000000000000000000000000000000000") = FALSE) THEN RETURN FALSE; END;
-  IF (ReadyForWriting("011110011111001111000111110011111000111100100010011111") = FALSE) THEN RETURN FALSE; END;
-  IF (ReadyForWriting("100000000100001000100100010000100001000000100010000100") = FALSE) THEN RETURN FALSE; END;
-  IF (ReadyForWriting("011100000100001111000111110000100001011100111110000100") = FALSE) THEN RETURN FALSE; END;
-  IF (ReadyForWriting("000010000100001001000100010000100001000100100010000100") = FALSE) THEN RETURN FALSE; END;
-  IF (ReadyForWriting("111100000100001000100100010011111000111100100010000100") = FALSE) THEN RETURN FALSE; END;
-  IF (ReadyForWriting("000000000000000000000000000000000000000000000000000000") = FALSE) THEN RETURN FALSE; END;
-  IF (ReadyForWriting("000000000000000000000000000000000000000000000000000000") = FALSE) THEN RETURN FALSE; END;
-  IF (ReadyForWriting("000000000000000000000000000000000000000000000000000000") = FALSE) THEN RETURN FALSE; END;
-  IF (ReadyForWriting("000000000011111001000100111110011001001000100000000000") = FALSE) THEN RETURN FALSE; END;
-  IF (ReadyForWriting("000000000000100001000100001000010101001001000000000000") = FALSE) THEN RETURN FALSE; END;
-  IF (ReadyForWriting("000000000000100001111100001000010101001110000000000000") = FALSE) THEN RETURN FALSE; END;
-  IF (ReadyForWriting("000000000000100001000100001000010101001001000000000000") = FALSE) THEN RETURN FALSE; END;
-  IF (ReadyForWriting("000000000000100001000100111110010011001000100000000000") = FALSE) THEN RETURN FALSE; END;
-  IF (ReadyForWriting("000000000000000000000000000000000000000000000000000000") = FALSE) THEN RETURN FALSE; END;
-  IF (ReadyForWriting("000000000000000000000000000000000000000000000000000000") = FALSE) THEN RETURN FALSE; END;
-  IF (ReadyForWriting("000000000010000001111100011110011111000111100000000000") = FALSE) THEN RETURN FALSE; END;
-  IF (ReadyForWriting("000000000010000001000100100000000100001000000000000000") = FALSE) THEN RETURN FALSE; END;
-  IF (ReadyForWriting("000000000010000001000100101110000100001000000000000000") = FALSE) THEN RETURN FALSE; END;
-  IF (ReadyForWriting("000000000010000001000100100010000100001000000000000000") = FALSE) THEN RETURN FALSE; END;
-  IF (ReadyForWriting("000000000011111001111100011110011111000111100000000000") = FALSE) THEN RETURN FALSE; END;
-  IF (ReadyForWriting("000000000000000000000000000000000000000000000000000000") = FALSE) THEN RETURN FALSE; END;
-  IF (ReadyForWriting("000000000000000000000000000000000000000000000000000000") = FALSE) THEN RETURN FALSE; END;
-  IF (ReadyForWriting("000000000000000000000000000000000000000000000000000000") = FALSE) THEN RETURN FALSE; END;
-  IF (ReadyForWriting("000000000000000000000000000000000000000000000000000000") = FALSE) THEN RETURN FALSE; END;
-  IF (ReadyForWriting("000000000000000000000000000000000000000000000000000000") = FALSE) THEN RETURN FALSE; END;
-  IF (ReadyForWriting("000000000000000000000000000000000000000000000000000000") = FALSE) THEN RETURN FALSE; END;
-  IF (ReadyForWriting("000000000000000000000000000000000000000000000000000000") = FALSE) THEN RETURN FALSE; END;
-  IF (ReadyForWriting("000000000000000000000000000000000000000000000000000000") = FALSE) THEN RETURN FALSE; END;
-  IF (ReadyForWriting("000000000000000000000000000000000000000000000000000000") = FALSE) THEN RETURN FALSE; END;
-  RETURN TRUE;
+    IF (ReadyForWriting("000000000011111001000100111110011001001000100000000000") = FALSE) THEN RETURN FALSE; END;
+    IF (ReadyForWriting("000000000000100001000100001000010101001001000000000000") = FALSE) THEN RETURN FALSE; END;
+    IF (ReadyForWriting("000000000000100001111100001000010101001110000000000000") = FALSE) THEN RETURN FALSE; END;
+    IF (ReadyForWriting("000000000000100001000100001000010101001001000000000000") = FALSE) THEN RETURN FALSE; END;
+    IF (ReadyForWriting("000000000000100001000100111110010011001000100000000000") = FALSE) THEN RETURN FALSE; END;
+    IF (ReadyForWriting("000000000000000000000000000000000000000000000000000000") = FALSE) THEN RETURN FALSE; END;
+    IF (ReadyForWriting("000000000000000000000000000000000000000000000000000000") = FALSE) THEN RETURN FALSE; END;
+    IF (ReadyForWriting("000000000011111001000100111110011111001000100000000000") = FALSE) THEN RETURN FALSE; END;
+    IF (ReadyForWriting("000000000010001001000100001000010000001001000000000000") = FALSE) THEN RETURN FALSE; END;
+    IF (ReadyForWriting("000000000010101001000100001000010000001110000000000000") = FALSE) THEN RETURN FALSE; END;
+    IF (ReadyForWriting("000000000010011001000100001000010000001001000000000000") = FALSE) THEN RETURN FALSE; END;
+    IF (ReadyForWriting("000000000011111001111100111110011111001000100000000000") = FALSE) THEN RETURN FALSE; END;
+    IF (ReadyForWriting("000000000000000000000000000000000000000000000000000000") = FALSE) THEN RETURN FALSE; END;
+    IF (ReadyForWriting("000000000000000000000000000000000000000000000000000000") = FALSE) THEN RETURN FALSE; END;
+    IF (ReadyForWriting("000000000000000000000000000000000000000000000000000000") = FALSE) THEN RETURN FALSE; END;
+    IF (ReadyForWriting("000000000011111001000100111110011001001000100000000000") = FALSE) THEN RETURN FALSE; END;
+    IF (ReadyForWriting("000000000000100001000100001000010101001001000000000000") = FALSE) THEN RETURN FALSE; END;
+    IF (ReadyForWriting("000000000000100001111100001000010101001110000000000000") = FALSE) THEN RETURN FALSE; END;
+    IF (ReadyForWriting("000000000000100001000100001000010101001001000000000000") = FALSE) THEN RETURN FALSE; END;
+    IF (ReadyForWriting("000000000000100001000100111110010011001000100000000000") = FALSE) THEN RETURN FALSE; END;
+    IF (ReadyForWriting("000000000000000000000000000000000000000000000000000000") = FALSE) THEN RETURN FALSE; END;
+    IF (ReadyForWriting("000000000000000000000000000000000000000000000000000000") = FALSE) THEN RETURN FALSE; END;
+    IF (ReadyForWriting("011110011111001111000111110011111000111100100010011111") = FALSE) THEN RETURN FALSE; END;
+    IF (ReadyForWriting("100000000100001000100100010000100001000000100010000100") = FALSE) THEN RETURN FALSE; END;
+    IF (ReadyForWriting("011100000100001111000111110000100001011100111110000100") = FALSE) THEN RETURN FALSE; END;
+    IF (ReadyForWriting("000010000100001001000100010000100001000100100010000100") = FALSE) THEN RETURN FALSE; END;
+    IF (ReadyForWriting("111100000100001000100100010011111000111100100010000100") = FALSE) THEN RETURN FALSE; END;
+    IF (ReadyForWriting("000000000000000000000000000000000000000000000000000000") = FALSE) THEN RETURN FALSE; END;
+    IF (ReadyForWriting("000000000000000000000000000000000000000000000000000000") = FALSE) THEN RETURN FALSE; END;
+    IF (ReadyForWriting("000000000000000000000000000000000000000000000000000000") = FALSE) THEN RETURN FALSE; END;
+    IF (ReadyForWriting("000000000011111001000100111110011001001000100000000000") = FALSE) THEN RETURN FALSE; END;
+    IF (ReadyForWriting("000000000000100001000100001000010101001001000000000000") = FALSE) THEN RETURN FALSE; END;
+    IF (ReadyForWriting("000000000000100001111100001000010101001110000000000000") = FALSE) THEN RETURN FALSE; END;
+    IF (ReadyForWriting("000000000000100001000100001000010101001001000000000000") = FALSE) THEN RETURN FALSE; END;
+    IF (ReadyForWriting("000000000000100001000100111110010011001000100000000000") = FALSE) THEN RETURN FALSE; END;
+    IF (ReadyForWriting("000000000000000000000000000000000000000000000000000000") = FALSE) THEN RETURN FALSE; END;
+    IF (ReadyForWriting("000000000000000000000000000000000000000000000000000000") = FALSE) THEN RETURN FALSE; END;
+    IF (ReadyForWriting("000000000010000001111100011110011111000111100000000000") = FALSE) THEN RETURN FALSE; END;
+    IF (ReadyForWriting("000000000010000001000100100000000100001000000000000000") = FALSE) THEN RETURN FALSE; END;
+    IF (ReadyForWriting("000000000010000001000100101110000100001000000000000000") = FALSE) THEN RETURN FALSE; END;
+    IF (ReadyForWriting("000000000010000001000100100010000100001000000000000000") = FALSE) THEN RETURN FALSE; END;
+    IF (ReadyForWriting("000000000011111001111100011110011111000111100000000000") = FALSE) THEN RETURN FALSE; END;
+    IF (ReadyForWriting("000000000000000000000000000000000000000000000000000000") = FALSE) THEN RETURN FALSE; END;
+    IF (ReadyForWriting("000000000000000000000000000000000000000000000000000000") = FALSE) THEN RETURN FALSE; END;
+    IF (ReadyForWriting("000000000000000000000000000000000000000000000000000000") = FALSE) THEN RETURN FALSE; END;
+    IF (ReadyForWriting("000000000000000000000000000000000000000000000000000000") = FALSE) THEN RETURN FALSE; END;
+    IF (ReadyForWriting("000000000000000000000000000000000000000000000000000000") = FALSE) THEN RETURN FALSE; END;
+    IF (ReadyForWriting("000000000000000000000000000000000000000000000000000000") = FALSE) THEN RETURN FALSE; END;
+    IF (ReadyForWriting("000000000000000000000000000000000000000000000000000000") = FALSE) THEN RETURN FALSE; END;
+    IF (ReadyForWriting("000000000000000000000000000000000000000000000000000000") = FALSE) THEN RETURN FALSE; END;
+    IF (ReadyForWriting("000000000000000000000000000000000000000000000000000000") = FALSE) THEN RETURN FALSE; END;
+    RETURN TRUE;
 END WriteThinks;
+
+PROCEDURE PlayTitleSequence;
+VAR
+    NotSkipped : BOOLEAN;
+BEGIN
+    ClearScreen(_GCLEARSCREEN);
+    Infinite_Software();
+    Delay (12*NoteDelay);
+    NotSkipped := NOT KeyPressed();
+    IF (NotSkipped) THEN
+        NotSkipped := FlashScreen();
+    END;
+    IF (NotSkipped) THEN
+        NotSkipped := SpinRectangle();
+    END;
+    IF (NotSkipped) THEN
+        NotSkipped := MakeDiamond();
+    END;
+    IF (NotSkipped) THEN
+        NotSkipped := ExoLogo();
+    END;
+    IF (NotSkipped) THEN
+        NotSkipped := WriteMyName();
+    END;
+    IF (NotSkipped) THEN
+        NotSkipped := WriteAtmosFear();
+    END;
+    IF (NotSkipped) THEN
+        NotSkipped := WriteThinks();
+    END;
+END PlayTitleSequence;
 
 (* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ *)
 
@@ -1361,43 +1418,44 @@ END DrawVGAPlanet;
 
 PROCEDURE PlaneToPlanet;
 VAR
-  NegPlaneSize, RandomRed : CARDINAL;
+    NegPlaneAddress : ADDRESS;
+    NegPlaneSize, RandomRed : CARDINAL;
 BEGIN
-  Graph.ClearScreen(Graph._GCLEARSCREEN);
-  NegPlaneSize := CARDINAL (Graph.ImageSize (249, 59, 319, 151));
-  Storage.ALLOCATE (NegPlaneAddress, NegPlaneSize);
-  DrawVGAPlanet;
-  FOR Count := 1 TO 100 DO
-     RandomRed := Lib.RANDOM(4) + 109;
-     Plot (Lib.RANDOM(220) + 100, Lib.RANDOM(80) + 120, RandomRed);
-  END;
-  FOR Count := 1 TO 50 DO
-     Plot (Lib.RANDOM(320), Lib.RANDOM(200), Lib.RANDOM(10) + 109);
-  END;
-  Graph.GetImage (249, 59, 319, 151, NegPlaneAddress);
-  PlaneX := 250; Width := 30; Height := 15;
-  FOR PlaneY := 60 TO 150 DO
-     IF NOT (IO.KeyPressed()) THEN
-        DrawPlane (PlaneX, PlaneY, Width, Height);
-        Lib.Delay (40);
-        IF (PlaneY MOD 2 = 0) THEN
-           PlaneX := PlaneX + 1;
+    Graph.ClearScreen(Graph._GCLEARSCREEN);
+    NegPlaneSize := CARDINAL (Graph.ImageSize (249, 59, 319, 151));
+    Storage.ALLOCATE (NegPlaneAddress, NegPlaneSize);
+    DrawVGAPlanet;
+    FOR Count := 1 TO 100 DO
+        RandomRed := Lib.RANDOM(4) + 109;
+        Plot (Lib.RANDOM(220) + 100, Lib.RANDOM(80) + 120, RandomRed);
+    END;
+    FOR Count := 1 TO 50 DO
+        Plot (Lib.RANDOM(320), Lib.RANDOM(200), Lib.RANDOM(10) + 109);
+    END;
+    Graph.GetImage (249, 59, 319, 151, NegPlaneAddress);
+    PlaneX := 250; Width := 30; Height := 15;
+    FOR PlaneY := 60 TO 150 DO
+        IF NOT (IO.KeyPressed()) THEN
+            DrawPlane (PlaneX, PlaneY, Width, Height);
+            Lib.Delay (40);
+            IF (PlaneY MOD 2 = 0) THEN
+                PlaneX := PlaneX + 1;
+            END;
+            IF (PlaneY MOD 3 = 0) THEN
+                Width := Width - 2;
+                Height := Height - 1;
+            END;
+            IF (Width < 0) THEN
+                Width := 0;
+            END;
+            IF (Height < 0) THEN
+                Height := 0;
+            END;
+            Graph.PutImage (249, 59, NegPlaneAddress, Graph._GPSET);
         END;
-        IF (PlaneY MOD 3 = 0) THEN
-           Width := Width - 2;
-           Height := Height - 1;
-        END;
-        IF (Width < 0) THEN
-           Width := 0;
-        END;
-        IF (Height < 0) THEN
-           Height := 0;
-        END;
-        Graph.PutImage (249, 59, NegPlaneAddress, Graph._GPSET);
-     END;
-  END;
-  Lib.Delay (500);
-  Storage.DEALLOCATE (NegPlaneAddress, NegPlaneSize);
+    END;
+    Lib.Delay (500);
+    Storage.DEALLOCATE (NegPlaneAddress, NegPlaneSize);
 END PlaneToPlanet;
 
 END Intro.

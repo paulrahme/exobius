@@ -3,29 +3,30 @@ IMPLEMENTATION MODULE Intros1;
 (*$S FF00*)
 
 IMPORT
-  Str, Graph, Lib, IO, Window, Storage, Exobius, Storage;
+    Str, Graph, Lib, IO, Exobius;
 
 FROM Graph IMPORT
-  SetClipRgn, SetVideoMode, Rectangle, GraphMode, TextMode, Polygon, Line,
-  HLine, Circle, Ellipse, Disc, Plot, Arc, Point, GetImage, ClearScreen,
-  OutText, SetTextPosition, _GCLEARSCREEN;
+    Rectangle, Polygon, Line, HLine, Circle, Ellipse, Disc, Plot, Arc, Point,
+    ClearScreen, _GCLEARSCREEN, OutText, SetTextPosition;
 
 FROM Lib IMPORT
-  Sound, NoSound, Delay, RANDOM;
+    Delay;
 
 FROM Exobius IMPORT
-  Black, DarkestGrey, DarkGrey, Grey, LightGrey, LightestGrey,
-  DarkestWhite, DarkWhite, White, LightWhite, LightestWhite,
-  DarkestBlue, DarkBlue, Blue, LightBlue, LightestBlue, DarkestRed,
-  DarkRed, Red, LightRed, LightestRed, DarkestBrown, DarkBrown,
-  Brown, LightBrown, LightestBrown, DarkestGreen, DarkGreen, Green, LightGreen,
-  LightestGreen, DarkestYellow, DarkYellow, Yellow, LightYellow,
-  LightestYellow, Count, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R,
-  S, T, U, V, W, X, Y, Z, Key;
+    Black,
+    DarkestGrey, DarkGrey, Grey, LightGrey, LightestGrey,
+    DarkestWhite, DarkWhite, White, LightWhite, LightestWhite,
+    DarkestBlue, DarkBlue, Blue, LightBlue, LightestBlue,
+    DarkestRed, DarkRed, Red, LightRed, LightestRed,
+    DarkestBrown, DarkBrown, Brown, LightBrown, LightestBrown,
+    DarkestGreen, DarkGreen, Green, LightGreen, LightestGreen,
+    DarkestYellow, DarkYellow, Yellow, LightYellow, LightestYellow,
+    A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z,
+    Key;
 
 VAR
-  Xs, Ys : ARRAY[0..20] OF CARDINAL;
-  OldCoords : Graph.TextCoords;
+    Xs, Ys : ARRAY[0..20] OF CARDINAL;
+    OldCoords : Graph.TextCoords;
 
 PROCEDURE Intro1;
 BEGIN
@@ -1466,7 +1467,35 @@ BEGIN
     Plot (83,22,1);
 END Intro5;
 
-PROCEDURE EndGame;
+PROCEDURE PlayIntroSequence;
+VAR
+    OldCoords : Graph.TextCoords;
+BEGIN
+    ClearScreen(_GCLEARSCREEN);
+    Intro1;
+    OldCoords := SetTextPosition (1, 1);
+    OutText("Working at Le Grande Pizzeria");
+    OldCoords := SetTextPosition (2, 1);
+    OutText("Has bad days...");
+    Key := IO.RdKey();
+    ClearScreen(_GCLEARSCREEN);
+    Intro2;
+    OldCoords := SetTextPosition (23, 1);
+    OutText("But does this look like your dream");
+    OldCoords := SetTextPosition (24, 1);
+    OutText("ship?...");
+    Key := IO.RdKey();
+    ClearScreen(_GCLEARSCREEN);
+    Intro3;
+    OldCoords := SetTextPosition (1, 1);
+    OutText("''Park it well'', he says...");
+    Key := IO.RdKey();
+    ClearScreen(_GCLEARSCREEN);
+    Intro4;
+    Key := IO.RdKey();
+END PlayIntroSequence;
+
+PROCEDURE PlayEndSequence;
 BEGIN
     ClearScreen(_GCLEARSCREEN);
     Intro1;
@@ -1489,7 +1518,6 @@ BEGIN
     OldCoords := SetTextPosition (2, 1);
     OutText("''...and go on home, okay?''");
     Key := IO.RdKey();
-
-END EndGame;
+END PlayEndSequence;
 
 END Intros1.
