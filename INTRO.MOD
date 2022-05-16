@@ -187,78 +187,58 @@ END ExoLogo;
 
 PROCEDURE WriteMyName() : BOOLEAN;
 CONST
-    NameDelay = 5000;
+    GravityAccel = 0.2;
+    TerminalVelocity = 3.0;
+    NameLeft = 95; NameRight = 235; NameHeight = 50;
 VAR
-    NameY : CARDINAL;
+    NameY, NameVelocity : REAL;
+    NameYCard, Bounces, NameImageSize : CARDINAL;
     NameAddress : ADDRESS;
 BEGIN
-    NameY := 1;
-    Storage.ALLOCATE (NameAddress, CARDINAL(Graph.ImageSize (95, 0, 235, 51)));
+    Bounces := 0;
+    NameY := 1.0; NameYCard := CARDINAL(NameY);
+    NameVelocity := TerminalVelocity;
     Graph.ClearScreen(Graph._GCLEARSCREEN);
     DrawStars;
-    Rectangle (95, NameY - 1, 235, NameY + 50, Black, TRUE);
-    P(105, NameY); A(135, NameY); U(165, NameY); L(195, NameY);
-    R(95, NameY+30); A(125, NameY+30); H(155, NameY+30); M(185, NameY+30); E(215, NameY+30);
-    Graph.GetImage (95, NameY-1, 235, NameY + 50, NameAddress);
-    FOR NameY := 1 TO 125 DO
-        HLine (95, NameY-1, 235, Black);
+    Rectangle(95, NameYCard - 1, NameRight, NameYCard + NameHeight, Black, TRUE);
+    P(105, NameYCard); A(135, NameYCard); U(165, NameYCard); L(195, NameYCard);
+    R(95, NameYCard+30); A(125, NameYCard+30); H(155, NameYCard+30); M(185, NameYCard+30); E(215, NameYCard+30);
+    NameImageSize := CARDINAL(Graph.ImageSize(NameLeft, 0, NameRight, NameHeight + 1));
+    Storage.ALLOCATE(NameAddress, NameImageSize);
+    Graph.GetImage(NameLeft, NameYCard - 1, NameRight, NameYCard + NameHeight, NameAddress);
+
+    WHILE (Bounces < 3) AND NOT (KeyPressed()) DO
+        IF (NameVelocity < TerminalVelocity) THEN NameVelocity := NameVelocity + GravityAccel; END;
+        NameY := NameY + NameVelocity; NameYCard := CARDINAL(NameY);
+
+        IF (NameVelocity > 0.0) THEN
+            Rectangle(NameLeft, NameYCard - CARDINAL(NameVelocity), NameRight, NameYCard, Black, TRUE);
+        ELSE
+            Rectangle(NameLeft, NameYCard + NameHeight, NameRight, NameYCard + NameHeight + CARDINAL(TerminalVelocity), Black, TRUE);
+        END;
+
+        IF (NameY > 124.9) THEN
+            NameY := 125.0;
+            NameVelocity := -NameVelocity;
+            Bounces := Bounces + 1;
+        END;
+        NameYCard := CARDINAL(NameY);
+
+        Graph.PutImage (NameLeft, NameYCard, NameAddress, Graph._GPSET);
         B(135 ,95); Y(165, 95);
-        Graph.PutImage (95, NameY, NameAddress, Graph._GPSET);
-        Lib.Delay (GameSpeed);
+        Lib.Delay(GameSpeed);
+
+        IF (KeyPressed()) THEN Bounces := 1000; END;
     END;
-    IF (KeyPressed()) THEN RETURN FALSE; END;
-    FOR NameY := 125 TO 110 BY -2 DO
-        HLine (95, NameY+52, 235, Black);
-        B(135 ,95); Y(165, 95);
-        Graph.PutImage (95, NameY, NameAddress, Graph._GPSET);
-        Lib.Delay (GameSpeed);
+
+    Storage.DEALLOCATE(NameAddress, NameImageSize);
+    IF (Bounces < 900) THEN
+        DrawStars;
+        FOR Count := 1 TO 5 DO
+            Lib.Delay(1000);
+            IF (KeyPressed()) THEN RETURN FALSE; END;
+        END;
     END;
-    FOR NameY := 110 TO 100 BY -1 DO
-        HLine (95, NameY+52, 235, Black);
-        B(135 ,95); Y(165, 95);
-        Graph.PutImage (95, NameY, NameAddress, Graph._GPSET);
-        Lib.Delay (GameSpeed);
-    END;
-    FOR NameY := 100 TO 110 DO
-        HLine (95, NameY-1, 235, Black);
-        B(135 ,95); Y(165, 95);
-        Graph.PutImage (95, NameY, NameAddress, Graph._GPSET);
-        Lib.Delay (GameSpeed);
-    END;
-    FOR NameY := 110 TO 125 BY 2 DO
-        HLine (95, NameY-1, 235, Black);
-        B(135 ,95); Y(165, 95);
-        Graph.PutImage (95, NameY, NameAddress, Graph._GPSET);
-        Lib.Delay (GameSpeed);
-    END;
-    FOR NameY := 125 TO 120 BY -2 DO
-        HLine (95, NameY+52, 235, Black);
-        B(135 ,95); Y(165, 95);
-        Graph.PutImage (95, NameY, NameAddress, Graph._GPSET);
-        Lib.Delay (GameSpeed);
-    END;
-    FOR NameY := 120 TO 115 BY -1 DO
-        HLine (95, NameY+52, 235, Black);
-        B(135 ,95); Y(165, 95);
-        Graph.PutImage (95, NameY, NameAddress, Graph._GPSET);
-        Lib.Delay (GameSpeed);
-    END;
-    FOR NameY := 115 TO 120 DO
-        HLine (95, NameY-1, 235, Black);
-        B(135 ,95); Y(165, 95);
-        Graph.PutImage (95, NameY, NameAddress, Graph._GPSET);
-        Lib.Delay (GameSpeed);
-    END;
-    FOR NameY := 120 TO 125 BY 2 DO
-        HLine (95, NameY-1, 235, Black);
-        B(135 ,95); Y(165, 95);
-        Graph.PutImage (95, NameY, NameAddress, Graph._GPSET);
-        Lib.Delay (GameSpeed);
-    END;
-    DrawStars;
-    Lib.Delay (NameDelay);
-    Storage.DEALLOCATE (NameAddress, CARDINAL(Graph.ImageSize (95, 0, 235, 51)));
-    IF (KeyPressed()) THEN RETURN FALSE; END;
     RETURN TRUE;
 END WriteMyName;
 
