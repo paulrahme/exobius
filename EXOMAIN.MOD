@@ -25,7 +25,7 @@ FROM Exobius IMPORT
     DarkestGreen, DarkGreen, Green, LightGreen, LightestGreen;
 
 FROM Intro IMPORT PlayTitleSequence, PlaneToPlanet;
-FROM Intros1 IMPORT Intro1, Intro2, Intro3, Intro4, Intro5, PlayIntroSequence, PlayEndSequence;
+FROM Intros1 IMPORT PlayIntroSequence, PlayEndSequence;
 FROM Screens1 IMPORT Screen1;
 FROM Screens2 IMPORT Screen2;
 FROM Screens3 IMPORT Screen3;

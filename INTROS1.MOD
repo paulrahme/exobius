@@ -1291,14 +1291,7 @@ BEGIN
 
 END Intro3;
 
-PROCEDURE Intro4;
-BEGIN
-
-    OldCoords := SetTextPosition (1, 1);
-    OutText("But you're one in for a joyride!!");
-END Intro4;
-
-PROCEDURE Intro5;
+PROCEDURE EndingKeyInHand;
 BEGIN
     Disc (111,126,52,6);
     Xs[0] := 59; Ys[0] := 130; 
@@ -1465,7 +1458,7 @@ BEGIN
     Plot (278,24,51);
     Circle (278,24,2,1);
     Plot (83,22,1);
-END Intro5;
+END EndingKeyInHand;
 
 PROCEDURE PlayIntroSequence;
 VAR
@@ -1476,7 +1469,7 @@ BEGIN
     OldCoords := SetTextPosition (1, 1);
     OutText("Working at Le Grande Pizzeria");
     OldCoords := SetTextPosition (2, 1);
-    OutText("Has bad days...");
+    OutText("has bad days...");
     Key := IO.RdKey();
     ClearScreen(_GCLEARSCREEN);
     Intro2;
@@ -1491,7 +1484,8 @@ BEGIN
     OutText("''Park it well'', he says...");
     Key := IO.RdKey();
     ClearScreen(_GCLEARSCREEN);
-    Intro4;
+    OldCoords := SetTextPosition (1, 1);
+    OutText("But you're in for a joyride!!");
     Key := IO.RdKey();
 END PlayIntroSequence;
 
@@ -1511,7 +1505,7 @@ BEGIN
     Key := IO.RdKey();
     ClearScreen(_GCLEARSCREEN);
     ClearScreen(_GCLEARSCREEN);
-    Intro5;
+    EndingKeyInHand;
     OldCoords := SetTextPosition (1, 1);
     OutText("''...so just keep the car...''");
     Key := IO.RdKey();

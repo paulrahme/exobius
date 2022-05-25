@@ -29,7 +29,7 @@ FROM Exobius IMPORT
     Enemies, Xs, Ys, Count, Lives, EnemyY,
     BkAddress, BkSize, PlaneAddress,
     Screen, ScreenComplete, GameOver,  MouseButtons,  MouseMove, GameSpeed,
-    DrawBullet, DrawPlane, CheckMouse, CheckMouseAndSpecialKeys, Die, DrawGameOver,
+    DrawBullet, DrawPlane, CheckMouse, CheckSpecialKeys, CheckMouseAndSpecialKeys, Die, DrawGameOver,
     FinishScreen1, Key, CheckDeath1,
     ClearTheBuffer, DrawGameOver;
 
@@ -136,87 +136,105 @@ BEGIN
     FOR RoofDots := 1 TO 60000 DO
         SetPixel(Lib.RANDOM(64000), DotColour);
     END;
-    DotColour := BYTE(DarkestWhite);
-    FOR RoofDots := 1 TO 20000 DO
-        PutPixel(40 + Lib.RANDOM(240), 50 + Lib.RANDOM(100), DotColour);
+    CheckSpecialKeys();
+    IF (NOT GameOver) THEN
+        DotColour := BYTE(DarkestWhite);
+        FOR RoofDots := 1 TO 20000 DO
+            PutPixel(40 + Lib.RANDOM(240), 50 + Lib.RANDOM(100), DotColour);
+        END;
     END;
-    DotColour := BYTE(LightGrey);
-    FOR RoofDots := 1 TO 5000 DO
-        PutPixel(70 + Lib.RANDOM(180), 50 + Lib.RANDOM(100), DotColour);
+    CheckSpecialKeys();
+    IF (NOT GameOver) THEN
+        DotColour := BYTE(LightGrey);
+        FOR RoofDots := 1 TO 5000 DO
+            PutPixel(70 + Lib.RANDOM(180), 50 + Lib.RANDOM(100), DotColour);
+        END;
     END;
-    DotColour := BYTE(DarkGrey);
-    FOR RoofDots := 1 TO 500 DO
-        PutPixel(130 + Lib.RANDOM(60), 80 + Lib.RANDOM(40), DotColour);
+    CheckSpecialKeys();
+    IF (NOT GameOver) THEN
+        DotColour := BYTE(DarkGrey);
+        FOR RoofDots := 1 TO 500 DO
+            PutPixel(130 + Lib.RANDOM(60), 80 + Lib.RANDOM(40), DotColour);
+        END;
     END;
-    DotColour := BYTE(DarkestGrey);
-    FOR RoofDots := 1 TO 200 DO
-        PutPixel(150 + Lib.RANDOM(20), 80 + Lib.RANDOM(40), DotColour);
+    CheckSpecialKeys();
+    IF (NOT GameOver) THEN
+        DotColour := BYTE(DarkestGrey);
+        FOR RoofDots := 1 TO 200 DO
+            PutPixel(150 + Lib.RANDOM(20), 80 + Lib.RANDOM(40), DotColour);
+        END;
     END;
-
-    CheckMouseAndSpecialKeys();
+    CheckSpecialKeys();
 
     (* Fly in plane *)
-    Rectangle (158, 98, 162, 102, Black, TRUE);
-    SetClipRgn (0, 0, 320, 199);
-    BkSize := CARDINAL(Graph.ImageSize(0, 150, 320, 200));
-    Storage.ALLOCATE(BkAddress, BkSize);
-    GetImage(0, 150, 320, 200, BkAddress);
-    FOR PlaneY := 200 TO 175 BY -1 DO
-        PlaneX := 145 - (PlaneY - 175);
-        Width := PlaneY - 125;
-        Height := Width DIV 2;
-        DrawPlane(PlaneX, PlaneY, Width, Height);
-        Lib.Delay(50);
-        Graph.PutImage(0, 150, BkAddress, Graph._GPSET);
+    IF (NOT GameOver) THEN
+        Rectangle (158, 98, 162, 102, Black, TRUE);
+        SetClipRgn (0, 0, 320, 199);
+        BkSize := CARDINAL(Graph.ImageSize(0, 150, 320, 200));
+        Storage.ALLOCATE(BkAddress, BkSize);
+        GetImage(0, 150, 320, 200, BkAddress);
+        FOR PlaneY := 200 TO 175 BY -1 DO
+            PlaneX := 145 - (PlaneY - 175);
+            Width := PlaneY - 125;
+            Height := Width DIV 2;
+            DrawPlane(PlaneX, PlaneY, Width, Height);
+            Lib.Delay(50);
+            Graph.PutImage(0, 150, BkAddress, Graph._GPSET);
+        END;
+        Storage.DEALLOCATE(BkAddress, BkSize);
+        CheckSpecialKeys();
     END;
-    Storage.DEALLOCATE(BkAddress, BkSize);
-    CheckMouseAndSpecialKeys();
 
     (* Darken cave *)
-    PlaneX := 145; OldPlaneX := PlaneX; PlaneY := 175; Width := 50; Height := 25; BulletY := 65520; RectY := 100;
-    FadeCountInc := 1;
-    FOR FadeCount := 1 TO 4000 DO
-        IF (FadeCount > 2500) THEN
-            IF (FadeCountInc < 100) THEN
-                FadeCountInc := FadeCountInc + 1;
+    IF (NOT GameOver) THEN
+        PlaneX := 145; OldPlaneX := PlaneX; PlaneY := 175; Width := 50; Height := 25; BulletY := 65520; RectY := 100;
+        FadeCountInc := 1;
+        FOR FadeCount := 1 TO 4000 DO
+            IF (FadeCount > 2500) THEN
+                IF (FadeCountInc < 100) THEN
+                    FadeCountInc := FadeCountInc + 1;
+                END;
+                FadeCount := FadeCount + FadeCountInc;
+                IF (FadeCount > 4000) THEN
+                    FadeCount := 4000;
+                END;
             END;
-            FadeCount := FadeCount + FadeCountInc;
-            IF (FadeCount > 4000) THEN
-                FadeCount := 4000;
+            NewRectY := 100 + (FadeCount DIV 40);
+            IF (NewRectY > RectY) THEN
+                RectY := NewRectY;
+                Rectangle(200 - RectY, 200 - RectY, 120 + RectY, RectY, Black, TRUE);
+            END;
+            IF (NewRectY < 175) THEN
+                Disc(Lib.RANDOM(320), Lib.RANDOM(200), 5,  Black);
+                IF (FadeCount MOD 20 = 0) THEN
+                    DrawPlane(PlaneX, PlaneY, Width, Height);
+                END;
+            ELSE
+                IF (RectY MOD 5 = 0) THEN
+                    DrawPlane(PlaneX, PlaneY, Width, Height);
+                END;
             END;
         END;
-        NewRectY := 100 + (FadeCount DIV 40);
-        IF (NewRectY > RectY) THEN
-            RectY := NewRectY;
-            Rectangle(200 - RectY, 200 - RectY, 120 + RectY, RectY, Black, TRUE);
-        END;
-        IF (NewRectY < 175) THEN
-            Disc(Lib.RANDOM(320), Lib.RANDOM(200), 5,  Black);
-            IF (FadeCount MOD 20 = 0) THEN
-                DrawPlane(PlaneX, PlaneY, Width, Height);
-            END;
-        ELSE
-            IF (RectY MOD 5 = 0) THEN
-                DrawPlane(PlaneX, PlaneY, Width, Height);
-            END;
-        END;
+        GetImage(145, 175, 195, 200, PlaneAddress);
+        CheckSpecialKeys();
     END;
-    GetImage(145, 175, 195, 200, PlaneAddress);
-    CheckMouseAndSpecialKeys();
 
     (* Draw enemies *)
-    GlowsAlive := GlowCount;
-    FOR GY := 0 TO 2 DO
-        FOR GX := 0 TO 5 DO
-            GlowIdx := (GY * 6) + GX;
-            GlowXs[GlowIdx] := 45 + (GX * 45);
-            GlowYs[GlowIdx] := GY * 35;
-        END;
-    END;
     GlowSize := CARDINAL(Graph.ImageSize(0, 0, GlowWidth, GlowHeight));
     Storage.ALLOCATE(GlowAddress, GlowSize);
-    DrawGlowWorms(GlowXs[0], GlowYs[0]);
-    GetImage(GlowXs[0], GlowYs[0], GlowXs[0] + GlowWidth, GlowYs[0] + GlowHeight, GlowAddress);
+    IF (NOT GameOver) THEN
+        GlowsAlive := GlowCount;
+        FOR GY := 0 TO 2 DO
+            FOR GX := 0 TO 5 DO
+                GlowIdx := (GY * 6) + GX;
+                GlowXs[GlowIdx] := 45 + (GX * 45);
+                GlowYs[GlowIdx] := GY * 35;
+            END;
+        END;
+        DrawGlowWorms(GlowXs[0], GlowYs[0]);
+        GetImage(GlowXs[0], GlowYs[0], GlowXs[0] + GlowWidth, GlowYs[0] + GlowHeight, GlowAddress);
+    END;
+    CheckMouseAndSpecialKeys();
 
     (* Main game loop *)
     WHILE NOT ScreenComplete AND NOT GameOver DO
