@@ -3,15 +3,7 @@ DEFINITION MODULE Music;
 IMPORT FIO, Str;
 
 VAR
-   Pitch, Count, NoteCount : CARDINAL;
-   TheOctave : RECORD
-             One, Two, Three : CARDINAL;
-   END;
-   TheNote : RECORD
-           One, Two, Three : CHAR;
-   END;
    f : FIO.File;
-   NewSong : BOOLEAN;
 
 PROCEDURE PlaySong(Song : ARRAY OF CHAR);
 
