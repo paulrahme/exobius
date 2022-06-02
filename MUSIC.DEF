@@ -1,10 +1,6 @@
 DEFINITION MODULE Music;
 
-IMPORT FIO, Str;
+PROCEDURE ReadFile(Song : ARRAY OF CHAR);
+PROCEDURE PlaySong();
 
-VAR
-   f : FIO.File;
-
-PROCEDURE PlaySong(Song : ARRAY OF CHAR);
-
-END Music.
+END Music.
