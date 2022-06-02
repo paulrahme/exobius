@@ -31,7 +31,7 @@ FROM Exobius IMPORT
     Screen, ScreenComplete, GameOver,  MouseButtons,  MouseMove, GameSpeed,
     DrawBullet, DrawPlane, CheckMouse, CheckSpecialKeys, CheckMouseAndSpecialKeys, Die, DrawGameOver,
     FinishScreen1, Key, CheckDeath1,
-    ClearTheBuffer, DrawGameOver;
+    DrawGameOver;
 
 FROM Sprites IMPORT
     DrawGlowWorms;

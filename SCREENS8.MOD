@@ -29,7 +29,7 @@ FROM Exobius IMPORT
   DrawBullet, DrawPlane, CheckSpecialKeys, Die,
   A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z,
   FinishScreen1, PlaneXMove, CheckDeath1, Score, Screen,
-  PlaneInMemory, PlaneAddress, BkAddress, BkSize, ClearTheBuffer, Cheat,
+  PlaneInMemory, PlaneAddress, BkAddress, BkSize, Cheat,
   DrawGameOver;
 
 CONST
