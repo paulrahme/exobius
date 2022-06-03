@@ -1,20 +1,38 @@
-2 e 0 _ 0 _
+2 e 2 b 3 e
+2 e 2 b 3 e
+2 e 2 b 3 e
 0 _ 0 _ 0 _
-2 e 0 _ 0 _
+2 e 2 b 3 e
 0 _ 0 _ 0 _
-2 e 0 _ 0 _
-0 _ 0 _ 0 _
-2 e 0 _ 0 _
-2 e 0 _ 0 _
+2 e 2 b 3 e
+2 d 2 a 3 d
 
-2 e 3 e 0 _
-2 e 3 e 0 _
-2 e 3 e 0 _
-2 e 3 e 0 _
-1 b 3 e 4 e
-0 b 3 e 4 e
-1 b 3 e 4 e
-0 b 3 e 4 e
+2 d 2 a 3 d
+2 e 2 b 3 e
+2 e 2 b 3 e
+0 _ 0 _ 0 _
+2 e 2 b 3 e
+0 _ 0 _ 0 _
+2 e 2 b 3 e
+2 d 2 a 3 d
+
+2 d 2 a 3 d
+2 e 2 b 3 e
+2 e 2 b 3 e
+0 _ 0 _ 0 _
+2 e 2 b 3 e
+0 _ 0 _ 0 _
+2 e 2 b 3 e
+0 _ 0 _ 0 _
+
+a 1 3 e 3 a
+a 1 a 2 0 _
+g 1 3 d 3 g
+g 1 g 2 0 _
+e 1 2 b 3 e
+e 1 e 2 0 _
+d 1 2 a 3 d
+d 1 d 2 0 _
 
 0 r
 
@@ -42,6 +60,43 @@
 1 a 3 a 3 b
 1 e 3 a 3 b
 1 e 3 a 3 b
+2 e 3 a 4 C
+1 e 3 a 4 C
+
+1 a 3 a 4 d
+1 a 3 a 4 d
+2 a 3 a 4 d
+1 a 3 a 4 C
+1 e 3 a 4 C
+1 e 3 a 4 C
+2 e 3 a 3 b
+1 e 3 a 3 b
+
+
+1 e 3 e 3 b
+1 e 3 e 3 b
+2 e 3 e 3 b
+1 e 3 e 3 a
+1 b 3 e 3 a
+1 b 3 e 3 a
+2 b 3 e 3 b
+1 b 3 e 3 b
+
+1 e 3 e 3 b
+1 e 3 e 3 b
+2 e 3 e 3 b
+1 e 3 e 3 a
+1 b 3 e 3 a
+1 b 3 e 3 a
+2 b 3 e 3 b
+1 b 3 e 3 b
+
+1 a 3 a 4 e
+1 a 3 a 4 e
+2 a 3 a 4 e
+1 a 3 a 4 d
+1 e 3 a 4 d
+1 e 3 a 4 d
 2 e 3 a 4 C
 1 e 3 a 4 C
 
@@ -128,6 +183,7 @@
 2 e 3 a 4 C
 1 e 3 a 4 C
 
+
 1 e 3 e 3 b
 1 e 3 e 3 b
 2 e 3 e 3 b
@@ -161,8 +217,45 @@
 1 e 3 e 3 g
 1 b 3 e 3 e
 1 b 3 e 3 e
+2 b 2 a 3 e
+1 b 2 a 3 e
+
+1 e 3 e 2 G
+1 e 3 e 2 G
+2 e 3 e 2 G
+1 e 3 e 2 G
+1 b 3 e 2 G
+1 b 3 e 2 G
+2 b 3 e 2 G
+1 b 3 d 2 G
+
+1 e 3 d 2 G
+1 e 3 e 2 G
+2 e 3 e 2 G
+1 e 1 e 2 G
+1 b 3 e 2 G
+1 b 1 e 2 G
+2 b 3 e 2 G
+1 b 3 d 2 G
+
+1 e 3 d 2 G
+1 e 3 e 2 G
+2 e 3 e 2 G
+1 e 1 e 2 G
+1 b 3 e 2 G
+1 b 1 e 2 G
+2 b 3 e 2 G
+1 b 1 e 2 G
+
+1 e 3 e 3 a
+1 e 0 _ 0 _
+2 e 3 e 3 g
+1 e 0 _ 0 _
+1 b 3 e 3 e
+1 b 0 _ 0 _
 2 b 2 G 3 D
-1 b 2 G 3 D
+1 b 0 _ 0 _
+
 
 1 C 3 G 4 C
 1 C 3 G 4 C
@@ -329,10 +422,10 @@
 1 F 4 C 4 G 
 1 F 4 C 4 G 
 1 F 4 C 4 G 
-1 F 4 C 4 G 
+1 F 4 C 4 a
 1 F 4 C 4 a 
-1 F 4 C 4 G 
 1 F 4 C 4 a 
+1 F 4 C 4 b 
 1 F 4 C 4 b 
 
 1 G 4 C 4 G 
@@ -435,50 +528,50 @@
 1 C 4 b 5 f 
 
 
-1 F 4 a 5 F
-1 F 4 a 5 F
 1 F 2 a 5 F
 1 F 2 a 5 F
-1 F 3 C 5 F
-1 F 3 C 5 F
-1 F 3 F 5 F
-1 F 3 F 5 F
-
-1 g 2 b 3 g
-1 g 2 b 3 g
-1 g 2 b 3 g
-1 g 2 b 3 g
-1 g 2 b 3 f
-1 g 2 b 3 f
-1 g 2 b 3 f
-1 g 2 b 3 f
-
-1 F 2 a 3 F
-1 F 2 a 3 F
-1 F 2 a 3 F
-1 F 2 a 3 F
-1 F 2 a 3 F
-1 F 2 a 3 F
+1 F 2 b 3 G
+1 F 2 b 3 G
+1 F 3 C 3 a
+1 F 3 C 3 a
 1 F 2 a 3 F
 1 F 2 a 3 F
 
 1 g 2 b 3 g
 1 g 2 b 3 g
+1 g 3 C 3 a
+1 g 3 C 3 a
+1 g 3 D 3 b
+1 g 3 D 3 b
 1 g 2 b 3 g
 1 g 2 b 3 g
-1 g 2 b 3 f
-1 g 2 b 3 f
-1 g 2 b 3 f
-1 g 2 b 3 f
 
 1 F 2 a 3 F
 1 F 2 a 3 F
+1 F 2 b 3 G
+1 F 2 b 3 G
+1 F 3 C 3 a
+1 F 3 C 3 a
 1 F 2 a 3 F
 1 F 2 a 3 F
+
+1 g 2 b 3 g
+1 g 2 b 3 g
+1 g 2 b 3 g
+1 g 2 b 3 g
+1 C 2 b 3 f
+1 C 2 b 3 f
+1 C 2 b 3 f
+1 C 2 b 3 f
+
 1 F 2 a 3 F
 1 F 2 a 3 F
+1 F 2 G 3 F
+1 F 2 G 3 F
 1 F 2 a 3 F
 1 F 2 a 3 F
+1 F 2 F 3 F
+1 F 2 F 3 F
 
 1 f 2 G 3 f
 1 f 2 G 3 f
@@ -535,9 +628,9 @@
 2 F 0 _ 0 _
 
 1 F 0 _ 0 _
-0 F 0 _ 0 _
-0 F 0 _ 0 _
-0 F 0 _ 0 _
+0 _ 0 _ 0 _
+0 _ 0 _ 0 _
+0 _ 0 _ 0 _
 4 b 0 _ 0 _
 3 b 0 _ 0 _
 2 b 0 _ 0 _
