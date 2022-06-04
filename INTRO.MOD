@@ -237,147 +237,214 @@ BEGIN
     RETURN TRUE;
 END WriteMyName;
 
-PROCEDURE FillAtmosFear (TenNos : ARRAY OF CHAR; AtmosX : CARDINAL);
+PROCEDURE FillAtmosFear(ColData : ARRAY OF CHAR; AtmosX : CARDINAL);
+CONST
+    LogoBottom = 145;
 VAR
-    AtmosY, Colour : CARDINAL;
+    YOffset : CARDINAL;
+    Color : BYTE;
 BEGIN
-    FOR AtmosY := 133 TO 124 BY -1 DO
-        CASE (TenNos[133-AtmosY]) OF
-            |'0': Colour := Black;
-            |'1': Colour := White;
+    FOR YOffset := 0 TO 15 DO
+        CASE (ColData[YOffset]) OF
+            |'0': Color := 0; (* Black *)
+            |'1': Color := 28; (* White *)
+            |'2': Color := 23; (* Grey *)
         END;
-        Plot(AtmosX, AtmosY, Colour);
-        Lib.Delay (5);
+        PutPixel(AtmosX, LogoBottom - YOffset, Color);
     END;
 END FillAtmosFear;
 
 PROCEDURE WriteAtmosFear() : BOOLEAN;
+CONST
+    MusicByHalfWidth = 100.0;
+    LettersY = 95;
+    LogoTop = 130; LogoBottom = 145;
 VAR
-    BandUX, _andSX, CandIX, RectangleX, RectangleY, RectY2, AtmosX : CARDINAL;
+    LetterOffsetX, RectangleX, RectangleY, RectY2, TopCornerOffset, AtmosX, BeamColor : CARDINAL;
+    MusicByProgress : REAL;
 BEGIN
-    BandUX := 80; _andSX := 90; CandIX := 140;
+    SwapVGAPages();
     Graph.ClearScreen(Graph._GCLEARSCREEN);
     DrawStars;
-    FOR Count := 60 TO 260 DO
-        Rectangle (58, 93, 292, 114, Black, TRUE);
-        Y(Count, 95); M(320-Count, 95);
-        IF Count MOD 4 <> 2 THEN
-            BandUX := BandUX + 1;
-        END;
-        B(BandUX, 95); U(320-BandUX, 95);
-        IF Count MOD 20 < 11 THEN
-            _andSX := _andSX + 1;
-        END;
-        S(320-_andSX, 95);
-        IF Count MOD 100 < 15 THEN
-            CandIX := CandIX + 1;
-        END;
-        C(CandIX, 95); I(320-CandIX, 95);
+    MusicByProgress := -1.0;
+    WHILE (MusicByProgress < 1.0) DO
+        Rectangle(50, LettersY, 300, LettersY + 20, Black, TRUE);
+
+        M(150 - CARDINAL(MusicByProgress * 105.0), LettersY);
+        U(150 - CARDINAL(MusicByProgress * 75.0), LettersY);
+        S(150 - CARDINAL(MusicByProgress * 45.0), LettersY);
+        I(150 - CARDINAL(MusicByProgress * 15.0), LettersY);
+
+        C(150 + CARDINAL(MusicByProgress * 15.0), LettersY);
+        (* leave gap for space *)
+        B(150 + CARDINAL(MusicByProgress * 75.0), LettersY);
+        Y(150 + CARDINAL(MusicByProgress * 105.0), LettersY);
+
+        SwapVGAPages();
+        IF (KeyPressed()) THEN RETURN FALSE; END;
+        MusicByProgress := MusicByProgress + 0.03;
     END;
-    Lib.Delay (1000);
+    Lib.Delay(500);
 
-    RectangleY := 112; RectY2 := 112;
-    FOR RectangleX := 160 TO 135 BY -1 DO
-      Rectangle (RectangleX, RectangleY, 320-RectangleX, RectY2, White, FALSE);
-      Lib.Delay (10);
-      IF (160-RectangleX)*2 MOD 5 = 0 THEN
-          RectangleY := RectangleY + 1;
-          RectY2 := RectY2 + 2;
-      END;
-      Rectangle (90, 112, 230, 150, Black, TRUE);
-    END;
-    Rectangle (135, 123, 185, 134, White, FALSE);
+    RectangleY := 120; RectY2 := 120;
+    FOR RectangleX := 160 TO 210 DO
+        RectangleY := 120 + ((RectangleX - 160) DIV 5);
+        RectY2 := 120 + ((RectangleX - 160) DIV 2);
+        Rectangle(90, 120, 230, 158, Black, TRUE);
 
-    Rectangle (135, 123, 139, 133, Black, TRUE);
-    Rectangle (181, 123, 185, 133, Black, TRUE);
-    Line (140, 123, 135, 134, White);
-    Line (180, 123, 185, 134, White);
-    Lib.Delay (200);
-    IF (KeyPressed()) THEN RETURN FALSE; END;
-    Line (140, 123, 145, 134, White);
-    Line (180, 123, 175, 134 ,White);
-    Lib.Delay (500);
-    IF (KeyPressed()) THEN RETURN FALSE; END;
-    Line (145, 134, 150 ,123, White);
-    Line (175, 134, 170, 123, White);
-    Lib.Delay (500);
-    IF (KeyPressed()) THEN RETURN FALSE; END;
-    Line (150, 123, 155, 134, White);
-    Line (170, 123, 165, 134, White);
-    Lib.Delay (500);
-    IF (KeyPressed()) THEN RETURN FALSE; END;
-    Line (155, 134, 160, 123, White);
-    Line (165, 134, 160, 123 ,White);
-    Lib.Delay (500);
-    IF (KeyPressed()) THEN RETURN FALSE; END;
+        TopCornerOffset := (RectangleX - 160) DIV 5;
+        HLine(320 - RectangleX + TopCornerOffset, RectangleY, RectangleX - TopCornerOffset, White);
+        HLine(320 - RectangleX, RectY2, RectangleX, White);
+        Line(320 - RectangleX + TopCornerOffset, RectangleY, 320 - RectangleX, RectY2, White);
+        Line(RectangleX - TopCornerOffset, RectangleY, RectangleX, RectY2, White);
 
-    FOR AtmosX := 135 TO 185 DO
-        Line (AtmosX + 2, 120, AtmosX + 2, 137, LightestWhite);
-        Line (AtmosX + 1, 121, AtmosX + 1, 136, Grey);
-        Line (AtmosX, 120, AtmosX, 137, Black);
-        Plot (AtmosX, 123, White);
-        Plot (AtmosX, 134, White);
-        CASE (AtmosX - 134) OF
-            |1:  FillAtmosFear("1100000000", AtmosX);
-            |2:  FillAtmosFear("0011000000", AtmosX);
-            |3:  FillAtmosFear("0000110000", AtmosX);
-            |4:  FillAtmosFear("0000001100", AtmosX);
-            |5:  FillAtmosFear("1111101111", AtmosX); Line(135, 123, 139, 123, Black);
-            |6:  FillAtmosFear("1111101111", AtmosX);
-            |7:  FillAtmosFear("0000001100", AtmosX);
-            |8:  FillAtmosFear("0000111100", AtmosX);
-            |9:  FillAtmosFear("0011001100", AtmosX);
-            |10: FillAtmosFear("1100000000", AtmosX);
-            |11: FillAtmosFear("1100000000", AtmosX);
-            |12: FillAtmosFear("0011001100", AtmosX);
-            |13: FillAtmosFear("0000111100", AtmosX);
-            |14: FillAtmosFear("1111001100", AtmosX);
-            |15: FillAtmosFear("0000011111", AtmosX);
-            |16: FillAtmosFear("0000011111", AtmosX);
-            |17: FillAtmosFear("1111001100", AtmosX);
-            |18: FillAtmosFear("0000110000", AtmosX);
-            |19: FillAtmosFear("0011000100", AtmosX);
-            |20: FillAtmosFear("1100011100", AtmosX);
-            |21: FillAtmosFear("1100011100", AtmosX);
-            |22: FillAtmosFear("0111000100", AtmosX);
-            |23: FillAtmosFear("0111110000", AtmosX);
-            |24: FillAtmosFear("0111111100", AtmosX);
-            |25: FillAtmosFear("0111100011", AtmosX);
-            |26: FillAtmosFear("0111011011", AtmosX);
-            |27: FillAtmosFear("0100111100", AtmosX);
-            |28: FillAtmosFear("0001110000", AtmosX);
-            |29: FillAtmosFear("0011000000", AtmosX);
-            |30: FillAtmosFear("1100010100", AtmosX);
-            |31: FillAtmosFear("1111110100", AtmosX);
-            |32: FillAtmosFear("0011110100", AtmosX);
-            |33: FillAtmosFear("0000110100", AtmosX);
-            |34: FillAtmosFear("0000001110", AtmosX);
-            |35: FillAtmosFear("0010000011", AtmosX);
-            |36: FillAtmosFear("0010010011", AtmosX);
-            |37: FillAtmosFear("0010011100", AtmosX);
-            |38: FillAtmosFear("0010110000", AtmosX);
-            |39: FillAtmosFear("0011000000", AtmosX);
-            |40: FillAtmosFear("1111110100", AtmosX);
-            |41: FillAtmosFear("1111110100", AtmosX);
-            |42: FillAtmosFear("0011000000", AtmosX);
-            |43: FillAtmosFear("0000110000", AtmosX);
-            |44: FillAtmosFear("0000001100", AtmosX);
-            |45: FillAtmosFear("1111001011", AtmosX);
-            |46: FillAtmosFear("1110101011", AtmosX);
-            |47: FillAtmosFear("1101101100", AtmosX);
-            |48: FillAtmosFear("0011110000", AtmosX);
-            |49: FillAtmosFear("0011000000", AtmosX);
-            |50: FillAtmosFear("1100000000", AtmosX);
-        END;
+        Lib.Delay(GameSpeed);
         IF (KeyPressed()) THEN RETURN FALSE; END;
     END;
-    Line (181, 123, 185, 123, Black);
-    Rectangle (186, 120, 187, 137, Black, TRUE);
+    Rectangle(90, 120, 230, 158, Black, TRUE);
+    HLine(120, LogoTop, 200, White);
+    HLine(110, LogoBottom, 210, White);
+    Line(110, LogoBottom, 120, LogoTop, White);
+    Line(210, LogoBottom, 200, LogoTop, White);
+    Lib.Delay (200);
+
     IF (KeyPressed()) THEN RETURN FALSE; END;
-    Delay (1000);
+    Line(120, LogoTop, 130, LogoBottom, White);
+    Line(200, LogoTop, 190, LogoBottom, White);
+    Lib.Delay(500);
     IF (KeyPressed()) THEN RETURN FALSE; END;
-    Delay (1000);
+    Line(130, LogoBottom, 140, LogoTop, White);
+    Line(190, LogoBottom, 180, LogoTop, White);
+    Lib.Delay(500);
     IF (KeyPressed()) THEN RETURN FALSE; END;
+    Line(140, LogoTop, 150, LogoBottom, White);
+    Line(180, LogoTop, 170, LogoBottom, White);
+    Lib.Delay(500);
+    IF (KeyPressed()) THEN RETURN FALSE; END;
+    Line(150, LogoBottom, 160, LogoTop, White);
+    Line(170, LogoBottom, 160, LogoTop, White);
+    Lib.Delay(500);
+    IF (KeyPressed()) THEN RETURN FALSE; END;
+
+    FOR AtmosX := 110 TO 210 DO
+        IF (AtmosX MOD 2 = 0) THEN BeamColor := Blue; ELSE BeamColor := LightestBlue; END;
+        Line(AtmosX + 3, LogoTop - 1, AtmosX + 3, LogoBottom + 1, Grey);
+        Line(AtmosX + 2, LogoTop - 3, AtmosX + 2, LogoBottom + 3, LightBlue);
+        Line(AtmosX + 1, LogoTop - 5, AtmosX + 1, LogoBottom + 5, BeamColor);
+        Line(AtmosX, LogoTop - 5, AtmosX, LogoBottom + 5, Black);
+        CASE AtmosX OF
+            |110:   FillAtmosFear("1000000000000000", AtmosX);
+            |111:   FillAtmosFear("1110000000000000", AtmosX);
+            |112:   FillAtmosFear("1221000000000000", AtmosX);
+            |113:   FillAtmosFear("1002110000000000", AtmosX);
+            |114:   FillAtmosFear("1000221000000000", AtmosX);
+            |115:   FillAtmosFear("1000002110000000", AtmosX);
+            |116:   FillAtmosFear("1000000221000000", AtmosX);
+            |117:   FillAtmosFear("1220000002110000", AtmosX);
+            |118:   FillAtmosFear("1222200000221000", AtmosX);
+            |119:   FillAtmosFear("1222220200002110", AtmosX);
+            |120:   FillAtmosFear("1222220222002221", AtmosX);
+            |121:   FillAtmosFear("1222220200002111", AtmosX);
+            |122:   FillAtmosFear("1222200000221221", AtmosX);
+            |123:   FillAtmosFear("1220000002112001", AtmosX);
+            |124:   FillAtmosFear("1000000221220001", AtmosX);
+            |125:   FillAtmosFear("1000002112220001", AtmosX);
+            |126:   FillAtmosFear("1000221222220001", AtmosX);
+            |127:   FillAtmosFear("1002112222220001", AtmosX);
+            |128:   FillAtmosFear("1221220002220001", AtmosX);
+            |129:   FillAtmosFear("1112000000000001", AtmosX);
+            |130:   FillAtmosFear("1000000000000001", AtmosX);
+            |131:   FillAtmosFear("1112000000000001", AtmosX);
+            |132:   FillAtmosFear("1221220002220001", AtmosX);
+            |133:   FillAtmosFear("1002112222220001", AtmosX);
+            |134:   FillAtmosFear("1000221222220001", AtmosX);
+            |135:   FillAtmosFear("1000002112220001", AtmosX);
+            |136:   FillAtmosFear("1220000221220001", AtmosX);
+            |137:   FillAtmosFear("1222000002112001", AtmosX);
+            |138:   FillAtmosFear("1022220000021221", AtmosX);
+            |139:   FillAtmosFear("1000000000222111", AtmosX);
+            |140:   FillAtmosFear("1000000022222221", AtmosX);
+            |141:   FillAtmosFear("1000000000222111", AtmosX);
+            |142:   FillAtmosFear("1022220000021221", AtmosX);
+            |143:   FillAtmosFear("1222000002112001", AtmosX);
+            |144:   FillAtmosFear("1220000221220001", AtmosX);
+            |145:   FillAtmosFear("1000002112000001", AtmosX);
+            |146:   FillAtmosFear("1000221220000001", AtmosX);
+            |147:   FillAtmosFear("1002112000000001", AtmosX);
+            |148:   FillAtmosFear("1221220000020001", AtmosX);
+            |149:   FillAtmosFear("1112000002220001", AtmosX);
+            |150:   FillAtmosFear("1200000222220001", AtmosX);
+            |151:   FillAtmosFear("1112000002220001", AtmosX);
+            |152:   FillAtmosFear("1221220000020001", AtmosX);
+            |153:   FillAtmosFear("1002112000000001", AtmosX);
+            |154:   FillAtmosFear("1002221220000001", AtmosX);
+            |155:   FillAtmosFear("1002222112000001", AtmosX);
+            |156:   FillAtmosFear("1002220021220001", AtmosX);
+            |157:   FillAtmosFear("1002220000112001", AtmosX);
+            |158:   FillAtmosFear("1002220000001221", AtmosX);
+            |159:   FillAtmosFear("1002220020000111", AtmosX);
+            |160:   FillAtmosFear("1002220022000221", AtmosX);
+            |161:   FillAtmosFear("1002200022200111", AtmosX);
+            |162:   FillAtmosFear("1000000022001221", AtmosX);
+            |163:   FillAtmosFear("1000000022112001", AtmosX);
+            |164:   FillAtmosFear("1000002221220001", AtmosX);
+            |165:   FillAtmosFear("1000002112000001", AtmosX);
+            |166:   FillAtmosFear("1000021220000001", AtmosX);
+            |167:   FillAtmosFear("1200112000020001", AtmosX);
+            |168:   FillAtmosFear("1221200002220001", AtmosX);
+            |169:   FillAtmosFear("1110000002220001", AtmosX);
+            |170:   FillAtmosFear("1000022002220001", AtmosX);
+            |171:   FillAtmosFear("1112222002220001", AtmosX);
+            |172:   FillAtmosFear("1221222002220001", AtmosX);
+            |173:   FillAtmosFear("1002112002220001", AtmosX);
+            |174:   FillAtmosFear("1000221002220001", AtmosX);
+            |175:   FillAtmosFear("1000002112220001", AtmosX);
+            |176:   FillAtmosFear("1000000021220001", AtmosX);
+            |177:   FillAtmosFear("1000200002110001", AtmosX);
+            |178:   FillAtmosFear("1000220000021221", AtmosX);
+            |179:   FillAtmosFear("1000220020002111", AtmosX);
+            |180:   FillAtmosFear("1000220022000221", AtmosX);
+            |181:   FillAtmosFear("1000220022000111", AtmosX);
+            |182:   FillAtmosFear("1000220022001221", AtmosX);
+            |183:   FillAtmosFear("1000220022112001", AtmosX);
+            |184:   FillAtmosFear("1000220021220001", AtmosX);
+            |185:   FillAtmosFear("1000220112000001", AtmosX);
+            |186:   FillAtmosFear("1000221200000001", AtmosX);
+            |187:   FillAtmosFear("1002110000020001", AtmosX);
+            |188:   FillAtmosFear("1221000000220001", AtmosX);
+            |189:   FillAtmosFear("1112222200220001", AtmosX);
+            |190:   FillAtmosFear("1222222220220001", AtmosX);
+            |191:   FillAtmosFear("1112222200220001", AtmosX);
+            |192:   FillAtmosFear("1221000000220001", AtmosX);
+            |193:   FillAtmosFear("1002110000020001", AtmosX);
+            |194:   FillAtmosFear("1000221200000001", AtmosX);
+            |195:   FillAtmosFear("1000002112000001", AtmosX);
+            |196:   FillAtmosFear("1000000221220001", AtmosX);
+            |197:   FillAtmosFear("1220000002112001", AtmosX);
+            |198:   FillAtmosFear("1222000000021221", AtmosX);
+            |199:   FillAtmosFear("1222220000002111", AtmosX);
+            |200:   FillAtmosFear("1222200022000221", AtmosX);
+            |201:   FillAtmosFear("1222002020002110", AtmosX);
+            |202:   FillAtmosFear("1220022000021000", AtmosX);
+            |203:   FillAtmosFear("1200022200110000", AtmosX);
+            |204:   FillAtmosFear("1000222221000000", AtmosX);
+            |205:   FillAtmosFear("1000222110000000", AtmosX);
+            |206:   FillAtmosFear("1002221000000000", AtmosX);
+            |207:   FillAtmosFear("1002110000000000", AtmosX);
+            |208:   FillAtmosFear("1221000000000000", AtmosX);
+            |209:   FillAtmosFear("1110000000000000", AtmosX);
+            |210:   FillAtmosFear("1000000000000000", AtmosX);
+        END;
+        Lib.Delay(GameSpeed * 2);
+        IF (KeyPressed()) THEN RETURN FALSE; END;
+    END;
+    Rectangle(211, LogoTop - 5, 214, LogoBottom + 5, Black, TRUE);
+
+    FOR Count := 1 TO 4 DO
+        Delay(500);
+        IF (KeyPressed()) THEN RETURN FALSE; END;
+    END;
+
     RETURN TRUE;
 END WriteAtmosFear;
 
