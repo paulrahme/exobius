@@ -8,17 +8,16 @@
 
 MODULE Music;
 
-IMPORT FIO, Str, IO;
+IMPORT FIO, Str, IO, Lib, SYSTEM;
 
 FROM Lib IMPORT
-    Sound, NoSound, Delay;
+    Sound, NoSound;
 
 TYPE
     NoteCharType = CHAR['A'..'g'];
     FreqArrayType = ARRAY NoteCharType OF CARDINAL;
 
 CONST
-    NoteLength = 16;
     NotesPerChord = 3;
     MaxSongLength = 4096;
     MaxMarkers = 10;
@@ -28,12 +27,10 @@ VAR
     SongData : ARRAY[0..MaxSongLength] OF CARDINAL;
     f : FIO.File;
     Chord : RECORD
-        Pitch1, Pitch2, Pitch3 : CARDINAL;
+        Pitches : ARRAY[0..(NotesPerChord-1)] OF CARDINAL;
     END;
-    ChordNoteNo : CARDINAL;
-    SongIndex : CARDINAL;
-    RepeatIndex : CARDINAL;
-    SongEndIndex : CARDINAL;
+    ChordNoteIdx, SongIndex, RepeatIndex, SongEndIndex : CARDINAL;
+    CurrentHSecs : BYTE;
 
 PROCEDURE CreateLookupTable;
 BEGIN
@@ -65,7 +62,7 @@ BEGIN;
     RETURN FALSE;
 END ProcessSpecialChars;
 
-PROCEDURE ReadFile(FileName : ARRAY OF CHAR);
+PROCEDURE LoadNewSong(FileName : ARRAY OF CHAR);
 VAR
     Card : CARDINAL;
     Char : CHAR;
@@ -84,37 +81,52 @@ BEGIN
     END;
     SongEndIndex := SongIndex - 1;
     FIO.Close(f);
-END ReadFile;
-
-PROCEDURE PlayNote(Pitch : CARDINAL);
-BEGIN
-    Sound(Pitch);
-    Delay(NoteLength);
-    NoSound;
-END PlayNote;
-
-PROCEDURE PlaySong();
-BEGIN
     SongIndex := 0;
-    WHILE (NOT IO.KeyPressed()) DO
-        IF (SongIndex >= SongEndIndex) THEN
-            SongIndex := RepeatIndex;
+    ChordNoteIdx := 0;
+END LoadNewSong;
+
+PROCEDURE CheckTimeForNextNote() : BOOLEAN;
+VAR
+    r : SYSTEM.Registers;
+BEGIN
+    r.AH := 2CH;
+    r.AL := CurrentHSecs;
+    Lib.Dos(r);
+
+    IF NOT (r.AL = r.DL) THEN
+        CurrentHSecs := r.DL; (* Note: This assignment slows it down massively. Find a way to avoid it *)
+        (*IO.WrCard(CurrentHSecs, 6);*)
+        RETURN TRUE;
+    ELSE
+        RETURN FALSE;
+    END;
+END CheckTimeForNextNote;
+
+PROCEDURE UpdateSong();
+BEGIN
+    IF (CheckTimeForNextNote()) THEN
+        ChordNoteIdx := ChordNoteIdx + 1;
+        IF (ChordNoteIdx >= NotesPerChord) THEN
+            IF (SongIndex >= SongEndIndex) THEN
+                SongIndex := RepeatIndex;
+            END;
+            FOR ChordNoteIdx := 0 TO (NotesPerChord-1) DO
+                Chord.Pitches[ChordNoteIdx] := SongData[SongIndex]; SongIndex := SongIndex + 1;
+            END;
+            ChordNoteIdx := 0;
         END;
 
-        Chord.Pitch1 := SongData[SongIndex]; SongIndex := SongIndex + 1;
-        Chord.Pitch2 := SongData[SongIndex]; SongIndex := SongIndex + 1;
-        Chord.Pitch3 := SongData[SongIndex]; SongIndex := SongIndex + 1;
-        FOR ChordNoteNo := 1 TO NotesPerChord DO
-            PlayNote(Chord.Pitch1);
-            PlayNote(Chord.Pitch2);
-            PlayNote(Chord.Pitch3);
-        END;
+        NoSound;
+        Sound(Chord.Pitches[ChordNoteIdx]);
     END;
-END PlaySong;
+END UpdateSong;
 
 BEGIN
     Init();
-    ReadFile("music.dat");
-    PlaySong();
+    LoadNewSong("music.dat");
+    WHILE (NOT IO.KeyPressed()) DO
+        UpdateSong();
+    END;
+    NoSound;
 END Music.
 
