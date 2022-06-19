@@ -57,10 +57,11 @@ BEGIN
     RETURN;
     (* This doesn't work, it spins forever *)
     (* Theoretically it should exit when 03DAH no longer has 3rd (8H) bit set *)
-    DO
+    MemValue := 8;
+    WHILE (3 IN BITSET(MemValue)) DO
         MemValue := [03DAH:0 BYTEPTR]^;
         (*IO.WrChar([03DAH:0 BYTEPTR]^);*)
-    WHILE (3 IN BITSET(MemValue));
+    END;
 END WaitVSync;
 
 PROCEDURE PutPixel(x, y : CARDINAL; color : BYTE);
