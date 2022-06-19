@@ -27,7 +27,7 @@ FROM Exobius IMPORT
   SixAlive, ScreenComplete, GameOver,  MouseButtons,  MouseMove, GameSpeed,
   DrawBullet, DrawPlane, CheckMouse, Die, A, B,
   C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z,
-  FinishScreen1, Key, PlaneXMove, Score, Screen, PlaneAddress,
+  FinishScreen1, Key, PlaneXMove, Score, PlaneAddress,
   BkAddress, BkSize, DrawGameOver;
 
 FROM Storage IMPORT

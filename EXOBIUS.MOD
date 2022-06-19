@@ -74,6 +74,11 @@ BEGIN
     [0A000H:pixPos BYTEPTR]^ := Color;
 END SetPixel;
 
+PROCEDURE GetPixel(x, y : CARDINAL) : SHORTCARD;
+BEGIN
+    RETURN [0A000H:x+y*320 BYTEPTR]^;
+END GetPixel;
+
 PROCEDURE ClearTheBuffer;
 VAR
     Key : CHAR;

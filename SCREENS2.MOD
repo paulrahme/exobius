@@ -28,7 +28,7 @@ FROM Exobius IMPORT
     OneAlive, TwoAlive, ThreeAlive, FourAlive, FiveAlive, SixAlive,
     Enemies, Xs, Ys, Count, Lives, EnemyY,
     BkAddress, BkSize, PlaneAddress,
-    Screen, ScreenComplete, GameOver,  MouseButtons,  MouseMove, GameSpeed,
+    ScreenComplete, GameOver,  MouseButtons,  MouseMove, GameSpeed,
     DrawBullet, DrawPlane, CheckMouse, CheckSpecialKeys, CheckMouseAndSpecialKeys, Die, DrawGameOver,
     FinishScreen1, Key, CheckDeath1,
     DrawGameOver;
@@ -127,7 +127,6 @@ VAR
     OldPlaneX : INTEGER;
     DotColour : BYTE;
 BEGIN
-    Screen := 2;
     ScreenComplete := FALSE;
     Graph.ClearScreen (Graph._GCLEARSCREEN);
 

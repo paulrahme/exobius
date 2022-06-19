@@ -22,7 +22,7 @@ FROM Exobius IMPORT
     OneAlive, TwoAlive, ThreeAlive, FourAlive, FiveAlive, SixAlive,
     Enemies, Xs, Ys,
     Count, Lives, EnemyY,
-    Screen, ScreenComplete, GameOver,  MouseButtons,  MouseMove, GameSpeed,
+    ScreenComplete, GameOver,  MouseButtons,  MouseMove, GameSpeed,
     DrawBullet, DrawPlane, CheckMouse, CheckMouseAndSpecialKeys, Die, DrawGameOver,
     FinishScreen1, CheckDeath1,
     BkAddress, DrawGameOver;
@@ -187,7 +187,6 @@ BEGIN
    END;
    Rectangle (0, 0, 320, 100, LightBlue, TRUE);
 
-   Screen := 3;
    GameOver := FALSE;
    BulletY := 0;
    ScreenComplete := FALSE;
@@ -258,3 +257,4 @@ BEGIN
 END Screen3;
 
 END Screens3.
+

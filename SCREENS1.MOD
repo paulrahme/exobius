@@ -6,13 +6,14 @@ IMPORT
     Str, Graph, Lib, IO, Window, Storage, Exobius;
 
 FROM Graph IMPORT
-    SetClipRgn, GetImage, PutImage,
+    ClearScreen, _GCLEARSCREEN, SetClipRgn, GetImage, PutImage,
     Rectangle, Polygon, Line, HLine, Circle, Ellipse, Disc, Plot, Arc, Point;
 
 FROM Lib IMPORT
     Sound, NoSound, Delay, RANDOM;
 
 FROM Exobius IMPORT
+    PutPixel, GetPixel,
     PlaneWidth, PlaneHeight,
     EnemyYStart, PlaneXMin, PlaneXMax, CollisionY,
     Black, DarkestGrey, DarkGrey, Grey, LightGrey, LightestGrey,
@@ -22,12 +23,12 @@ FROM Exobius IMPORT
     DarkestYellow, DarkYellow, Yellow, LightYellow, LightestYellow,
     DarkestWhite, DarkWhite, White, LightWhite, LightestWhite,
     DarkestGreen, DarkGreen, Green, LightGreen, LightestGreen,
-    PlaneX, BulletX, BulletY, PlaneY, Width, Height, 
+    PlaneX, BulletX, BulletY, PlaneY, Width, Height,
     Enemy1X, Enemy2X, Enemy3X, Enemy4X, Enemy5X, Enemy6X,
     OneAlive, TwoAlive, ThreeAlive, FourAlive, FiveAlive, SixAlive,
     Enemies, Xs, Ys,
     Count, Lives, EnemyY,
-    Screen, ScreenComplete, GameOver,  MouseButtons,  MouseMove, GameSpeed,
+    ScreenComplete, GameOver,  MouseButtons,  MouseMove, GameSpeed,
     DrawBullet, DrawPlane, CheckMouse, CheckMouseAndSpecialKeys, Die, DrawGameOver,
     FinishScreen1, CheckDeath1,
     ClearTheBuffer, DrawGameOver;
@@ -35,6 +36,9 @@ FROM Exobius IMPORT
 FROM Sprites IMPORT
     DrawBoomGuards, DrawSpinners, DrawFlyTraps, DrawMaces, DrawPlants,
     DrawIceRocks, DrawSnowMen, DrawSnowBalls, DrawSkiiers, DrawGlowWorms;
+
+CONST
+    MountY = 140;
 
 PROCEDURE BlankGround1;
 BEGIN
@@ -138,22 +142,25 @@ BEGIN
     END;
 END DrawEnemies1;
 
-PROCEDURE Screen1;
-CONST
-    MountY = 140;
-VAR
-    GroundDots, MtPointX, MtPointY, MountX, MtRadius, DotX, DotY,
-        LineSpeed, LineXEnd, LineY, GroundLines, GroundLineX : CARDINAL;
-    LineXStart : INTEGER;
-
+PROCEDURE DrawMountain(x, y, radius : CARDINAL);
 BEGIN
-    Screen := 1;
-    Lives := 0;
-    GameOver := FALSE;
-    BulletY := 0;
-    PlaneX := 145;
-    EnemyY := 100;
-    SetClipRgn (0, 0, 320, 101);
+    Ellipse (x, y, radius - (radius*2 DIV 9), radius, DarkBrown, TRUE);
+    Ellipse (x, y, radius - (radius*3 DIV 9), radius, Brown, FALSE);
+    Ellipse (x, y, radius - (radius*7 DIV 18),radius, Brown, FALSE);
+    Ellipse (x, y, radius - (radius*4 DIV 9), radius, Brown, TRUE);
+    Ellipse (x, y, radius - (radius*5 DIV 9), radius, LightBrown, FALSE);
+    Ellipse (x, y, radius - (radius*11 DIV 18),radius, LightBrown, FALSE);
+    Ellipse (x, y, radius - (radius*2 DIV 3), radius, LightBrown, TRUE);
+    Ellipse (x, y, radius - (radius*7 DIV 9), radius, LightestBrown, FALSE);
+    Ellipse (x, y, radius - (radius*15 DIV 18), radius, LightestBrown, FALSE);
+    Ellipse (x, y, radius - (radius*8 DIV 9), radius, LightestBrown, TRUE);
+END DrawMountain;
+
+PROCEDURE DrawMountains();
+VAR
+    MountX, MtRadius, MtPointX, MtPointY : CARDINAL;
+    GotPixel : SHORTCARD;
+BEGIN
     Rectangle (0,0,320,15,176,TRUE);
     Rectangle (0,16,319,30,104,TRUE);
     Rectangle (0,31,319,45,1,TRUE);
@@ -186,42 +193,45 @@ BEGIN
     Line (0,86,319,86,30);
     Line (0,92,319,92,29);
     Line (0,95,320,95,29);
+
+    SetClipRgn (0, 0, 320, 101);
     FOR Count := 1 TO 25 DO
-        MountX := Lib.RANDOM(320);
         MtRadius := Lib.RANDOM(50) + 40;
-        Graph.TrueDisc (MountX, MountY, MtRadius, DarkestBrown);
-        Ellipse (MountX, MountY, MtRadius - (MtRadius*2 DIV 9), MtRadius, DarkBrown, TRUE);
-        Ellipse (MountX, MountY, MtRadius - (MtRadius*3 DIV 9), MtRadius, Brown, FALSE);
-        Ellipse (MountX, MountY, MtRadius - (MtRadius*7 DIV 18),MtRadius, Brown, FALSE);
-        Ellipse (MountX, MountY, MtRadius - (MtRadius*4 DIV 9), MtRadius, Brown, TRUE);
-        Ellipse (MountX, MountY, MtRadius - (MtRadius*5 DIV 9), MtRadius, LightBrown, FALSE);
-        Ellipse (MountX, MountY, MtRadius -(MtRadius*11 DIV 18),MtRadius, LightBrown, FALSE);
-        Ellipse (MountX, MountY, MtRadius - (MtRadius*2 DIV 3), MtRadius, LightBrown, TRUE);
-        Ellipse (MountX, MountY, MtRadius - (MtRadius*7 DIV 9), MtRadius, LightestBrown, FALSE);
-        Ellipse (MountX, MountY, MtRadius -(MtRadius*15 DIV 18), MtRadius, LightestBrown, FALSE);
-        Ellipse (MountX, MountY, MtRadius - (MtRadius*8 DIV 9), MtRadius, LightestBrown, TRUE);
+        MountX := Lib.RANDOM(320);
+        DrawMountain(MountX, MountY, MtRadius);
     END;
+
     MountX := 160;
     MtRadius := 70;
     Graph.TrueDisc (MountX, MountY, MtRadius, DarkestBrown);
-    Ellipse (MountX, MountY, MtRadius - (MtRadius*2 DIV 9), MtRadius, DarkBrown, TRUE);
-    Ellipse (MountX, MountY, MtRadius - (MtRadius*3 DIV 9), MtRadius, Brown, FALSE);
-    Ellipse (MountX, MountY, MtRadius - (MtRadius*7 DIV 18),MtRadius, Brown, FALSE);
-    Ellipse (MountX, MountY, MtRadius - (MtRadius*4 DIV 9), MtRadius, Brown, TRUE);
-    Ellipse (MountX, MountY, MtRadius - (MtRadius*5 DIV 9), MtRadius, LightBrown, FALSE);
-    Ellipse (MountX, MountY, MtRadius -(MtRadius*11 DIV 18),MtRadius, LightBrown, FALSE);
-    Ellipse (MountX, MountY, MtRadius - (MtRadius*2 DIV 3), MtRadius, LightBrown, TRUE);
-    Ellipse (MountX, MountY, MtRadius - (MtRadius*7 DIV 9), MtRadius, LightestBrown, FALSE);
-    Ellipse (MountX, MountY, MtRadius -(MtRadius*15 DIV 18), MtRadius, LightestBrown, FALSE);
-    Ellipse (MountX, MountY, MtRadius - (MtRadius*8 DIV 9), MtRadius, LightestBrown, TRUE);
+    DrawMountain(MountX, MountY, MtRadius);
+    Graph.TrueDisc (MountX, MountY, MtRadius, DarkestBrown);
     SetClipRgn (0, 0, 320, 200);
+
     FOR Count := 1 TO 4000 DO
-        MtPointX := Lib.RANDOM(320);
+        MtPointX := Lib.RANDOM(319);
         MtPointY := Lib.RANDOM(50) + 50;
-        IF (Graph.Point(MtPointX, MtPointY) = LightestBrown) OR (Graph.Point(MtPointX, MtPointY) = LightBrown) OR (Graph.Point(MtPointX, MtPointY) = Brown) OR (Graph.Point(MtPointX, MtPointY) = DarkBrown) OR (Graph.Point(MtPointX, MtPointY) = DarkestBrown) THEN
-            Plot (MtPointX, MtPointY, Lib.RANDOM(7) + 16);
+        GotPixel := GetPixel(MtPointX, MtPointY);
+        IF (GotPixel = LightestBrown) OR (GotPixel = LightBrown) OR (GotPixel = Brown) OR (GotPixel = DarkBrown) OR (GotPixel = DarkestBrown) THEN
+            Plot(MtPointX, MtPointY, Lib.RANDOM(7) + 16);
         END;
     END;
+END DrawMountains;
+
+PROCEDURE Screen1;
+VAR
+    GroundDots, DotX, DotY,
+        LineSpeed, LineXEnd, LineY, GroundLines, GroundLineX : CARDINAL;
+    LineXStart : INTEGER;
+
+BEGIN
+    ClearScreen(_GCLEARSCREEN);
+
+    BulletY := 0;
+    PlaneX := 145;
+    EnemyY := 100;
+
+    DrawMountains();
     Rectangle (0, 100, 320, 200, LightGreen, TRUE);
     FOR Count := 1 TO 1000 DO
         Plot (Lib.RANDOM(320), Lib.RANDOM(25) + 100, DarkestGreen);
@@ -396,4 +406,4 @@ BEGIN
     END;
 END Screen1;
 
-END Screens1.
+END Screens1.

@@ -28,7 +28,7 @@ FROM Exobius IMPORT
   SixAlive, ScreenComplete, GameOver,  MouseButtons,  MouseMove, GameSpeed,
   DrawBullet, DrawPlane, CheckSpecialKeys, Die,
   A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z,
-  FinishScreen1, PlaneXMove, CheckDeath1, Score, Screen,
+  FinishScreen1, PlaneXMove, CheckDeath1, Score,
   PlaneInMemory, PlaneAddress, BkAddress, BkSize, Cheat,
   DrawGameOver;
 
@@ -424,7 +424,7 @@ PROCEDURE Screen8;
 BEGIN
     Enemies := 0; BulletY := 0; UpBulletY := 65000; PlaneX := 145;
     PlaneY := 175; UpBulletX := 65000; PlaneInMemory := FALSE; EnemyY := 0;
-    ScreenComplete := FALSE; Screen := 8; PlanetRadius := 2;
+    ScreenComplete := FALSE; PlanetRadius := 2;
     NoSound;
     Graph.ClearScreen (Graph._GCLEARSCREEN);
     DrawPlanet (PlanetX, PlanetY, PlanetRadius);

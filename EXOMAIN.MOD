@@ -45,11 +45,10 @@ BEGIN
     ScreenComplete := FALSE;
     Lives := 0;
 
-    PlayIntroSequence();
+    (*PlayIntroSequence();
     PlayTitleSequence();
     ClearTheBuffer;
-    PlaneToPlanet;
-    ClearScreen (_GCLEARSCREEN);
+    PlaneToPlanet;*)
     Screen1;
     IF NOT GameOver THEN
         Boss1();
