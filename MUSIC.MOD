@@ -30,7 +30,7 @@ VAR
         Pitches : ARRAY[0..(NotesPerChord-1)] OF CARDINAL;
     END;
     ChordNoteIdx, SongIndex, RepeatIndex, SongEndIndex : CARDINAL;
-    CurrentHSecs : BYTE;
+    Hrs, Mins, Secs, HSecs, PrevHSecs : CARDINAL;
 
 PROCEDURE CreateLookupTable;
 BEGIN
@@ -86,16 +86,12 @@ BEGIN
 END LoadNewSong;
 
 PROCEDURE CheckTimeForNextNote() : BOOLEAN;
-VAR
-    r : SYSTEM.Registers;
 BEGIN
-    r.AH := 2CH;
-    r.AL := CurrentHSecs;
-    Lib.Dos(r);
+    Lib.GetTime(Hrs, Mins, Secs, HSecs);
 
-    IF NOT (r.AL = r.DL) THEN
-        CurrentHSecs := r.DL; (* Note: This assignment slows it down massively. Find a way to avoid it *)
-        (*IO.WrCard(CurrentHSecs, 6);*)
+    IF NOT (HSecs = PrevHSecs) THEN
+        PrevHSecs := HSecs;
+        IO.WrCard(HSecs, 6);
         RETURN TRUE;
     ELSE
         RETURN FALSE;
