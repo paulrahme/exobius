@@ -30,8 +30,9 @@ FROM Exobius IMPORT
     Count, Lives, EnemyY,
     ScreenComplete, GameOver,  MouseButtons,  MouseMove, GameSpeed,
     DrawBullet, DrawPlane, CheckMouse, CheckMouseAndSpecialKeys, Die, DrawGameOver,
-    FinishScreen1, CheckDeath1,
-    ClearTheBuffer, DrawGameOver;
+    FinishScreen, CheckDeath1,
+    GroundAddress, GroundSize,
+    CheckSpecialKeys, ClearTheBuffer, DrawGameOver;
 
 FROM Sprites IMPORT
     DrawBoomGuards, DrawSpinners, DrawFlyTraps, DrawMaces, DrawPlants,
@@ -39,11 +40,6 @@ FROM Sprites IMPORT
 
 CONST
     MountY = 140;
-
-PROCEDURE BlankGround1;
-BEGIN
-    Graph.PutImage(0, 100, GroundAddress, Graph._GPSET);
-END BlankGround1;
 
 PROCEDURE DrawEnemies1;
 BEGIN
@@ -161,6 +157,8 @@ VAR
     MountX, MtRadius, MtPointX, MtPointY : CARDINAL;
     GotPixel : SHORTCARD;
 BEGIN
+    SetClipRgn (0, 0, 320, 101);
+
     Rectangle (0,0,320,15,176,TRUE);
     Rectangle (0,16,319,30,104,TRUE);
     Rectangle (0,31,319,45,1,TRUE);
@@ -194,7 +192,6 @@ BEGIN
     Line (0,92,319,92,29);
     Line (0,95,320,95,29);
 
-    SetClipRgn (0, 0, 320, 101);
     FOR Count := 1 TO 25 DO
         MtRadius := Lib.RANDOM(50) + 40;
         MountX := Lib.RANDOM(320);
@@ -203,10 +200,7 @@ BEGIN
 
     MountX := 160;
     MtRadius := 70;
-    Graph.TrueDisc (MountX, MountY, MtRadius, DarkestBrown);
     DrawMountain(MountX, MountY, MtRadius);
-    Graph.TrueDisc (MountX, MountY, MtRadius, DarkestBrown);
-    SetClipRgn (0, 0, 320, 200);
 
     FOR Count := 1 TO 4000 DO
         MtPointX := Lib.RANDOM(319);
@@ -216,6 +210,8 @@ BEGIN
             Plot(MtPointX, MtPointY, Lib.RANDOM(7) + 16);
         END;
     END;
+
+    SetClipRgn(0, 0, 320, 200);
 END DrawMountains;
 
 PROCEDURE Screen1;
@@ -227,55 +223,39 @@ VAR
 BEGIN
     ClearScreen(_GCLEARSCREEN);
 
-    BulletY := 0;
-    PlaneX := 145;
-    EnemyY := 100;
-
     DrawMountains();
-    Rectangle (0, 100, 320, 200, LightGreen, TRUE);
+    (* Draw grass *)
+    Rectangle(0, 100, 320, 200, LightGreen, TRUE);
     FOR Count := 1 TO 1000 DO
-        Plot (Lib.RANDOM(320), Lib.RANDOM(25) + 100, DarkestGreen);
-        Plot (Lib.RANDOM(320), Lib.RANDOM(40) + 100, DarkestGreen);
-        Plot (Lib.RANDOM(320), Lib.RANDOM(40) + 120, DarkGreen);
-        Plot (Lib.RANDOM(320), Lib.RANDOM(40) + 140, Green);
-        Plot (Lib.RANDOM(320), Lib.RANDOM(40) + 160, LightestGreen);
+        Plot(Lib.RANDOM(320), Lib.RANDOM(25) + 100, DarkestGreen);
+        Plot(Lib.RANDOM(320), Lib.RANDOM(40) + 100, DarkestGreen);
+        Plot(Lib.RANDOM(320), Lib.RANDOM(40) + 120, DarkGreen);
+        Plot(Lib.RANDOM(320), Lib.RANDOM(40) + 140, Green);
+        Plot(Lib.RANDOM(320), Lib.RANDOM(40) + 160, LightestGreen);
     END;
+    (* Draw path *)
     Xs[0] := 0; Xs[1] := 150; Xs[2] := 170; Xs[3] := 320;
     Ys[0] := 200; Ys[1] := 100; Ys[2] := 100; Ys[3] := 200;
-      Polygon (4, Xs, Ys, DarkestBrown);
-    Rectangle (150, 87, 170, 100, Black, TRUE);
+    Polygon(4, Xs, Ys, DarkestBrown);
+    (* Draw mountain entrance *)
+    Rectangle(150, 87, 170, 100, Black, TRUE);
 
     (* Screen is now ready; Set up for action *)
 
-    PlaneX := 135; PlaneY := 174; LineSpeed := 156;
-    ClearTheBuffer;
-    FOR Count := 1 TO 8 DO
-        LineXStart := 150; LineXEnd := 170;
-        FOR LineY := 100 TO 200 DO
-            IF NOT IO.KeyPressed() THEN
-                IF (LineY MOD 2 = 0) THEN
-                    LineXStart := LineXStart - 3;
-                    LineXEnd := LineXEnd + 3;
-                    IF (LineXStart < 0) THEN
-                        LineXStart := 0;
-                    END;
-                END;
-                HLine (LineXStart, LineY, LineXEnd, LightestBrown);
-                Lib.Delay (LineSpeed);
-                HLine (LineXStart, LineY, LineXEnd, DarkestBrown);
-                IF (LineSpeed < 3) AND (Count < 6) THEN
-                    LineSpeed := 4;
-                END;
-                IF (LineSpeed < 2) AND (Count >= 6) THEN
-                LineSpeed := 2;
-                END;
-                IF (Count <> 3) THEN
-                    LineSpeed := LineSpeed - 2;
-                END;
-                DrawPlane(PlaneX, PlaneY, PlaneWidth, PlaneHeight);
-            END;
+    (* Fly in plane *)
+    IF (NOT GameOver) THEN
+        FOR PlaneY := 200 TO 175 BY -1 DO
+            Rectangle(135, 175, 135 + PlaneWidth, 175 + PlaneHeight, DarkestBrown, TRUE);
+            PlaneX := 135 - (PlaneY - 175);
+            Width := PlaneY - 125;
+            Height := Width DIV 2;
+            DrawPlane(PlaneX, PlaneY, Width, Height);
+            Lib.Delay(50);
+            CheckSpecialKeys();
+            IF (GameOver) THEN PlaneY := 175; END;
         END;
     END;
+
     Polygon (4, Xs, Ys, DarkestBrown);
     DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
     Lib.Delay (20);
@@ -309,6 +289,7 @@ BEGIN
     Lib.Delay (20);
     ScreenComplete := FALSE;
     Enemies := 1;
+    BulletY := 0;
 
     (* Main Program Starts *)
 
@@ -329,7 +310,7 @@ BEGIN
             IF (PlaneX > PlaneXMax) THEN
                 PlaneX := PlaneXMax;
             END;
-            BlankGround1;
+            Graph.PutImage(0, 100, GroundAddress, Graph._GPSET);
             FOR GroundLines := 1 TO 30 DO
                 GroundLineX := RANDOM(80);
                 Line (GroundLineX DIV 16 + 150, 100, GroundLineX, 200, LightestBrown);
@@ -364,7 +345,7 @@ BEGIN
         FOR EnemyY := 101 TO 200 DO
             IF (GameOver=FALSE) AND (ScreenComplete=FALSE) THEN
                 CheckMouse;
-                BlankGround1;
+                Graph.PutImage(0, 100, GroundAddress, Graph._GPSET);
                 DrawEnemies1;
                 FOR GroundLines := 1 TO 30 DO
                     GroundLineX := RANDOM(80);

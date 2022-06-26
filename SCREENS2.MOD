@@ -30,7 +30,7 @@ FROM Exobius IMPORT
     BkAddress, BkSize, PlaneAddress,
     ScreenComplete, GameOver,  MouseButtons,  MouseMove, GameSpeed,
     DrawBullet, DrawPlane, CheckMouse, CheckSpecialKeys, CheckMouseAndSpecialKeys, Die, DrawGameOver,
-    FinishScreen1, Key, CheckDeath1,
+    FinishScreen, Key, CheckDeath1,
     DrawGameOver;
 
 FROM Sprites IMPORT

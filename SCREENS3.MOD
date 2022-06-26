@@ -23,17 +23,13 @@ FROM Exobius IMPORT
     Enemies, Xs, Ys,
     Count, Lives, EnemyY,
     ScreenComplete, GameOver,  MouseButtons,  MouseMove, GameSpeed,
-    DrawBullet, DrawPlane, CheckMouse, CheckMouseAndSpecialKeys, Die, DrawGameOver,
-    FinishScreen1, CheckDeath1,
-    BkAddress, DrawGameOver;
+    DrawBullet, DrawPlane, CheckMouse, CheckMouseAndSpecialKeys, Die,
+    FinishScreen, CheckDeath1,
+    BkAddress, GroundAddress, GroundSize, DrawGameOver;
 
 FROM Sprites IMPORT
     DrawBoomGuards, DrawSpinners, DrawFlyTraps, DrawMaces, DrawPlants,
     DrawIceRocks, DrawSnowMen, DrawSnowBalls, DrawSkiiers, DrawGlowWorms;
-
-VAR
-    GroundAddress : ADDRESS;
-    GroundSize : CARDINAL;
 
 PROCEDURE DrawEnemies3;
 BEGIN

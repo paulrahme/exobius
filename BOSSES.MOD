@@ -27,17 +27,15 @@ FROM Exobius IMPORT
   SixAlive, ScreenComplete, GameOver,  MouseButtons,  MouseMove, GameSpeed,
   DrawBullet, DrawPlane, CheckMouse, Die, A, B,
   C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z,
-  FinishScreen1, Key, PlaneXMove, Score, PlaneAddress,
-  BkAddress, BkSize, DrawGameOver;
+  FinishScreen, Key, PlaneXMove, Score,
+  PlaneAddress, BkAddress, BkSize, GroundAddress, GroundSize,
+  DrawGameOver;
 
 FROM Storage IMPORT
      ALLOCATE, DEALLOCATE;
 
 FROM Sprites IMPORT
   DrawSpinners;
-
-FROM Screens1 IMPORT
-    BlankGround1, GroundAddress, GroundSize;
 
 FROM Screens8 IMPORT
   DrawStars8, DrawPlanet, PlanetRadius;
@@ -180,8 +178,8 @@ BEGIN
 
         (* The Action Begins !! *)
 
-        Graph.PutImage (0, 0, BkAddress, Graph._GPSET);
-        BlankGround1;
+        Graph.PutImage(0, 0, BkAddress, Graph._GPSET);
+        Graph.PutImage(0, 100, GroundAddress, Graph._GPSET);
         FOR GroundLines := 1 TO 30 DO
             GroundLineX := RANDOM(80);
             Line (GroundLineX DIV 16 + 150, 100, GroundLineX, 200, LightestBrown);
@@ -254,7 +252,7 @@ BEGIN
                 END;    (* This "END" From SpitY < 200 Check. *)
         END;            (* This "END" From ScreenComplete Check. *)
         IF ScreenComplete AND NOT GameOver THEN
-           FinishScreen1;
+           FinishScreen;
         END;
         IF GameOver THEN
            G(110, 30); A(140, 30); M(170, 30); E(200, 30);

@@ -1,9 +1,5 @@
 DEFINITION MODULE Screens4;
 
-VAR
-  GroundAddress : ADDRESS;
-  GroundSize : CARDINAL;
-
 PROCEDURE Screen4;
 
 PROCEDURE Screen5;

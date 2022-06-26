@@ -11,9 +11,6 @@ FROM Graph IMPORT
 FROM Lib IMPORT
     Sound, NoSound, Delay;
 
-FROM Screens1 IMPORT
-    BlankGround1;
-
 TYPE
     BYTEPTR = POINTER TO BYTE;
 
@@ -638,7 +635,7 @@ BEGIN
     END;
 END CheckDeath1;
 
-PROCEDURE FinishScreen1;
+PROCEDURE FinishScreen;
 BEGIN
     Rectangle(0, 0, 320, 10, White, FALSE);
     FOR PlaneY := 175 TO 100 BY -2 DO
@@ -648,12 +645,12 @@ BEGIN
         IF (PlaneX > 155) THEN
             PlaneX := PlaneX - 5;
         END;
-        BlankGround1;
+        Graph.PutImage(0, 100, GroundAddress, Graph._GPSET);
         DrawPlane(PlaneX, PlaneY, ((PlaneY - 100) DIV 2), ((PlaneY - 100) DIV 4));
         Delay(40);
     END;
     Graph.ClearScreen(Graph._GCLEARSCREEN);
-END FinishScreen1;
+END FinishScreen;
 
 END Exobius.
 
