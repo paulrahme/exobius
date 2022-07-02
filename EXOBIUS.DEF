@@ -45,7 +45,7 @@ PROCEDURE PutPixel(x, y : CARDINAL; color : BYTE);
 PROCEDURE SetPixel(pixPos : CARDINAL; Color : BYTE);
 PROCEDURE GetPixel(x, y : CARDINAL) : SHORTCARD;
 PROCEDURE DrawPlane(x, y, Width, Height : CARDINAL);
-PROCEDURE DrawBullet;
+PROCEDURE Update3DBullet;
 PROCEDURE CheckSpecialKeys;
 PROCEDURE CheckMouseAndSpecialKeys;
 PROCEDURE CheckMouse;

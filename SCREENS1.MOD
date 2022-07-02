@@ -15,7 +15,7 @@ FROM Lib IMPORT
 FROM Exobius IMPORT
     PutPixel, GetPixel,
     PlaneWidth, PlaneHeight,
-    EnemyYStart, PlaneXMin, PlaneXMax, CollisionY,
+    EnemyYStart, CollisionY,
     Black, DarkestGrey, DarkGrey, Grey, LightGrey, LightestGrey,
     DarkestBlue, DarkBlue, Blue, LightBlue, LightestBlue,
     DarkestBrown, DarkBrown, Brown, LightBrown, LightestBrown,
@@ -29,7 +29,7 @@ FROM Exobius IMPORT
     Enemies, Xs, Ys,
     Count, Lives, EnemyY,
     ScreenComplete, GameOver,  MouseButtons,  MouseMove, GameSpeed,
-    DrawBullet, DrawPlane, CheckMouse, CheckMouseAndSpecialKeys, Die, DrawGameOver,
+    Update3DBullet, DrawPlane, CheckMouse, CheckMouseAndSpecialKeys, Die, DrawGameOver,
     FinishScreen, CheckDeath1,
     GroundAddress, GroundSize,
     CheckSpecialKeys, ClearTheBuffer, DrawGameOver;
@@ -214,10 +214,31 @@ BEGIN
     SetClipRgn(0, 0, 320, 200);
 END DrawMountains;
 
+PROCEDURE DrawGroundLine();
+VAR
+    GroundLineX : CARDINAL;
+BEGIN
+    GroundLineX := RANDOM(80);
+    Line(GroundLineX DIV 16 + 150, 100, GroundLineX, 200, LightestBrown);
+    Line(GroundLineX DIV 16 + 155, 100, GroundLineX+80, 200, LightestBrown);
+    Line(GroundLineX DIV 16 + 160, 100, GroundLineX+160, 200, LightestBrown);
+    Line(GroundLineX DIV 16 + 165, 100, GroundLineX+240, 200, LightestBrown);
+    GroundLineX := RANDOM(150);
+    Line(GroundLineX, 100, 0, 100 + GroundLineX*2 DIV 3, Green);
+    Line(320-GroundLineX, 100, 320, 100 + GroundLineX*2 DIV 3, Green);
+    GroundLineX := RANDOM(150);
+    Line(GroundLineX, 100, 0, 100 + GroundLineX*2 DIV 3, LightestGreen);
+    Line(320-GroundLineX, 100, 320, 100 + GroundLineX*2 DIV 3, LightestGreen);
+    GroundLineX := RANDOM(80);
+    Line(GroundLineX DIV 16 + 150, 100, GroundLineX, 200, Brown);
+    Line(GroundLineX DIV 16 + 155, 100, GroundLineX+80, 200, Brown);
+    Line(GroundLineX DIV 16 + 160, 100, GroundLineX+160, 200, Brown);
+    Line(GroundLineX DIV 16 + 165, 100, GroundLineX+240, 200, Brown);
+END DrawGroundLine;
+
 PROCEDURE Screen1;
 VAR
-    GroundDots, DotX, DotY,
-        LineSpeed, LineXEnd, LineY, GroundLines, GroundLineX : CARDINAL;
+    LineCount, LineSpeed, LineXEnd, LineY : CARDINAL;
     LineXStart : INTEGER;
 
 BEGIN
@@ -256,6 +277,7 @@ BEGIN
         END;
     END;
 
+    (* Flash the ground *)
     Polygon (4, Xs, Ys, DarkestBrown);
     DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
     Lib.Delay (20);
@@ -282,109 +304,56 @@ BEGIN
     Line (171, 100, 320, 199, DarkBrown);
     Line (148, 100, 0, 198, DarkestBrown);
     Line (172, 100, 320, 198, DarkestBrown);
-    GroundSize := CARDINAL(Graph.ImageSize (0, 100, 320, 200));
-    Storage.ALLOCATE (GroundAddress, GroundSize);
-    Graph.GetImage (0, 100, 320, 200, GroundAddress);
-    DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
-    Lib.Delay (20);
+    GroundSize := CARDINAL(Graph.ImageSize(0, 100, 319, 199));
+
+    (* Gameplay Starts *)
+
+    Storage.ALLOCATE(GroundAddress, GroundSize);
+    Graph.GetImage(0, 100, 319, 199, GroundAddress);
+    DrawPlane(PlaneX, PlaneY, PlaneWidth, PlaneHeight);
     ScreenComplete := FALSE;
     Enemies := 1;
     BulletY := 0;
 
-    (* Main Program Starts *)
-
-    CheckMouseAndSpecialKeys();
     WHILE NOT GameOver AND NOT ScreenComplete DO
-        FOR GroundDots := 1 TO 20 DO
-            DotX := Lib.RANDOM (70) + 125;
-            DotY := Lib.RANDOM (100) + 100;
-            IF (Graph.Point (DotX, DotY) = LightBrown) THEN
-                Plot (DotX, DotY, Lib.RANDOM(7) + 16);
-                Lib.Delay (GameSpeed);
-                Plot (DotX, DotY, LightBrown);
-            END;
-            CheckMouse;
-            IF (PlaneX < PlaneXMin) THEN
-                PlaneX := PlaneXMin;
-            END;
-            IF (PlaneX > PlaneXMax) THEN
-                PlaneX := PlaneXMax;
-            END;
+        (* Between waves of enemies *)
+        FOR LineCount := 1 TO 20 DO
+            CheckMouse();
             Graph.PutImage(0, 100, GroundAddress, Graph._GPSET);
-            FOR GroundLines := 1 TO 30 DO
-                GroundLineX := RANDOM(80);
-                Line (GroundLineX DIV 16 + 150, 100, GroundLineX, 200, LightestBrown);
-                Line (GroundLineX DIV 16 + 155, 100, GroundLineX+80, 200, LightestBrown);
-                Line (GroundLineX DIV 16 + 160, 100, GroundLineX+160, 200, LightestBrown);
-                Line (GroundLineX DIV 16 + 165, 100, GroundLineX+240, 200, LightestBrown);
-                GroundLineX := RANDOM(150);
-                Line (GroundLineX, 100, 0, 100 + GroundLineX*3 DIV 5, LightestGreen);
-                Line (320-GroundLineX, 100, 320, 100 + GroundLineX*3 DIV 5, LightestGreen);
-                GroundLineX := RANDOM(150);
-                Line (GroundLineX, 100, 0, 100 + GroundLineX*3 DIV 5, Green);
-                Line (320-GroundLineX, 100, 320, 100 + GroundLineX*3 DIV 5, Green);
-                GroundLineX := RANDOM(80);
-                Line (GroundLineX DIV 16 + 150, 100, GroundLineX, 200, Brown);
-                Line (GroundLineX DIV 16 + 155, 100, GroundLineX+80, 200, Brown);
-                Line (GroundLineX DIV 16 + 160, 100, GroundLineX+160, 200, Brown);
-                Line (GroundLineX DIV 16 + 165, 100, GroundLineX+240, 200, Brown);
-            END;
-            DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
-            DrawBullet;
-            IF (BulletY < 6 ) AND (BulletY > 0) THEN
-                BulletY := BulletY - 1;
-            END;
-            Lib.Delay (GameSpeed);
-        END;   (* This "END" from Ground Dots *)
-        OneAlive   := TRUE;
-        TwoAlive   := TRUE;
-        ThreeAlive := TRUE;
-        FourAlive  := TRUE;
-        FiveAlive  := TRUE;
-        SixAlive   := TRUE;
+            DrawGroundLine();
+            Update3DBullet();
+            DrawPlane(PlaneX, PlaneY, PlaneWidth, PlaneHeight);
+            Lib.Delay(GameSpeed);
+        END;
+
+        (* Draw wave of enemies *)
+        OneAlive := TRUE; TwoAlive := TRUE; ThreeAlive := TRUE; FourAlive := TRUE; FiveAlive := TRUE; SixAlive := TRUE;
         FOR EnemyY := 101 TO 200 DO
             IF (GameOver=FALSE) AND (ScreenComplete=FALSE) THEN
                 CheckMouse;
                 Graph.PutImage(0, 100, GroundAddress, Graph._GPSET);
-                DrawEnemies1;
-                FOR GroundLines := 1 TO 30 DO
-                    GroundLineX := RANDOM(80);
-                    Line (GroundLineX DIV 16 + 150, 100, GroundLineX, 200, LightestBrown);
-                    Line (GroundLineX DIV 16 + 155, 100, GroundLineX+80, 200, LightestBrown);
-                    Line (GroundLineX DIV 16 + 160, 100, GroundLineX+160, 200, LightestBrown);
-                    Line (GroundLineX DIV 16 + 165, 100, GroundLineX+240, 200, LightestBrown);
-                    GroundLineX := RANDOM(150);
-                    Line (GroundLineX, 100, 0, 100 + GroundLineX*2 DIV 3, Green);
-                    Line (320-GroundLineX, 100, 320, 100 + GroundLineX*2 DIV 3, Green);
-                    GroundLineX := RANDOM(150);
-                    Line (GroundLineX, 100, 0, 100 + GroundLineX*2 DIV 3, LightestGreen);
-                    Line (320-GroundLineX, 100, 320, 100 + GroundLineX*2 DIV 3, LightestGreen);
-                    GroundLineX := RANDOM(80);
-                    Line (GroundLineX DIV 16 + 150, 100, GroundLineX, 200, Brown);
-                    Line (GroundLineX DIV 16 + 155, 100, GroundLineX+80, 200, Brown);
-                    Line (GroundLineX DIV 16 + 160, 100, GroundLineX+160, 200, Brown);
-                    Line (GroundLineX DIV 16 + 165, 100, GroundLineX+240, 200, Brown);
-                END;
-                DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
-                DrawBullet;
-                DrawEnemies1;
+                DrawGroundLine();
+                DrawEnemies1();
+                Update3DBullet();
+                DrawPlane(PlaneX, PlaneY, PlaneWidth, PlaneHeight);
                 IF (BulletY > 99) THEN
                     BulletY := BulletY - 1;
                 END;
                 IF (EnemyY > CollisionY) THEN
                     CheckDeath1;
                 END;
-                IF (BulletY < 6) AND (BulletY > 0) THEN
-                    BulletY := BulletY - 1;
-                END;
                 Lib.Delay (GameSpeed);
-            END;                          (* This "END" From IF Statement*)
-        END;                      (* This "END" From Enemy Movement. *)
+            END;
+        END;
         Enemies := Enemies + 1;
-    END;                          (* This "END" From GameOver/ScreenComplete Check. *)
+    END;
+
+    Storage.DEALLOCATE(GroundAddress, GroundSize);
+
     IF GameOver THEN
         DrawGameOver;
     END;
 END Screen1;
 
-END Screens1.
+END Screens1.
+

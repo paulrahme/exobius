@@ -505,11 +505,15 @@ BEGIN;
     Score := Score + 10;
 END BlowUpEnemy;
 
-PROCEDURE DrawBullet;
+PROCEDURE Update3DBullet;
 VAR
     NewBulletX : CARDINAL;
     Dist : INTEGER;
 BEGIN
+    IF (BulletY > 0) AND (BulletY <= 6 ) THEN
+        BulletY := BulletY - 1;
+    END;
+
     CASE BulletY OF
         |5: IF (BulletX >= 160) THEN
                 Dist := (10 + ((3*70) DIV 2)) * (BulletX-160) DIV 160;
@@ -567,7 +571,7 @@ BEGIN
                 BlowUpEnemy;
             END;
      END;
-END DrawBullet;
+END Update3DBullet;
 
 PROCEDURE Die;
 CONST

@@ -15,7 +15,7 @@ FROM Lib IMPORT
 FROM Exobius IMPORT
     PutPixel, SetPixel, SwapVGAPages,
     PlaneWidth, PlaneHeight,
-    EnemyYStart, PlaneXMin, PlaneXMax, CollisionY,
+    EnemyYStart, CollisionY,
     Black, DarkestGrey, DarkGrey, Grey, LightGrey, LightestGrey,
     DarkestBlue, DarkBlue, Blue, LightBlue, LightestBlue,
     DarkestBrown, DarkBrown, Brown, LightBrown, LightestBrown,
@@ -29,7 +29,7 @@ FROM Exobius IMPORT
     Enemies, Xs, Ys, Count, Lives, EnemyY,
     BkAddress, BkSize, PlaneAddress,
     ScreenComplete, GameOver,  MouseButtons,  MouseMove, GameSpeed,
-    DrawBullet, DrawPlane, CheckMouse, CheckSpecialKeys, CheckMouseAndSpecialKeys, Die, DrawGameOver,
+    DrawPlane, CheckMouse, CheckSpecialKeys, CheckMouseAndSpecialKeys, Die, DrawGameOver,
     FinishScreen, Key, CheckDeath1,
     DrawGameOver;
 

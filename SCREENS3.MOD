@@ -14,7 +14,7 @@ FROM Lib IMPORT
 
 FROM Exobius IMPORT
     PlaneWidth, PlaneHeight,
-    EnemyYStart, PlaneXMin, PlaneXMax, CollisionY,
+    EnemyYStart, CollisionY,
     Black, DarkestGrey, DarkGrey, Grey, LightGrey, LightestGrey,
     DarkestWhite, DarkWhite, White, LightWhite, LightestWhite, LightBlue,
     PlaneX, BulletX, BulletY, PlaneY, Width, Height,
@@ -23,7 +23,7 @@ FROM Exobius IMPORT
     Enemies, Xs, Ys,
     Count, Lives, EnemyY,
     ScreenComplete, GameOver,  MouseButtons,  MouseMove, GameSpeed,
-    DrawBullet, DrawPlane, CheckMouse, CheckMouseAndSpecialKeys, Die,
+    Update3DBullet, DrawPlane, CheckMouse, CheckMouseAndSpecialKeys, Die,
     FinishScreen, CheckDeath1,
     BkAddress, GroundAddress, GroundSize, DrawGameOver;
 
@@ -205,18 +205,9 @@ BEGIN
             Lib.Delay (GameSpeed);
             Plot (DotX, DotY, LightBlue);
             CheckMouse;
-            IF (PlaneX < PlaneXMin) THEN
-               PlaneX := PlaneXMin;
-            END;
-            IF (PlaneX > PlaneXMax) THEN
-               PlaneX := PlaneXMax;
-            END;
             BlankGround3;
-            DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
-            DrawBullet;
-            IF (BulletY < 6 ) AND (BulletY > 0) THEN
-               BulletY := BulletY - 1;
-            END;
+            DrawPlane(PlaneX, PlaneY, PlaneWidth, PlaneHeight);
+            Update3DBullet;
             Lib.Delay (GameSpeed);
          END;   (* This "END" from Ground Dots *)
          OneAlive   := TRUE;
@@ -230,16 +221,13 @@ BEGIN
             CheckMouse;
             BlankGround3;
             DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
-            DrawBullet;
+            Update3DBullet;
             DrawEnemies3;
             IF (BulletY > 99) THEN
                BulletY := BulletY - 1;
             END;
             IF (EnemyY > CollisionY) THEN
                CheckDeath1;
-            END;
-            IF (BulletY < 6) AND (BulletY > 0) THEN
-               BulletY := BulletY - 1;
             END;
             Lib.Delay (GameSpeed);
           END;

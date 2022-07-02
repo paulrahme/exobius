@@ -13,7 +13,7 @@ FROM Lib IMPORT
 
 FROM Exobius IMPORT
   SolidFill, PlaneWidth, PlaneHeight, PlaneMovement,
-  EnemyYStart, PlaneXMin, PlaneXMax, CollisionY, NegPlaneSize,
+  EnemyYStart, CollisionY, NegPlaneSize,
   Black, DarkestGrey, DarkGrey, Grey, LightGrey, LightestGrey,
   DarkestWhite, DarkWhite, White, LightWhite, LightestWhite,
   DarkestBlue, DarkBlue, Blue, LightBlue, LightestBlue, DarkestRed,
@@ -25,7 +25,7 @@ FROM Exobius IMPORT
   Count, Lives, EnemyY, BkColour,
   OldBkColor,  Xs, Ys, OneAlive, TwoAlive, ThreeAlive, FourAlive, FiveAlive,
   SixAlive, ScreenComplete, GameOver,  MouseButtons,  MouseMove, GameSpeed,
-  DrawBullet, DrawPlane, CheckMouse, Die,
+  DrawPlane, CheckMouse, Die,
   A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z,
   FinishScreen, PlaneXMove, CheckDeath1, Score,
   PlaneInMemory, PlaneAddress, BkAddress, BkSize, ClearTheBuffer, Cheat,

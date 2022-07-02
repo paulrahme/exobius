@@ -14,7 +14,7 @@ FROM Lib IMPORT
 
 FROM Exobius IMPORT
   SolidFill, PlaneWidth, PlaneHeight, PlaneMovement,
-  EnemyYStart, PlaneXMin, PlaneXMax, CollisionY, NegPlaneSize,
+  EnemyYStart, CollisionY, NegPlaneSize,
   Black, DarkestGrey, DarkGrey, Grey, LightGrey, LightestGrey,
   DarkestWhite, DarkWhite, White, LightWhite, LightestWhite,
   DarkestBlue, DarkBlue, Blue, LightBlue, LightestBlue, DarkestRed,
@@ -26,7 +26,7 @@ FROM Exobius IMPORT
   Count, Lives, EnemyY, BkColour,
   OldBkColor,  Xs, Ys, OneAlive, TwoAlive, ThreeAlive, FourAlive, FiveAlive,
   SixAlive, ScreenComplete, GameOver,  MouseButtons,  MouseMove, GameSpeed,
-  DrawBullet, DrawPlane, CheckSpecialKeys, Die,
+  DrawPlane, CheckMouse, Die,
   A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z,
   FinishScreen, PlaneXMove, CheckDeath1, Score,
   PlaneInMemory, PlaneAddress, BkAddress, BkSize, Cheat,
@@ -349,29 +349,11 @@ PROCEDURE CheckMouse8;
 VAR
   TextPos : Graph.TextCoords;
 BEGIN
-  MsMouse.GetStatus (MouseButtons);
-  MsMouse.GetMotion (MouseMove);
-  IF (MouseButtons.left_pressed) THEN
-     BulletX := PlaneX + 25;
-     BulletY := 5;
-  END;
-  IF (MouseButtons.right_pressed) THEN
+  CheckMouse();
+  IF (BulletY = 5) THEN
      UpBulletX := PlaneX + (PlaneWidth DIV 2);
      UpBulletY := 170;
   END;
-  IF (MouseMove.horiz <> 0) AND (PlaneX + MouseMove.horiz >= 0) THEN
-     INC (PlaneX, MouseMove.horiz DIV PlaneMovement);
-  END;
-  IF (PlaneX + MouseMove.horiz < 0) THEN
-     PlaneX := 0;
-  END;
-  IF (PlaneX < PlaneXMin) THEN
-     PlaneX := PlaneXMin;
-  END;
-  IF (PlaneX > PlaneXMax) THEN
-     PlaneX := PlaneXMax;
-  END;
-  CheckSpecialKeys;
 END CheckMouse8;
 
 PROCEDURE CheckDeath8;

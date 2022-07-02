@@ -13,7 +13,7 @@ FROM Lib IMPORT
 
 FROM Exobius IMPORT
   SolidFill, PlaneWidth, PlaneHeight, PlaneMovement,
-  EnemyYStart, PlaneXMin, PlaneXMax, CollisionY, NegPlaneSize,
+  EnemyYStart, PlaneXMin, CollisionY, NegPlaneSize,
   Black, DarkestGrey, DarkGrey, Grey, LightGrey, LightestGrey,
   DarkestWhite, DarkWhite, White, LightWhite, LightestWhite,
   DarkestBlue, DarkBlue, Blue, LightBlue, LightestBlue, DarkestRed,
@@ -25,7 +25,7 @@ FROM Exobius IMPORT
   Count, Lives, EnemyY, BkColour,
   OldBkColor,  Xs, Ys, OneAlive, TwoAlive, ThreeAlive, FourAlive, FiveAlive,
   SixAlive, ScreenComplete, GameOver,  MouseButtons,  MouseMove, GameSpeed,
-  DrawBullet, DrawPlane, CheckMouse, Die, A, B,
+  Update3DBullet, DrawPlane, CheckMouse, Die, A, B,
   C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z,
   FinishScreen, Key, PlaneXMove, Score,
   PlaneAddress, BkAddress, BkSize, GroundAddress, GroundSize,
@@ -132,9 +132,6 @@ BEGIN
         EnemyY := 99;
         ScreenComplete := FALSE;
         PlaneX := PlaneXMin;
-        PlaneY := 175;
-        Width := 50;
-        Height := 25;
         Storage.ALLOCATE (BkAddress, MAX(CARDINAL));
         Xs[0] := 0; Xs[1] := 112; Xs[2] := 208; Xs[3] := 320;
         Ys[0] := 200; Ys[1] := 151; Ys[2] := 151; Ys[3] := 200;
@@ -204,14 +201,8 @@ BEGIN
         Disc (160, MouthY, 5, Black);   (* Open Boss' Mouth *)
         Graph.GetImage (0, 0, 320, 200, BkAddress);
         CheckMouse;
-        IF (PlaneX < PlaneXMin) THEN
-                PlaneX := PlaneXMin;
-        END;
-        IF (PlaneX > PlaneXMax) THEN
-                PlaneX := PlaneXMax;
-        END;
         DrawPlane (PlaneX, PlaneY, Width, Height);
-        DrawBullet;
+        Update3DBullet;
         IF (BulletY  > 99) THEN
                 BulletY := BulletY - 1;
         END;
@@ -230,10 +221,7 @@ BEGIN
                         END;
                         CheckMouse;
                         DrawPlane (PlaneX, PlaneY, Width, Height);
-                        DrawBullet;
-                        IF (BulletY  < 6) AND (BulletY > 0) THEN
-                                BulletY := BulletY - 1;
-                        END;
+                        Update3DBullet;
                         IF (BulletX > 140) AND (BulletX < 170) AND (BulletY < 3) THEN
                                 Disc (160, 110, 40, LightestWhite);
                                 BossLives := BossLives - 1;
@@ -1004,7 +992,7 @@ BEGIN
         Graph.PutImage (0, 0, BkAddress, Graph._GPSET);
         CheckMouse;
         DrawPlane (PlaneX, PlaneY, Width, Height);
-        DrawBullet;
+        Update3DBullet;
         IF (BulletY  > 99) THEN
                 BulletY := BulletY - 1;
         END;
@@ -1039,7 +1027,7 @@ BEGIN
                         END;
                         CheckMouse;
                         DrawPlane (PlaneX, PlaneY, Width, Height);
-                        DrawBullet;
+                        Update3DBullet;
                         IF (BulletY  < 6) AND (BulletY > 0) THEN
                                 BulletY := BulletY - 1;
                         END;
