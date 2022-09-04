@@ -40,6 +40,16 @@ FROM Sprites IMPORT
 
 CONST
     MountY = 140;
+    NumGroundDots = 10;
+    GroundDotsMoveSpeedDiv = 3; (* Larger = slower movement *)
+
+TYPE
+    GroundDot = RECORD
+        CurrX, FinalX, YOffset : CARDINAL;
+    END;
+
+VAR
+    GroundDots : ARRAY[0..10] OF GroundDot;
 
 PROCEDURE DrawEnemies1;
 BEGIN
@@ -192,7 +202,7 @@ BEGIN
     Line (0,92,319,92,29);
     Line (0,95,320,95,29);
 
-    FOR Count := 1 TO 25 DO
+    FOR Count := 1 TO 20 DO
         MtRadius := Lib.RANDOM(50) + 40;
         MountX := Lib.RANDOM(320);
         DrawMountain(MountX, MountY, MtRadius);
@@ -214,33 +224,42 @@ BEGIN
     SetClipRgn(0, 0, 320, 200);
 END DrawMountains;
 
-PROCEDURE DrawGroundLine();
+PROCEDURE UpdateGroundDots();
 VAR
-    GroundLineX : CARDINAL;
+    DotIdx : CARDINAL;
+    XOffset, YOffsetMult : INTEGER;
+    Dot : GroundDot;
 BEGIN
-    GroundLineX := RANDOM(80);
-    Line(GroundLineX DIV 16 + 150, 100, GroundLineX, 200, LightestBrown);
-    Line(GroundLineX DIV 16 + 155, 100, GroundLineX+80, 200, LightestBrown);
-    Line(GroundLineX DIV 16 + 160, 100, GroundLineX+160, 200, LightestBrown);
-    Line(GroundLineX DIV 16 + 165, 100, GroundLineX+240, 200, LightestBrown);
-    GroundLineX := RANDOM(150);
-    Line(GroundLineX, 100, 0, 100 + GroundLineX*2 DIV 3, Green);
-    Line(320-GroundLineX, 100, 320, 100 + GroundLineX*2 DIV 3, Green);
-    GroundLineX := RANDOM(150);
-    Line(GroundLineX, 100, 0, 100 + GroundLineX*2 DIV 3, LightestGreen);
-    Line(320-GroundLineX, 100, 320, 100 + GroundLineX*2 DIV 3, LightestGreen);
-    GroundLineX := RANDOM(80);
-    Line(GroundLineX DIV 16 + 150, 100, GroundLineX, 200, Brown);
-    Line(GroundLineX DIV 16 + 155, 100, GroundLineX+80, 200, Brown);
-    Line(GroundLineX DIV 16 + 160, 100, GroundLineX+160, 200, Brown);
-    Line(GroundLineX DIV 16 + 165, 100, GroundLineX+240, 200, Brown);
-END DrawGroundLine;
+    FOR DotIdx := 0 TO (NumGroundDots-1) DO
+        WITH GroundDots[DotIdx] DO
+            PutPixel(CurrX, 100 + YOffset, LightBrown);
+            YOffset := YOffset * 2;
+            IF (YOffset > 99) THEN
+                FinalX := Lib.RANDOM(319);
+                YOffset := Lib.RANDOM(10) + 1;
+            END;
+
+            XOffset := INTEGER(FinalX);
+            XOffset := XOffset - 160;
+
+            YOffsetMult := INTEGER(YOffset);
+            YOffsetMult := (100 - YOffsetMult); (* convert to 100 -> 0 for perspective calc *)
+            YOffsetMult := YOffsetMult * 16;
+            YOffsetMult := YOffsetMult DIV 100;
+
+            (*XOffset := XOffset DIV YOffsetMult;*) (* y*16, so starts at 1/16th distance from centre, ends at full distance *)
+            XOffset := 160 + XOffset;
+          
+            CurrX := CARDINAL(XOffset);
+            PutPixel(CurrX, 100 + YOffset, DarkBrown);
+        END;
+    END;
+END UpdateGroundDots;
 
 PROCEDURE Screen1;
 VAR
-    LineCount, LineSpeed, LineXEnd, LineY : CARDINAL;
+    FrameBetweenWaves, DotIdx : CARDINAL;
     LineXStart : INTEGER;
-
 BEGIN
     ClearScreen(_GCLEARSCREEN);
 
@@ -306,6 +325,14 @@ BEGIN
     Line (172, 100, 320, 198, DarkestBrown);
     GroundSize := CARDINAL(Graph.ImageSize(0, 100, 319, 199));
 
+    FOR DotIdx := 0 TO (NumGroundDots-1) DO
+        WITH GroundDots[DotIdx] DO
+            CurrX := 160;
+            FinalX := Lib.RANDOM(319);
+            YOffset := Lib.RANDOM(90) + 1;
+        END;
+    END;
+
     (* Gameplay Starts *)
 
     Storage.ALLOCATE(GroundAddress, GroundSize);
@@ -317,10 +344,10 @@ BEGIN
 
     WHILE NOT GameOver AND NOT ScreenComplete DO
         (* Between waves of enemies *)
-        FOR LineCount := 1 TO 20 DO
+        FOR FrameBetweenWaves := 1 TO 20 DO
             CheckMouse();
             Graph.PutImage(0, 100, GroundAddress, Graph._GPSET);
-            DrawGroundLine();
+            UpdateGroundDots();
             Update3DBullet();
             DrawPlane(PlaneX, PlaneY, PlaneWidth, PlaneHeight);
             Lib.Delay(GameSpeed);
@@ -332,7 +359,7 @@ BEGIN
             IF (GameOver=FALSE) AND (ScreenComplete=FALSE) THEN
                 CheckMouse;
                 Graph.PutImage(0, 100, GroundAddress, Graph._GPSET);
-                DrawGroundLine();
+                UpdateGroundDots();
                 DrawEnemies1();
                 Update3DBullet();
                 DrawPlane(PlaneX, PlaneY, PlaneWidth, PlaneHeight);
@@ -342,7 +369,7 @@ BEGIN
                 IF (EnemyY > CollisionY) THEN
                     CheckDeath1;
                 END;
-                Lib.Delay (GameSpeed);
+                Lib.Delay(GameSpeed);
             END;
         END;
         Enemies := Enemies + 1;
