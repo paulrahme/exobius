@@ -40,16 +40,17 @@ FROM Sprites IMPORT
 
 CONST
     MountY = 140;
-    NumGroundDots = 10;
+    NumGroundDots = 32;
     GroundDotsMoveSpeedDiv = 3; (* Larger = slower movement *)
 
 TYPE
     GroundDot = RECORD
-        CurrX, FinalX, YOffset : CARDINAL;
+        CurrX, FinalXOffset, YOffset : CARDINAL;
+        XOffsetIsOnRight : BOOLEAN;
     END;
 
 VAR
-    GroundDots : ARRAY[0..10] OF GroundDot;
+    GroundDots : ARRAY[0..NumGroundDots] OF GroundDot;
 
 PROCEDURE DrawEnemies1;
 BEGIN
@@ -226,32 +227,40 @@ END DrawMountains;
 
 PROCEDURE UpdateGroundDots();
 VAR
-    DotIdx : CARDINAL;
-    XOffset, YOffsetMult : INTEGER;
+    DotIdx, XOffset, YOffsetMult : CARDINAL;
+    Color : BYTE;
     Dot : GroundDot;
 BEGIN
     FOR DotIdx := 0 TO (NumGroundDots-1) DO
         WITH GroundDots[DotIdx] DO
+            (* Erase previous dot *)
             PutPixel(CurrX, 100 + YOffset, LightBrown);
-            YOffset := YOffset * 2;
+
+            (* Update y position *)
+            YOffset := (YOffset * 4) DIV 3;
             IF (YOffset > 99) THEN
-                FinalX := Lib.RANDOM(319);
-                YOffset := Lib.RANDOM(10) + 1;
+                FinalXOffset := Lib.RANDOM(150) + 5;
+                YOffset := Lib.RANDOM(10) + 3;
             END;
 
-            XOffset := INTEGER(FinalX);
-            XOffset := XOffset - 160;
+            (* Calculate X perspective using final X and current y *)
+            YOffsetMult := YOffset + 8;                         (* convert to 100 -> 0 for perspective calc *)
+            XOffset := (FinalXOffset * YOffsetMult) DIV 116;    (* starts at 1/16th distance from centre, ends at full distance *)
+            IF XOffsetIsOnRight THEN
+                CurrX := 160 + XOffset;
+            ELSE
+                CurrX := 160 - XOffset;
+            END;
 
-            YOffsetMult := INTEGER(YOffset);
-            YOffsetMult := (100 - YOffsetMult); (* convert to 100 -> 0 for perspective calc *)
-            YOffsetMult := YOffsetMult * 16;
-            YOffsetMult := YOffsetMult DIV 100;
+            (* Dot's colour - "random" from final X *)
+            IF ODD(FinalXOffset) THEN
+                Color := LightestBrown;
+            ELSE
+                Color := Brown;
+            END;
 
-            (*XOffset := XOffset DIV YOffsetMult;*) (* y*16, so starts at 1/16th distance from centre, ends at full distance *)
-            XOffset := 160 + XOffset;
-          
-            CurrX := CARDINAL(XOffset);
-            PutPixel(CurrX, 100 + YOffset, DarkBrown);
+            (* Draw new dot *)
+            PutPixel(CurrX, 98 + YOffset, Color);
         END;
     END;
 END UpdateGroundDots;
@@ -265,6 +274,7 @@ BEGIN
 
     DrawMountains();
     (* Draw grass *)
+
     Rectangle(0, 100, 320, 200, LightGreen, TRUE);
     FOR Count := 1 TO 1000 DO
         Plot(Lib.RANDOM(320), Lib.RANDOM(25) + 100, DarkestGreen);
@@ -328,8 +338,9 @@ BEGIN
     FOR DotIdx := 0 TO (NumGroundDots-1) DO
         WITH GroundDots[DotIdx] DO
             CurrX := 160;
-            FinalX := Lib.RANDOM(319);
-            YOffset := Lib.RANDOM(90) + 1;
+            FinalXOffset := Lib.RANDOM(150) + 5;
+            XOffsetIsOnRight := ODD(DotIdx);
+            YOffset := Lib.RANDOM(90) + 5;
         END;
     END;
 
