@@ -1,33 +1,48 @@
 IMPLEMENTATION MODULE Sprites;
 
-PROCEDURE DrawBoomGuards (x, y, Width : CARDINAL);
+PROCEDURE DrawBoomGuards(x, y, Width : CARDINAL);
+VAR
+      Width3, Width5, Width10, Width15, Width25, Width30,  Width35, Width40 : CARDINAL;
 BEGIN
-  Disc (x + (Width   DIV 10), y + (Width DIV 2), Width*3 DIV 50, Black);
-  Disc (x + (Width*3 DIV 5), y + (Width DIV 2), Width*3 DIV 50, Black);
-  Line (x + (Width   DIV 10), y + (Width DIV 2), x + (Width   DIV 10), y + (Width*4 DIV 5), Black);
-  Line (x + (Width*3 DIV 5), y + (Width DIV 2), x + (Width*3 DIV 5), y + (Width*4 DIV 5), Black);
-  Line (x + (Width   DIV 10), y + (Width*4 DIV 5), x, y + Width, Black);
-  Line (x + (Width*3 DIV 5), y + (Width*4 DIV 5), x + (Width DIV 2), y + Width, Black);
-  Line (x + (Width   DIV 10), y + (Width*4 DIV 5), x + (Width   DIV 5), y + Width, Black);
-  Line (x + (Width*3 DIV 5), y + (Width*4 DIV 5), x + (Width*35 DIV 50), y + Width, Black);
-  Rectangle (x + (Width*12 DIV 50), y + (Width*35 DIV 50), x + (Width*15 DIV 50), y + Width, Black, TRUE);
-  Rectangle (x + (Width*37 DIV 50), y + (Width*35 DIV 50), x + (Width*4 DIV 5), y + Width, Black, TRUE);
-  Line (x + (Width*16 DIV 50), y + (Width*35 DIV 50), x + (Width*25 DIV 50), y + (Width*35 DIV 50), Yellow);
-  Line (x + (Width*41 DIV 50), y + (Width*35 DIV 50), x + Width, y + (Width*35 DIV 50), Yellow);
-  Graph.SetLinestyle (0AAAAH);
-  Line (x + (Width*16 DIV 50), y + (Width*35 DIV 50), x + (Width*25 DIV 50), y + (Width*35 DIV 50), Black);
-  Line (x + (Width*41 DIV 50), y + (Width*35 DIV 50), x + (Width*3 DIV 2), y + (Width*35 DIV 50), Black);
-  Graph.SetLinestyle (0FFFFH);
-  CASE (y MOD 4) OF
-     | 0 : Line (x + (Width*2 DIV 50), y + (Width*33 DIV 50), x + (Width*7 DIV 50), y + (Width*37 DIV 50), Black);
-           Line (x + (Width*27 DIV 50), y + (Width*33 DIV 50), x + (Width*32 DIV 50), y + (Width*37 DIV 50), Black);
-     | 1 : Line (x + (Width*2 DIV 50), y + (Width*35 DIV 50), x + (Width*7 DIV 50), y + (Width*35 DIV 50), Black);
-           Line (x + (Width*27 DIV 50), y + (Width*35 DIV 50), x + (Width*32 DIV 50), y + (Width*35 DIV 50), Black);
-     | 2 : Line (x + (Width*2 DIV 50), y + (Width*37 DIV 50), x + (Width*7 DIV 50), y + (Width*33 DIV 50), Black);
-           Line (x + (Width*27 DIV 50), y + (Width*37 DIV 50), x + (Width*32 DIV 50), y + (Width*33 DIV 50), Black);
-     | 3 : Line (x + (Width*2 DIV 50), y + (Width*35 DIV 50), x + (Width*7 DIV 50), y + (Width*35 DIV 50), Black);
-           Line (x + (Width*27 DIV 50), y + (Width*35 DIV 50), x + (Width*32 DIV 50), y + (Width*35 DIV 50), Black);
-  END;
+      Width3 := Width * 3 DIV 50;
+      Width5 := Width DIV 10;
+      Width10 := Width DIV 5;
+      Width15 := Width * 15 DIV 50;
+      Width25 := Width DIV 2;
+      Width30 := Width * 3 DIV 5;
+      Width35 := Width * 35 DIV 50;
+      Width40 := Width * 4 DIV 5;
+
+      (* Guards' heads + bodies *)
+      Disc(x + Width5, y + Width25, Width3, Black);
+      Disc(x + Width30, y + Width25, Width3, Black);
+      Line(x + Width5, y + Width25, x + Width5, y + Width40, Black);
+      Line(x + Width30, y + Width25, x + Width30, y + Width40, Black);
+      Line(x + Width5, y + Width40, x, y + Width, Black);
+      Line(x + Width30, y + Width40, x + Width25, y + Width, Black);
+      Line(x + Width5, y + Width40, x + Width10, y + Width, Black);
+      Line(x + Width30, y + Width40, x + Width35, y + Width, Black);
+      (* Guards' waving arms *)
+      CASE (y MOD 4) OF
+          |0: Line(x, y + Width30, x + Width15, y + Width40, Black);
+              Line(x + Width25, y + Width30, x + Width40, y + Width40, Black);
+          |1: HLine(x, y + Width35, x + Width15, Black);
+              HLine(x + Width25, y + Width35, x + Width40, Black);
+          |2: Line(x, y + Width40, x + Width15, y + Width30, Black);
+              Line(x + Width25, y + Width40, x + Width40, y + Width30, Black);
+          |3: HLine(x, y + Width35, x + Width15, Black);
+              HLine(x + Width25, y + Width35, x + Width40, Black);
+      END;
+      (* Boom stands *)
+      Rectangle(x + (Width*12 DIV 50), y + Width35, x + (Width*14 DIV 50), y + Width, Black, FALSE);
+      Rectangle(x + (Width*38 DIV 50), y + Width35, x + Width40, y + Width, Black, FALSE);
+      (* Boom beams *)
+      HLine(x + (Width*16 DIV 50), y + Width35, x + Width25, Yellow);
+      HLine(x + (Width*41 DIV 50), y + Width35, x + Width, Yellow);
+      Graph.SetLinestyle(0AAAAH);
+      Line(x + (Width*16 DIV 50), y + Width35, x + Width25, y + Width35, Black);
+      Line(x + (Width*41 DIV 50), y + Width35, x + Width, y + Width35, Black);
+      Graph.SetLinestyle(0FFFFH);
 END DrawBoomGuards;
 
 PROCEDURE DrawSpinners (x, y, Width : CARDINAL);
