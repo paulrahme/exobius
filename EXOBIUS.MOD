@@ -411,97 +411,45 @@ END CheckMouse;
 PROCEDURE BlowUpEnemy;
 CONST
     SoundDelay = 30;
+VAR
+    BlowUpX, BlowUpYOffset : CARDINAL;
 BEGIN;
     IF (BulletX <= 50) AND (OneAlive) THEN
-        Sound(30);
-        Disc(Enemy1X + (EnemyY-100) DIV 3, EnemyY + (EnemyY -100) DIV 3, (EnemyY -100) DIV 6, LightRed);
-        Lib.Delay (SoundDelay);
-        NoSound;
-        Sound(25);
-        Disc(Enemy1X + (EnemyY-100) DIV 3, EnemyY + (EnemyY -100) DIV 3, (EnemyY -100) DIV 8, LightestRed);
-        Lib.Delay (SoundDelay);
-        NoSound;
-        Sound(21);
-        Disc(Enemy1X + (EnemyY-100) DIV 3, EnemyY + (EnemyY -100) DIV 3, (EnemyY -100) DIV 10, DarkestYellow);
-        Lib.Delay(SoundDelay);
-        NoSound;
+        BlowUpX := Enemy1X;
         OneAlive := FALSE;
-    END;
-    IF (BulletX >= 55) AND (BulletX <= 100) AND (TwoAlive) THEN
-        Sound(30);
-        Disc(Enemy2X + (EnemyY-100) DIV 3, EnemyY + (EnemyY -100) DIV 3, (EnemyY -100) DIV 6, LightRed);
-        Lib.Delay(SoundDelay);
-        NoSound;
-        Sound(25);
-        Disc(Enemy2X + (EnemyY-100) DIV 3, EnemyY + (EnemyY -100) DIV 3, (EnemyY -100) DIV 8, LightestRed);
-        Lib.Delay(SoundDelay);
-        NoSound;
-        Sound(21);
-        Disc (Enemy2X + (EnemyY-100) DIV 3, EnemyY + (EnemyY -100) DIV 3, (EnemyY -100) DIV 10, DarkestYellow);
-        Lib.Delay(SoundDelay);
-        NoSound;
+    ELSIF (BulletX >= 55) AND (BulletX <= 100) AND (TwoAlive) THEN
+        BlowUpX := Enemy2X;
         TwoAlive := FALSE;
-    END;
-    IF (BulletX >= 100) AND (BulletX <= 160) AND (ThreeAlive) THEN
-        Sound(30);
-        Disc(Enemy3X + (EnemyY-100) DIV 3, EnemyY + (EnemyY -100) DIV 3, (EnemyY -100) DIV 6, LightRed);
-        Lib.Delay(SoundDelay);
-        NoSound;
-        Sound(25);
-        Disc(Enemy3X + (EnemyY-100) DIV 3, EnemyY + (EnemyY -100) DIV 3, (EnemyY -100) DIV 8, LightestRed);
-        Lib.Delay (SoundDelay);
-        NoSound;
-        Sound(21);
-        Disc(Enemy3X + (EnemyY-100) DIV 3, EnemyY + (EnemyY -100) DIV 3, (EnemyY -100) DIV 10, DarkestYellow);
-        Lib.Delay(SoundDelay);
-        NoSound;
+    ELSIF (BulletX >= 100) AND (BulletX <= 160) AND (ThreeAlive) THEN
+        BlowUpX := Enemy3X;
         ThreeAlive := FALSE;
-    END;
-    IF (BulletX >= 160) AND (BulletX <= 210) AND (FourAlive) THEN
-        Sound(30);
-        Disc(Enemy4X + (EnemyY-100) DIV 3, EnemyY + (EnemyY -100) DIV 3, (EnemyY -100) DIV 6, LightRed);
-        Lib.Delay(SoundDelay);
-        NoSound;
-        Sound(25);
-        Disc(Enemy4X + (EnemyY-100) DIV 3, EnemyY + (EnemyY -100) DIV 3, (EnemyY -100) DIV 8, LightestRed);
-        Lib.Delay(SoundDelay);
-        NoSound;
-        Sound(21);
-        Disc(Enemy4X + (EnemyY-100) DIV 3, EnemyY + (EnemyY -100) DIV 3, (EnemyY -100) DIV 10, DarkestYellow);
-        Lib.Delay(SoundDelay);
-        NoSound;
+    ELSIF (BulletX >= 160) AND (BulletX <= 210) AND (FourAlive) THEN
+        BlowUpX := Enemy4X;
         FourAlive := FALSE;
-    END;
-    IF (BulletX >= 210) AND (BulletX <= 260) AND (FiveAlive) THEN
-        Sound(30);
-        Disc(Enemy5X + (EnemyY-100) DIV 3, EnemyY + (EnemyY -100) DIV 3, (EnemyY -100) DIV 6, LightRed);
-        Lib.Delay(SoundDelay);
-        NoSound;
-        Sound(25);
-        Disc(Enemy5X + (EnemyY-100) DIV 3, EnemyY + (EnemyY -100) DIV 3, (EnemyY -100) DIV 8, LightestRed);
-        Lib.Delay(SoundDelay);
-        NoSound;
-        Sound(21);
-        Disc(Enemy5X + (EnemyY-100) DIV 3, EnemyY + (EnemyY -100) DIV 3, (EnemyY -100) DIV 10, DarkestYellow);
-        Lib.Delay(SoundDelay);
-        NoSound;
+    ELSIF (BulletX >= 210) AND (BulletX <= 260) AND (FiveAlive) THEN
+        BlowUpX := Enemy5X;
         FiveAlive := FALSE;
-    END;
-    IF (BulletX >= 260) AND (SixAlive) THEN
-        Sound(30);
-        Disc(Enemy6X + (EnemyY-100) DIV 3, EnemyY + (EnemyY -100) DIV 3, (EnemyY -100) DIV 6, LightRed);
-        Lib.Delay(SoundDelay);
-        NoSound;
-        Sound(25);
-        Disc(Enemy6X + (EnemyY-100) DIV 3, EnemyY + (EnemyY -100) DIV 3, (EnemyY -100) DIV 8, LightestRed);
-        Lib.Delay(SoundDelay);
-        NoSound;
-        Sound(21);
-        Disc(Enemy6X + (EnemyY-100) DIV 3, EnemyY + (EnemyY -100) DIV 3, (EnemyY -100) DIV 10, DarkestYellow);
-        Lib.Delay(SoundDelay);
-        NoSound;
+    ELSIF (BulletX >= 260) AND (SixAlive) THEN
+        BlowUpX := Enemy6X;
         SixAlive := FALSE;
+    ELSE
+        RETURN;
     END;
+
+    (* If it got here, there's a valid enemy to blow up *)
+    BlowUpYOffset := (EnemyY - 100) DIV 3;
+    Sound(30);
+    Disc(BlowUpX + BlowUpYOffset, EnemyY + BlowUpYOffset, BlowUpYOffset DIV 2, LightRed);
+    Lib.Delay(SoundDelay);
+    NoSound;
+    Sound(25);
+    Disc(BlowUpX + BlowUpYOffset, EnemyY + BlowUpYOffset, BlowUpYOffset DIV 3, LightestRed);
+    Lib.Delay(SoundDelay);
+    NoSound;
+    Sound(21);
+    Disc(BlowUpX + BlowUpYOffset, EnemyY + BlowUpYOffset, BlowUpYOffset DIV 4, DarkestYellow);
+    Lib.Delay(SoundDelay);
+    NoSound;
     Score := Score + 10;
 END BlowUpEnemy;
 

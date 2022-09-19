@@ -45,92 +45,107 @@ BEGIN
       Graph.SetLinestyle(0FFFFH);
 END DrawBoomGuards;
 
-PROCEDURE DrawSpinners (x, y, Width : CARDINAL);
+PROCEDURE DrawSpinners(x, y, Width : CARDINAL);
 VAR
-  DiskX, DiskY : CARDINAL;
+    DiskX, DiskY, Width1, Width3, Width5, Width7, Width9, YMod3 : CARDINAL;
 BEGIN
-  Disc (x + (Width*25 DIV 50), y + (Width * 25 DIV 50), Width*9 DIV 50, DarkestGreen);
-  Disc (x + (Width*26 DIV 50), y + (Width * 24 DIV 50), Width*7 DIV 50, DarkGreen);
-  Disc (x + (Width*27 DIV 50), y + (Width * 23 DIV 50), Width*5 DIV 50, Green);
-  Disc (x + (Width*28 DIV 50), y + (Width * 22 DIV 50), Width*3 DIV 50, LightGreen);
-  Disc (x + (Width*29 DIV 50), y + (Width * 21 DIV 50), Width   DIV 50, LightestGreen);
-  CASE (y MOD 3) OF
-     | 0 : DiskX := 9;
-           DiskY := 25;
-     | 1 : DiskX := 12;
-           DiskY := 17;
-     | 2 : DiskX := 17;
-           DiskY := 12;
-  END;
-  Disc (x + (Width*DiskX DIV 50), y + (Width*DiskY DIV 50), Width*9 DIV 50, DarkestBrown);
-  Disc (x + (Width*(DiskX+1) DIV 50), y + (Width*(DiskY-1) DIV 50), Width*7 DIV 50, DarkBrown);
-  Disc (x + (Width*(DiskX+2) DIV 50), y + (Width*(DiskY-2) DIV 50), Width*5 DIV 50, Brown);
-  Disc (x + (Width*(DiskX+3) DIV 50), y + (Width*(DiskY-3) DIV 50), Width*3 DIV 50, LightBrown);
-  Disc (x + (Width*(DiskX+4) DIV 50), y + (Width*(DiskY-4) DIV 50), Width   DIV 50, LightestBrown);
-  CASE (y MOD 3) OF
-     | 0 : DiskX := 25;
-           DiskY := 9;
-     | 1 : DiskX := 33;
-           DiskY := 12;
-     | 2 : DiskX := 38;
-           DiskY := 17;
-  END;
-  Disc (x + (Width*DiskX DIV 50), y + (Width*DiskY DIV 50), Width*9 DIV 50, DarkestBrown);
-  Disc (x + (Width*(DiskX+1) DIV 50), y + (Width*(DiskY-1) DIV 50), Width*7 DIV 50, DarkBrown);
-  Disc (x + (Width*(DiskX+2) DIV 50), y + (Width*(DiskY-2) DIV 50), Width*5 DIV 50, Brown);
-  Disc (x + (Width*(DiskX+3) DIV 50), y + (Width*(DiskY-3) DIV 50), Width*3 DIV 50, LightBrown);
-  Disc (x + (Width*(DiskX+4) DIV 50), y + (Width*(DiskY-4) DIV 50), Width   DIV 50, LightestBrown);
-  CASE (y MOD 3) OF
-     | 0 : DiskX := 41;
-           DiskY := 25;
-     | 1 : DiskX := 38;
-           DiskY := 33;
-     | 2 : DiskX := 33;
-           DiskY := 38;
-  END;
-  Disc (x + (Width*DiskX DIV 50), y + (Width*DiskY DIV 50), Width*9 DIV 50, DarkestBrown);
-  Disc (x + (Width*(DiskX+1) DIV 50), y + (Width*(DiskY-1) DIV 50), Width*7 DIV 50, DarkBrown);
-  Disc (x + (Width*(DiskX+2) DIV 50), y + (Width*(DiskY-2) DIV 50), Width*5 DIV 50, Brown);
-  Disc (x + (Width*(DiskX+3) DIV 50), y + (Width*(DiskY-3) DIV 50), Width*3 DIV 50, LightBrown);
-  Disc (x + (Width*(DiskX+4) DIV 50), y + (Width*(DiskY-4) DIV 50), Width   DIV 50, LightestBrown);
-  CASE (y MOD 3) OF
-     | 0 : DiskX := 25;
-           DiskY := 41;
-     | 1 : DiskX := 17;
-           DiskY := 38;
-     | 2 : DiskX := 12;
-           DiskY := 33;
-  END;
-  Disc (x + (Width*DiskX DIV 50), y + (Width*DiskY DIV 50), Width*9 DIV 50, DarkestBrown);
-  Disc (x + (Width*(DiskX+1) DIV 50), y + (Width*(DiskY-1) DIV 50), Width*7 DIV 50, DarkBrown);
-  Disc (x + (Width*(DiskX+2) DIV 50), y + (Width*(DiskY-2) DIV 50), Width*5 DIV 50, Brown);
-  Disc (x + (Width*(DiskX+3) DIV 50), y + (Width*(DiskY-3) DIV 50), Width*3 DIV 50, LightBrown);
-  Disc (x + (Width*(DiskX+4) DIV 50), y + (Width*(DiskY-4) DIV 50), Width   DIV 50, LightestBrown);
+    Width1 := Width DIV 50;
+    Width3 := Width * 3 DIV 50;
+    Width5 := Width DIV 10;
+    Width7 := Width * 7 DIV 50;
+    Width9 := Width * 9 DIV 50;
+    YMod3 := y MOD 3;
+
+    Disc(x + (Width*25 DIV 50), y + (Width * 25 DIV 50), Width9, DarkestGreen);
+    Disc(x + (Width*26 DIV 50), y + (Width * 24 DIV 50), Width7, DarkGreen);
+    Disc(x + (Width*27 DIV 50), y + (Width * 23 DIV 50), Width5, Green);
+    Disc(x + (Width*28 DIV 50), y + (Width * 22 DIV 50), Width3, LightGreen);
+    Disc(x + (Width*29 DIV 50), y + (Width * 21 DIV 50), Width1, LightestGreen);
+
+    CASE (YMod3) OF
+        |0: DiskX := 9;
+            DiskY := 25;
+        |1: DiskX := 12;
+            DiskY := 17;
+        |2: DiskX := 17;
+            DiskY := 12;
+    END;
+    Disc (x + (Width*DiskX DIV 50), y + (Width*DiskY DIV 50), Width*9 DIV 50, DarkestBrown);
+    Disc (x + (Width*(DiskX+1) DIV 50), y + (Width*(DiskY-1) DIV 50), Width*7 DIV 50, DarkBrown);
+    Disc (x + (Width*(DiskX+2) DIV 50), y + (Width*(DiskY-2) DIV 50), Width*5 DIV 50, Brown);
+    Disc (x + (Width*(DiskX+3) DIV 50), y + (Width*(DiskY-3) DIV 50), Width*3 DIV 50, LightBrown);
+    Disc (x + (Width*(DiskX+4) DIV 50), y + (Width*(DiskY-4) DIV 50), Width   DIV 50, LightestBrown);
+    CASE (YMod3) OF
+        |0: DiskX := 25;
+            DiskY := 9;
+        |1: DiskX := 33;
+            DiskY := 12;
+        |2: DiskX := 38;
+            DiskY := 17;
+    END;
+    Disc (x + (Width*DiskX DIV 50), y + (Width*DiskY DIV 50), Width*9 DIV 50, DarkestBrown);
+    Disc (x + (Width*(DiskX+1) DIV 50), y + (Width*(DiskY-1) DIV 50), Width*7 DIV 50, DarkBrown);
+    Disc (x + (Width*(DiskX+2) DIV 50), y + (Width*(DiskY-2) DIV 50), Width*5 DIV 50, Brown);
+    Disc (x + (Width*(DiskX+3) DIV 50), y + (Width*(DiskY-3) DIV 50), Width*3 DIV 50, LightBrown);
+    Disc (x + (Width*(DiskX+4) DIV 50), y + (Width*(DiskY-4) DIV 50), Width   DIV 50, LightestBrown);
+    CASE (YMod3) OF
+        |0: DiskX := 41;
+            DiskY := 25;
+        |1: DiskX := 38;
+            DiskY := 33;
+        |2: DiskX := 33;
+            DiskY := 38;
+    END;
+    Disc (x + (Width*DiskX DIV 50), y + (Width*DiskY DIV 50), Width*9 DIV 50, DarkestBrown);
+    Disc (x + (Width*(DiskX+1) DIV 50), y + (Width*(DiskY-1) DIV 50), Width*7 DIV 50, DarkBrown);
+    Disc (x + (Width*(DiskX+2) DIV 50), y + (Width*(DiskY-2) DIV 50), Width*5 DIV 50, Brown);
+    Disc (x + (Width*(DiskX+3) DIV 50), y + (Width*(DiskY-3) DIV 50), Width*3 DIV 50, LightBrown);
+    Disc (x + (Width*(DiskX+4) DIV 50), y + (Width*(DiskY-4) DIV 50), Width   DIV 50, LightestBrown);
+    CASE (YMod3) OF
+        |0: DiskX := 25;
+            DiskY := 41;
+        |1: DiskX := 17;
+            DiskY := 38;
+        |2: DiskX := 12;
+            DiskY := 33;
+    END;
+    Disc (x + (Width*DiskX DIV 50), y + (Width*DiskY DIV 50), Width*9 DIV 50, DarkestBrown);
+    Disc (x + (Width*(DiskX+1) DIV 50), y + (Width*(DiskY-1) DIV 50), Width*7 DIV 50, DarkBrown);
+    Disc (x + (Width*(DiskX+2) DIV 50), y + (Width*(DiskY-2) DIV 50), Width*5 DIV 50, Brown);
+    Disc (x + (Width*(DiskX+3) DIV 50), y + (Width*(DiskY-3) DIV 50), Width*3 DIV 50, LightBrown);
+    Disc (x + (Width*(DiskX+4) DIV 50), y + (Width*(DiskY-4) DIV 50), Width   DIV 50, LightestBrown);
 END DrawSpinners;
 
 PROCEDURE DrawPlants (x, y, Width : CARDINAL);
+VAR
+      Width10, Width14, Width25 : CARDINAL;
 BEGIN
-  Line (x + (Width*10 DIV 50), y + (Width*25 DIV 50), x + (Width*40 DIV 50), y + (Width*25 DIV 50), DarkestRed);
-  Line (x + (Width*25 DIV 50), y + (Width*25 DIV 50), x + (Width*25 DIV 50), y + Width, DarkestRed);
-  Disc (x + (Width*25 DIV 50), y + (Width*25 DIV 50), Width*10 DIV 50, DarkestRed);
-  Disc (x + (Width*27 DIV 50), y + (Width*23 DIV 50), Width*8 DIV 50, DarkRed);
-  Disc (x + (Width*29 DIV 50), y + (Width*21 DIV 50), Width*6 DIV 50, Red);
-  Disc (x + (Width*31 DIV 50), y + (Width*19 DIV 50), Width*4 DIV 50, LightRed);
-  Disc (x + (Width*33 DIV 50), y + (Width*17 DIV 50), Width*2 DIV 50, LightestRed);
-  CASE (y MOD 4) OF
-     | 0 : Line (x + (Width*25 DIV 50), y + (Width*14 DIV 50), x + (Width*10 DIV 50), y + (Width*10 DIV 50), LightBlue);
-           Disc (x + (Width*10 DIV 50), y + (Width*10 DIV 50), Width*3 DIV 50, DarkestYellow);
-           Plot (x + (Width*11 DIV 50), y + (Width*9 DIV 50), LightYellow);
-     | 1 : Line (x + (Width*25 DIV 50), y + (Width*14 DIV 50), x + (Width*25 DIV 50), y + (Width*5 DIV 50), LightBlue);
-           Disc (x + (Width*25 DIV 50), y + (Width*5 DIV 50), Width*3 DIV 50, DarkestYellow);
-           Plot (x + (Width*26 DIV 50), y + (Width*4 DIV 50), LightYellow);
-     | 2 : Line (x + (Width*25 DIV 50), y + (Width*14 DIV 50), x + (Width*40 DIV 50), y + (Width*10 DIV 50), LightBlue);
-           Disc (x + (Width*40 DIV 50), y + (Width*10 DIV 50), Width*3 DIV 50, DarkestYellow);
-           Plot (x + (Width*41 DIV 50), y + (Width*9 DIV 50), LightYellow);
-     | 3 : Line (x + (Width*25 DIV 50), y + (Width*14 DIV 50), x + (Width*25 DIV 50), y + (Width*5 DIV 50), LightBlue);
-           Disc (x + (Width*25 DIV 50), y + (Width*5 DIV 50), Width*3 DIV 50, DarkestYellow);
-           Plot (x + (Width*26 DIV 50), y + (Width*4 DIV 50), LightYellow);
-  END;
+    Width10 := Width DIV 5;
+    Width25 := Width DIV 2;
+
+    (* Plant base *)
+    Line(x + Width10, y + (Width25), x + (Width*40 DIV 50), y + (Width25), DarkestRed);
+    Line(x + (Width25), y + (Width25), x + (Width25), y + Width, DarkestRed);
+    Disc(x + (Width25), y + (Width25), Width10, DarkestRed);
+    Disc(x + (Width*26 DIV 50), y + (Width*24 DIV 50), Width*8 DIV 50, DarkRed);
+    Disc(x + (Width*27 DIV 50), y + (Width*23 DIV 50), Width*6 DIV 50, Red);
+    Disc(x + (Width*28 DIV 50), y + (Width*22 DIV 50), Width*4 DIV 50, LightRed);
+    Plot(x + (Width*29 DIV 50), y + (Width*21 DIV 50), LightestRed);
+    (* Bobble on top *)
+    CASE (y MOD 4) OF
+        |0: Line(x + (Width25), y + (Width*14 DIV 50), x + Width10, y + Width10, LightBlue);
+            Disc(x + Width10, y + Width10, Width*4 DIV 50, DarkestYellow);
+            Plot(x + (Width*11 DIV 50), y + (Width*9 DIV 50), LightYellow);
+        |1: Line(x + (Width25), y + (Width*14 DIV 50), x + (Width25), y + (Width*5 DIV 50), LightBlue);
+            Disc(x + (Width25), y + (Width*5 DIV 50), Width*4 DIV 50, DarkestYellow);
+            Plot(x + (Width*26 DIV 50), y + (Width*4 DIV 50), LightYellow);
+        |2: Line(x + (Width25), y + (Width*14 DIV 50), x + (Width*40 DIV 50), y + Width10, LightBlue);
+            Disc(x + (Width*40 DIV 50), y + Width10, Width*4 DIV 50, DarkestYellow);
+            Plot(x + (Width*41 DIV 50), y + (Width*9 DIV 50), LightYellow);
+        |3: Line(x + (Width25), y + (Width*14 DIV 50), x + (Width25), y + (Width*5 DIV 50), LightBlue);
+            Disc(x + (Width25), y + (Width*5 DIV 50), Width*4 DIV 50, DarkestYellow);
+            Plot(x + (Width*26 DIV 50), y + (Width*4 DIV 50), LightYellow);
+    END;
 END DrawPlants;
 
 PROCEDURE DrawFlyTraps (x, y, Width : CARDINAL);
