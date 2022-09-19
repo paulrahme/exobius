@@ -26,12 +26,10 @@ BEGIN
       CASE (y MOD 4) OF
           |0: Line(x, y + Width30, x + Width15, y + Width40, Black);
               Line(x + Width25, y + Width30, x + Width40, y + Width40, Black);
-          |1: HLine(x, y + Width35, x + Width15, Black);
+          |1,3: HLine(x, y + Width35, x + Width15, Black);
               HLine(x + Width25, y + Width35, x + Width40, Black);
           |2: Line(x, y + Width40, x + Width15, y + Width30, Black);
               Line(x + Width25, y + Width40, x + Width40, y + Width30, Black);
-          |3: HLine(x, y + Width35, x + Width15, Black);
-              HLine(x + Width25, y + Width35, x + Width40, Black);
       END;
       (* Boom stands *)
       Rectangle(x + (Width*12 DIV 50), y + Width35, x + (Width*14 DIV 50), y + Width, Black, FALSE);
@@ -116,7 +114,7 @@ BEGIN
     Disc (x + (Width*(DiskX+4) DIV 50), y + (Width*(DiskY-4) DIV 50), Width   DIV 50, LightestBrown);
 END DrawSpinners;
 
-PROCEDURE DrawPlants (x, y, Width : CARDINAL);
+PROCEDURE DrawPlants(x, y, Width : CARDINAL);
 VAR
       Width10, Width14, Width25 : CARDINAL;
 BEGIN
@@ -148,53 +146,73 @@ BEGIN
     END;
 END DrawPlants;
 
-PROCEDURE DrawFlyTraps (x, y, Width : CARDINAL);
+PROCEDURE DrawFlyTraps(x, y, Width : CARDINAL);
+VAR
+    Width15, Width20, Width25, Width30 : CARDINAL;
 BEGIN
-  HLine (x, y + Width, x + Width, Black);
-  Line (x + (Width*25 DIV 50), y, x + Width, y + Width, Black);
-  Disc (x + (Width*25 DIV 50), y + (Width*20 DIV 50), Width*15 DIV 50, DarkestBlue);
-  Disc (x + (Width*27 DIV 50), y + (Width*18 DIV 50), Width*13 DIV 50, DarkBlue);
-  Disc (x + (Width*29 DIV 50), y + (Width*16 DIV 50), Width*11 DIV 50, Blue);
-  Disc (x + (Width*31 DIV 50), y + (Width*14 DIV 50), Width*9 DIV 50, LightBlue);
-  Disc (x + (Width*33 DIV 50), y + (Width*12 DIV 50), Width*7 DIV 50, LightestBlue);
-  Disc (x + (Width*35 DIV 50), y + (Width*10 DIV 50), Width*3 DIV 50, LightestWhite);
-  CASE (y MOD 4) OF
-     | 0 : HLine (x + (Width*10 DIV 50), y + (Width*25 DIV 50), x + (Width*40 DIV 50), DarkestRed);
-     | 1 : Ellipse (x + (Width*25 DIV 50), y + (Width*20 DIV 50), Width*15 DIV 50, Width*5 DIV 50, DarkestRed, TRUE);
-           Line (x + (Width*20 DIV 50), y + (Width*15 DIV 50), x + (Width*20 DIV 50), y + (Width*20 DIV 50), White);
-           Line (x + (Width*30 DIV 50), y + (Width*15 DIV 50), x + (Width*30 DIV 50), y + (Width*20 DIV 50), White);
-     | 2 : Ellipse (x + (Width*25 DIV 50), y + (Width*20 DIV 50), Width*15 DIV 50, Width*5 DIV 50, DarkestRed, TRUE);
-           Line (x + (Width*20 DIV 50), y + (Width*15 DIV 50), x + (Width*20 DIV 50), y + (Width*20 DIV 50), White);
-           Line (x + (Width*30 DIV 50), y + (Width*15 DIV 50), x + (Width*30 DIV 50), y + (Width*20 DIV 50), White);
-           Rectangle (x + (Width*24 DIV 50), y + (Width*20 DIV 50), x + (Width*26 DIV 50), y + (Width*40 DIV 50), LightRed, TRUE);
-     | 3 : Ellipse (x + (Width*25 DIV 50), y + (Width*20 DIV 50), Width*15 DIV 50, Width*5 DIV 50, DarkestRed, TRUE);
-           Line (x + (Width*20 DIV 50), y + (Width*15 DIV 50), x + (Width*20 DIV 50), y + (Width*20 DIV 50), White);
-           Line (x + (Width*30 DIV 50), y + (Width*15 DIV 50), x + (Width*30 DIV 50), y + (Width*20 DIV 50), White);
-  END;
+    Width15 := Width * 15 DIV 50;
+    Width20 := Width * 20 DIV 50;
+    Width25 := Width * 25 DIV 50;
+    Width30 := Width * 30 DIV 50;
+
+    (* Stalk + head *)
+    HLine(x, y + Width, x + Width, Black);
+    Line(x + Width25, y, x + Width, y + Width, Black);
+    Disc(x + Width25, y + Width20, Width15, DarkestBlue);
+    Disc(x + (Width*26 DIV 50), y + (Width*19 DIV 50), Width*13 DIV 50, DarkBlue);
+    Disc(x + (Width*27 DIV 50), y + (Width*18 DIV 50), Width*11 DIV 50, Blue);
+    Disc(x + (Width*28 DIV 50), y + (Width*17 DIV 50), Width*9 DIV 50, LightBlue);
+    Disc(x + (Width*29 DIV 50), y + (Width*16 DIV 50), Width*7 DIV 50, LightestBlue);
+    Disc(x + Width30, y + Width15, Width*3 DIV 50, LightestWhite);
+    (* Tongue *)
+    CASE (y MOD 4) OF
+        |0: HLine(x + (Width*10 DIV 50), y + Width25, x + (Width*40 DIV 50), DarkestRed);
+        |1: Ellipse(x + Width25, y + Width20, Width15, Width*5 DIV 50, DarkestRed, TRUE);
+            Line(x + Width20, y + Width15, x + Width20, y + Width20, White);
+            Line(x + Width30, y + Width15, x + Width30, y + Width20, White);
+        |2: Ellipse(x + Width25, y + Width20, Width15, Width*5 DIV 50, DarkestRed, TRUE);
+            Line(x + Width20, y + Width15, x + Width20, y + Width20, White);
+            Line(x + Width30, y + Width15, x + Width30, y + Width20, White);
+            Rectangle(x + (Width*23 DIV 50), y + Width20, x + (Width*27 DIV 50), y + (Width*40 DIV 50), LightRed, TRUE);
+        |3: Ellipse(x + Width25, y + Width20, Width15, Width*5 DIV 50, DarkestRed, TRUE);
+            Line(x + Width20, y + Width15, x + Width20, y + Width20, White);
+            Line(x + Width30, y + Width15, x + Width30, y + Width20, White);
+    END;
 END DrawFlyTraps;
 
 PROCEDURE DrawMaces (x, y, Width : CARDINAL);
+VAR
+    Width5, Width10, Width15, Width20, Width25, Width45 : CARDINAL;
 BEGIN
-  Ellipse (x + (Width*25 DIV 50), y + (Width*25 DIV 50), Width*20 DIV 50, Width*10 DIV 50, DarkestGrey, TRUE);
-  Ellipse (x + (Width*26 DIV 50), y + (Width*24 DIV 50), Width*18 DIV 50, Width*9 DIV 50, DarkGrey, TRUE);
-  Ellipse (x + (Width*27 DIV 50), y + (Width*23 DIV 50), Width*16 DIV 50, Width*8 DIV 50, Grey, TRUE);
-  Ellipse (x + (Width*28 DIV 50), y + (Width*22 DIV 50), Width*14 DIV 50, Width*7 DIV 50, LightGrey, TRUE);
-  Ellipse (x + (Width*29 DIV 50), y + (Width*21 DIV 50), Width*12 DIV 50, Width*6 DIV 50, LightestGrey, TRUE);
-  Ellipse (x + (Width*30 DIV 50), y + (Width*20 DIV 50), Width*10 DIV 50, Width*5 DIV 50, DarkestWhite, TRUE);
-  Ellipse (x + (Width*31 DIV 50), y + (Width*19 DIV 50), Width*8 DIV 50, Width*4 DIV 50, DarkWhite, TRUE);
-  Ellipse (x + (Width*32 DIV 50), y + (Width*18 DIV 50), Width*6 DIV 50, Width*3 DIV 50, White, TRUE);
-  Ellipse (x + (Width*33 DIV 50), y + (Width*17 DIV 50), Width*4 DIV 50, Width*2 DIV 50, LightWhite, TRUE);
-  Ellipse (x + (Width*34 DIV 50), y + (Width*16 DIV 50), Width*2 DIV 50, Width   DIV 50, LightestWhite, TRUE);
-  CASE (y MOD 2) OF
-     | 0 : Line (x + (Width*25 DIV 50), y + (Width*34 DIV 50), x + (Width*25 DIV 50), y + Width, Black);
-           Line (x + (Width*5 DIV 50), y + (Width*25 DIV 50), x, y + (Width*25 DIV 50), Black);
-           Line (x + (Width*45 DIV 50), y + (Width*25 DIV 50), x + Width, y + (Width*25 DIV 50), Black);
-           Line (x + (Width*25 DIV 50), y + (Width*12 DIV 50), x + (Width*25 DIV 50), y + (Width*14 DIV 50), Black);
-     | 1 : Line (x + (Width*15 DIV 50), y + (Width*30 DIV 50), x + (Width*5 DIV 50), y + (Width*45 DIV 50), Black);
-           Line (x + (Width*35 DIV 50), y + (Width*30 DIV 50), x + (Width*45 DIV 50), y + (Width*45 DIV 50), Black);
-           Line (x + (Width*15 DIV 50), y + (Width*20 DIV 50), x + (Width*10 DIV 50), y + (Width*10 DIV 50), Black);
-           Line (x + (Width*35 DIV 50), y + (Width*20 DIV 50), x + (Width*40 DIV 50), y + (Width*40 DIV 50), Black);
-  END;
+    Width5 := Width DIV 10;
+    Width10 := Width * 10 DIV 50;
+    Width15 := Width * 15 DIV 50;
+    Width20 := Width * 20 DIV 50;
+    Width25 := Width * 25 DIV 50;
+    Width45 := Width * 45 DIV 50;
+
+    (* Base disc *)
+    Ellipse(x + Width25, y + Width25, Width*20 DIV 50, Width10, DarkestGrey, TRUE);
+    Ellipse(x + (Width*26 DIV 50), y + (Width*24 DIV 50), Width*18 DIV 50, Width*9 DIV 50, DarkGrey, TRUE);
+    Ellipse(x + (Width*27 DIV 50), y + (Width*23 DIV 50), Width*16 DIV 50, Width*8 DIV 50, Grey, TRUE);
+    Ellipse(x + (Width*28 DIV 50), y + (Width*22 DIV 50), Width*14 DIV 50, Width*7 DIV 50, LightGrey, TRUE);
+    Ellipse(x + (Width*29 DIV 50), y + (Width*21 DIV 50), Width*12 DIV 50, Width*6 DIV 50, LightestGrey, TRUE);
+    Ellipse(x + (Width*30 DIV 50), y + Width20, Width10, Width5, DarkestWhite, TRUE);
+    Ellipse(x + (Width*31 DIV 50), y + (Width*19 DIV 50), Width*8 DIV 50, Width*4 DIV 50, DarkWhite, TRUE);
+    Ellipse(x + (Width*32 DIV 50), y + (Width*18 DIV 50), Width*6 DIV 50, Width*3 DIV 50, White, TRUE);
+    Ellipse(x + (Width*33 DIV 50), y + (Width*17 DIV 50), Width*4 DIV 50, Width*2 DIV 50, LightWhite, TRUE);
+    Ellipse(x + (Width*34 DIV 50), y + (Width*16 DIV 50), Width*2 DIV 50, Width   DIV 50, LightestWhite, TRUE);
+    (* Spikes *)
+    CASE (y MOD 2) OF
+        |0: Line(x + Width25, y + (Width*34 DIV 50), x + Width25, y + Width, Black);
+            Line(x + Width25, y + (Width*12 DIV 50), x + Width25, y + (Width*14 DIV 50), Black);
+            HLine(x, y + Width25, x + Width5, Black);
+            HLine(x + Width45, y + Width25, x + Width, Black);
+        |1: Line(x + Width10, y + Width10,x + Width15, y + Width15, Black);
+            Line(x + (Width*40 DIV 50), y + Width10, x + (Width*35 DIV 50), y + Width15, Black);
+            Line(x, y + Width45, x + Width15, y + (Width*30 DIV 50), Black);
+            Line(x + Width, y + Width45, x + (Width*35 DIV 50), y + (Width*30 DIV 50), Black);
+    END;
 END DrawMaces;
 
 PROCEDURE DrawGlowWorms (x, y : CARDINAL);
