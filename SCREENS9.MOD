@@ -23,7 +23,7 @@ FROM Exobius IMPORT
   Brown, LightBrown, LightestBrown, DarkestGreen, DarkGreen, Green, LightGreen,
   LightestGreen, DarkestYellow, DarkYellow, Yellow, LightYellow,
   LightestYellow, PlaneX,  Enemy1X, Enemy2X, Enemy3X, Enemy4X, Enemy5X,
-  Enemy6X, Enemies, BulletX, BulletY, PlaneY, Width, Height, CoverRectangleX,
+  Enemy6X, Enemies, BulletX, BulletY, PlaneY, CoverRectangleX,
   Count, Lives, EnemyY, BkColour,
   OldBkColor,  Xs, Ys, OneAlive, TwoAlive, ThreeAlive, FourAlive, FiveAlive,
   SixAlive, ScreenComplete, GameOver,  MouseButtons,  MouseMove, GameSpeed,
@@ -141,7 +141,7 @@ BEGIN
               OldPlaneX := PlaneX;
               CheckMouse;
               Rectangle (OldPlaneX, PlaneY, OldPlaneX + PlaneWidth, PlaneY + PlaneHeight, DarkRed, TRUE);
-              DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
+              DrawPlane (PlaneX, PlaneY, PlaneWidth);
             END;
           END;
           DrawPartialSky (Pillar5X);

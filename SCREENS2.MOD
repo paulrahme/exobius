@@ -24,7 +24,7 @@ FROM Exobius IMPORT
     DarkestWhite, DarkWhite, White, LightWhite, LightestWhite,
     DarkestGreen, DarkGreen, Green, LightGreen, LightestGreen,
     Enemy1X, Enemy2X, Enemy3X, Enemy4X, Enemy5X, Enemy6X,
-    PlaneX, BulletX, BulletY, OldBulletX, OldBulletY, PlaneY, Width, Height,
+    PlaneX, BulletX, BulletY, OldBulletX, OldBulletY, PlaneY,
     OneAlive, TwoAlive, ThreeAlive, FourAlive, FiveAlive, SixAlive,
     Enemies, Xs, Ys, Count, Lives, EnemyY,
     BkAddress, BkSize, PlaneAddress,
@@ -96,7 +96,7 @@ BEGIN
         (* Just fired? *)
         IF (BulletY = 5) THEN
             BulletY := 170;
-            BulletX := PlaneX + (Width DIV 2);
+            BulletX := PlaneX + (PlaneWidth DIV 2);
             OldBulletX := BulletX;
         END;
 
@@ -174,9 +174,7 @@ BEGIN
         GetImage(0, 150, 320, 200, BkAddress);
         FOR PlaneY := 200 TO 175 BY -1 DO
             PlaneX := 145 - (PlaneY - 175);
-            Width := PlaneY - 125;
-            Height := Width DIV 2;
-            DrawPlane(PlaneX, PlaneY, Width, Height);
+            DrawPlane(PlaneX, PlaneY, PlaneY - 125);
             Lib.Delay(50);
             Graph.PutImage(0, 150, BkAddress, Graph._GPSET);
         END;
@@ -186,7 +184,7 @@ BEGIN
 
     (* Darken cave *)
     IF (NOT GameOver) THEN
-        PlaneX := 145; OldPlaneX := PlaneX; PlaneY := 175; Width := 50; Height := 25; BulletY := 65520; RectY := 100;
+        PlaneX := 145; OldPlaneX := PlaneX; PlaneY := 175; BulletY := 65520; RectY := 100;
         FadeCountInc := 1;
         FOR FadeCount := 1 TO 4000 DO
             IF (FadeCount > 2500) THEN
@@ -206,11 +204,11 @@ BEGIN
             IF (NewRectY < 175) THEN
                 Disc(Lib.RANDOM(320), Lib.RANDOM(200), 5,  Black);
                 IF (FadeCount MOD 20 = 0) THEN
-                    DrawPlane(PlaneX, PlaneY, Width, Height);
+                    DrawPlane(PlaneX, PlaneY, PlaneWidth);
                 END;
             ELSE
                 IF (RectY MOD 5 = 0) THEN
-                    DrawPlane(PlaneX, PlaneY, Width, Height);
+                    DrawPlane(PlaneX, PlaneY, PlaneWidth);
                 END;
             END;
         END;
@@ -242,8 +240,8 @@ BEGIN
         (* Update player *)
         OldPlaneX := PlaneX;
         CheckMouse();
-        Rectangle(CARDINAL(OldPlaneX), CARDINAL(PlaneY), CARDINAL(OldPlaneX) + CARDINAL(Width), CARDINAL(PlaneY) + CARDINAL(Height), Black, TRUE);
-        DrawPlane(PlaneX, PlaneY, Width, Height);
+        Rectangle(CARDINAL(OldPlaneX), PlaneY, CARDINAL(OldPlaneX) + PlaneWidth, PlaneY + PlaneHeight, Black, TRUE);
+        DrawPlane(PlaneX, PlaneY, PlaneWidth);
         UpBullet;
 
         (* Draw enemies *)
@@ -287,7 +285,7 @@ BEGIN
                     OldPlaneX := PlaneX;
                     Die;
                     IF NOT GameOver THEN
-                        Rectangle(CARDINAL(OldPlaneX), CARDINAL(PlaneY), CARDINAL(OldPlaneX) + CARDINAL(Width), CARDINAL(PlaneY) + CARDINAL(Height), Black, TRUE);
+                        Rectangle(CARDINAL(OldPlaneX), PlaneY, CARDINAL(OldPlaneX) + PlaneWidth, PlaneY + PlaneHeight, Black, TRUE);
                         Rectangle(GX, GY, GX + GlowWidth, GY + GlowHeight, Black, TRUE);
                         GY := 65000;
                         GlowsAlive := GlowsAlive - 1;

@@ -23,7 +23,7 @@ FROM Exobius IMPORT
   LightestYellow, PlaneX,  Enemy1X, Enemy2X, Enemy3X, Enemy4X, Enemy5X,
   Enemy6X, Enemies,
   BulletX, BulletY, OldBulletX, OldBulletY,
-  PlaneY, Width, Height, CoverRectangleX,
+  PlaneY, CoverRectangleX,
   Count, Lives, EnemyY, BkColour,
   OldBkColor,  Xs, Ys, OneAlive, TwoAlive, ThreeAlive, FourAlive, FiveAlive,
   SixAlive, ScreenComplete, GameOver,  MouseButtons,  MouseMove, GameSpeed,
@@ -135,7 +135,7 @@ BEGIN
         END;
         RandomBrown(BrownColour);
         HLine (LineXStart, LineY, LineXEnd, BrownColour);
-        DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
+        DrawPlane (PlaneX, PlaneY, PlaneWidth);
      END;
      Lib.Delay (50);
      PlaneInMemory := FALSE;
@@ -144,7 +144,7 @@ BEGIN
          Xs[0] := 150; Xs[1] := 150 - (LineY*3 DIV 2); Xs[2] := 170 + (LineY*3 DIV 2); Xs[3] := 170;
          Ys[0] := LineY; Ys[1] := 200; Ys[2] := 200; Ys[3] := LineY;
          Polygon (4, Xs, Ys, DarkestBrown);
-         DrawPlane (PlaneX, PlaneY, (LineY*3 DIV 10) + 20, (LineY*3 DIV 20) + 10);
+         DrawPlane (PlaneX, PlaneY, (LineY*3 DIV 10) + 20);
      END;
      RectangleX := 150;
      FOR RectY := 0 TO 180 BY 10 DO
@@ -152,7 +152,7 @@ BEGIN
      END;
      Line (RectangleX, 0, RectangleX, 200, DarkestGrey);
      PlaneY := 190;
-     DrawPlane (PlaneX, PlaneY, 20, 10);
+     DrawPlane (PlaneX, PlaneY, 20);
      Storage.ALLOCATE (BkAddress, CARDINAL(Graph.ImageSize(0, 0, 320, 190)));
      RectY := 0; BridgesDrawn := 0; PlaneX := 150;
 		WHILE NOT (GameOver OR ScreenComplete) DO
@@ -172,7 +172,7 @@ BEGIN
 			IF (BridgesDrawn = NoOfBridges) THEN
 				ScreenComplete := TRUE;
 			END;
-			DrawPlane (PlaneX, PlaneY, 20, 10);
+			DrawPlane (PlaneX, PlaneY, 20);
 			BridgesDrawn := BridgesDrawn + 1;
 			IF (Point(PlaneX+10, PlaneY-1) = Blue) OR (Point(PlaneX+10, PlaneY-1) = LightestBlue) THEN
             Die4;
@@ -223,7 +223,7 @@ BEGIN
               END;
           END;
 	  CheckMouse;
-	  DrawPlane (PlaneX, PlaneY, 20, 10);
+	  DrawPlane (PlaneX, PlaneY, 20);
 	  IF (Point(PlaneX+10, PlaneY-1) = Blue) OR (Point(PlaneX+10, PlaneY-1) = LightestBlue) THEN
         Die4;
      END;
@@ -245,7 +245,7 @@ BEGIN
 	  IF (BridgesDrawn = 30) THEN
 	     ScreenComplete := TRUE;
 	  END;
-	  DrawPlane (PlaneX, PlaneY, 20, 10);
+	  DrawPlane (PlaneX, PlaneY, 200);
 	  BridgesDrawn := BridgesDrawn + 1;
 	  IF (Point(PlaneX+10, PlaneY-1) = Blue) OR (Point(PlaneX+10, PlaneY-1) = LightestBlue) THEN
         Die4;
@@ -261,7 +261,7 @@ BEGIN
             Xs[0] := 150; Xs[1] := 150 - (LineY*3 DIV 2); Xs[2] := 170 + (LineY*3 DIV 2); Xs[3] := 170;
             Ys[0] := LineY; Ys[1] := 200; Ys[2] := 200; Ys[3] := LineY;
             Polygon (4, Xs, Ys, DarkWhite);
-            DrawPlane (PlaneX, PlaneY, (LineY*3 DIV 10) + 20, (LineY*3 DIV 20) + 10);
+            DrawPlane (PlaneX, PlaneY, (LineY*3 DIV 10) + 20);
         END;
         Polygon (4, Xs, Ys, LightGrey);
         FOR BridgeDots := 1 TO 50 DO
@@ -274,44 +274,44 @@ BEGIN
         PlaneInMemory := TRUE;
         FOR LineY := 100 TO 200 DO
             HLine (0, LineY, 320, LightWhite);
-            DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
+            DrawPlane (PlaneX, PlaneY, PlaneWidth);
             Plot (Lib.RANDOM(320), Lib.RANDOM(100)+100, DarkGrey);
         END;
     END;
     Rectangle (0, 0, 320, 100, Blue, TRUE);
     Rectangle (0, 100, 320, 200, White, TRUE);
-    DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
+    DrawPlane (PlaneX, PlaneY, PlaneWidth);
     Delay (20);
     Rectangle (0, 0, 320, 100, LightBlue, TRUE);
     Rectangle (0, 100, 320, 200, DarkWhite, TRUE);
-    DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
+    DrawPlane (PlaneX, PlaneY, PlaneWidth);
     Delay(20);
     Rectangle (0, 0, 320, 100, Blue, TRUE);
     Rectangle (0, 100, 320, 200, DarkestWhite, TRUE);
-    DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
+    DrawPlane (PlaneX, PlaneY, PlaneWidth);
     Delay(20);
     Rectangle (0, 0, 320, 100, DarkBlue, TRUE);
     Rectangle (0, 100, 320, 200, LightestGrey, TRUE);
-    DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
+    DrawPlane (PlaneX, PlaneY, PlaneWidth);
     Delay(20);
     Rectangle (0, 0, 320, 100, Blue, TRUE);
     Rectangle (0, 100, 320, 200, LightGrey, TRUE);
-    DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
+    DrawPlane (PlaneX, PlaneY, PlaneWidth);
     Delay(20);
     Rectangle (0, 0, 320, 100, DarkBlue, TRUE);
     Rectangle (0, 100, 320, 200, Grey, TRUE);
-    DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
+    DrawPlane (PlaneX, PlaneY, PlaneWidth);
     Delay(20);
     Rectangle (0, 0, 320, 100, DarkestBlue, TRUE);
     Rectangle (0, 100, 320, 200, DarkGrey, TRUE);
-    DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
+    DrawPlane (PlaneX, PlaneY, PlaneWidth);
     Delay(20);
     Rectangle (0, 0, 320, 100, Black, TRUE);
     Rectangle (0, 100, 320, 200, DarkestGrey, TRUE);
-    DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
+    DrawPlane (PlaneX, PlaneY, PlaneWidth);
     Delay(20);
     Rectangle (0, 100, 320, 200, Black, TRUE);
-    DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
+    DrawPlane (PlaneX, PlaneY, PlaneWidth);
     Delay(20);
     IF GameOver THEN
        DrawGameOver;

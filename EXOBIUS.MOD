@@ -6,7 +6,7 @@ IMPORT
     Str, Lib, IO, Graph, Window, Storage, MsMouse, Bosses;
 
 FROM Graph IMPORT
-    SetVideoMode, _MRES256COLOR, _DEFAULTMODE, SetActivePage, SetVisualPage, Line, Polygon, Circle, Disc, Ellipse, Rectangle;
+    SetVideoMode, _MRES256COLOR, _DEFAULTMODE, SetActivePage, SetVisualPage, Line, Polygon, Circle, Disc, Ellipse, Rectangle, Plot;
 
 FROM Lib IMPORT
     Sound, NoSound, Delay;
@@ -334,33 +334,71 @@ BEGIN
     Polygon (4, Xs, Ys, LightGrey);
 END Z;
 
-PROCEDURE DrawPlane (x, y, PlaneWidth, PlaneHeight : CARDINAL);
+PROCEDURE DrawPlane (x, y, Width : CARDINAL);
 VAR
-    Xs, Ys : ARRAY [0..6] OF CARDINAL;
-    PlaneCount : CARDINAL;
+    Xs, Ys : ARRAY [0..3] OF CARDINAL;
+    x9, x13, x14, x15, x16, x17, x18, x25,
+    x32, x33, x34, x35, x36, x37,
+    Height, y8, y9, y10, y22, y25 : CARDINAL;
 BEGIN
-    Xs[0] := x; Xs[1] := x+(PlaneWidth DIV 4); Xs[2] := x+(PlaneWidth DIV 3); Xs[3] := x+(PlaneWidth*2 DIV 5);
-    Xs[4] := x+(PlaneWidth DIV 2); Xs[5] := x+(PlaneWidth DIV 2); Xs[6] := x+(PlaneWidth DIV 4);
-    Ys[0] := y+PlaneHeight; Ys[1] := y+(PlaneHeight DIV 3); Ys[2] := y+(PlaneHeight DIV 2); Ys[3] := y+(PlaneHeight DIV 5);
-    Ys[4] := y; Ys[5] := y+(PlaneHeight*4 DIV 5); Ys[6] := y+(PlaneHeight*13 DIV 15);
-    Polygon (7, Xs, Ys, Blue);
-    FOR PlaneCount := 0 TO 6 DO
-        Xs[PlaneCount] := (x + PlaneWidth) - (Xs[PlaneCount] - x);
-    END;
-    Polygon (7, Xs, Ys, LightestBlue);
-    Line (x + (PlaneWidth DIV 3), y + (PlaneHeight*2 DIV 5), x + (PlaneWidth DIV 4), y + (PlaneHeight*4 DIV 5), LightGrey);
-    Line (x + (PlaneWidth* 6 DIV 20), y + (PlaneHeight*2 DIV 5), x + (PlaneWidth*3 DIV 8), y + (PlaneHeight*4 DIV 5), DarkestWhite);
-    Line (x + (PlaneWidth*5 DIV 20), y + (PlaneHeight DIV 3), x + (PlaneWidth*1 DIV 8), y + (PlaneHeight*4 DIV 5), DarkestGrey);
-    Line (x + (PlaneWidth DIV 4), y + (PlaneHeight DIV 3), x + (PlaneWidth*3 DIV 16), y + (PlaneHeight*4 DIV 5), DarkGrey);
-    Line (x + (PlaneWidth*9 DIV 32), y + (PlaneHeight DIV 3), x + (PlaneWidth DIV 4), y + (PlaneHeight*4 DIV 5), Grey);
-    Line (x + (PlaneWidth*5 DIV 16), y + (PlaneHeight*2 DIV 5), x + (PlaneWidth*5 DIV 16), y + (PlaneHeight*4 DIV 5), LightestGrey);
-    Ellipse (x + (PlaneWidth*1 DIV 4), y + (PlaneHeight*4 DIV 5), (PlaneHeight DIV 5), (PlaneWidth DIV 16), LightestWhite, TRUE);
-    Line (x + (PlaneWidth*21 DIV 32), y + (PlaneHeight*2 DIV 5), x + (PlaneWidth*21 DIV 32), y + (PlaneHeight*4 DIV 5), DarkestGrey);
-    Line (x + (PlaneWidth*23 DIV 32), y + (PlaneHeight*2 DIV 5), x + (PlaneWidth*23 DIV 32), y + (PlaneHeight*4 DIV 5), DarkestGrey);
-    Line (x + (PlaneWidth*23 DIV 32), y + (PlaneHeight DIV 3), x + (PlaneWidth*25 DIV 32), y + (PlaneHeight*4 DIV 5), LightGrey);
-    Line (x + (PlaneWidth*3 DIV 4), y + (PlaneHeight*2 DIV 5), x + (PlaneWidth*27 DIV 32), y + (PlaneHeight*4 DIV 5), LightestGrey);
-    Ellipse (x + (PlaneWidth*23 DIV 32), y + (PlaneHeight*4 DIV 5), (PlaneHeight DIV 5), (PlaneWidth DIV 16), LightestWhite, TRUE);
-    Line (x + (PlaneWidth DIV 2), y, x + (PlaneWidth DIV 2), y + (PlaneHeight * 4 DIV 5), LightestWhite);
+    x9 := x + (Width * 9 DIV 50);
+    x13 := x + (Width * 13 DIV 50);
+    x14 := x + (Width * 14 DIV 50);
+    x15 := x + (Width * 15 DIV 50);
+    x16 := x + (Width * 16 DIV 50);
+    x17 := x + (Width * 17 DIV 50);
+    x18 := x + (Width * 18 DIV 50);
+    x25 := x + (Width DIV 2);
+    x32 := x + (Width * 32 DIV 50);
+    x33 := x + (Width * 33 DIV 50);
+    x34 := x + (Width * 34 DIV 50);
+    x35 := x + (Width * 35 DIV 50);
+    x36 := x + (Width * 36 DIV 50);
+    x37 := x + (Width * 37 DIV 50);
+    Height := Width DIV 2;
+    y8 := y + (Height * 8 DIV 25);
+    y9 := y + (Height * 9 DIV 25);
+    y10 := y + (Height * 10 DIV 25);
+    y22 := y + (Height * 22 DIV 25);
+    y25 := y + Height;
+
+    (* Main ship body *)
+    Xs[0] := x; Ys[0] := y25;
+    Xs[1] := x25; Ys[1] := y + (Height * 20 DIV 25);
+    Xs[2] := x25; Ys[2] := y;
+    Xs[3] := x; Ys[3] := y25;
+    Polygon(4, Xs, Ys, DarkBlue);
+    Xs[0] := x + Width; Xs[3] := x + Width;
+    Polygon(4, Xs, Ys, LightBlue);
+
+    (* Left engine *)
+    Line(x18, y22, x18, y9, LightestWhite);
+    Line(x17, y22, x18, y9, LightWhite);
+    Line(x16, y22, x18, y9, White);
+    Line(x15, y22, x17, y9, DarkWhite);                     Plot(x17, y8, DarkWhite);
+    Line(x14, y22, x16, y9, DarkestWhite);
+    Line(x13, y22, x16, y9, LightestGrey);                  Plot(x16, y8, DarkestGrey);
+    Line(x + (Width * 12 DIV 50), y22, x15, y9, LightGrey);
+    Line(x + (Width * 11 DIV 50), y22, x15, y9, Grey);      Plot(x15, y8, LightGrey);
+    Line(x + (Width * 10 DIV 50), y22, x14, y9, DarkGrey);
+    Line(x9, y22, x14, y9, DarkGrey);
+    Line(x + (Width * 8 DIV 50), y22, x13, y10, DarkestGrey);
+    Ellipse(x13, y22, Width DIV 10, Width DIV 25, Yellow, TRUE);
+
+    (* Right engine *)
+    Line(x32, y22, x32, y9, DarkestGrey);
+    Line(x33, y22, x32, y9, DarkGrey);
+    Line(x34, y22, x32, y9, Grey);
+    Line(x35, y22, x32, y9, LightGrey);                     Plot(x33, y8, LightGrey);
+    Line(x36, y22, x34, y9, LightestGrey);
+    Line(x37, y22, x34, y9, DarkestWhite);                  Plot(x34, y8, DarkestWhite);
+    Line(x + (Width * 38 DIV 50), y22, x35, y9, DarkWhite);
+    Line(x + (Width * 39 DIV 50), y22, x35, y9, DarkWhite); Plot(x35, y8, DarkWhite);
+    Line(x + (Width * 40 DIV 50), y22, x36, y9, White);
+    Line(x + (Width * 41 DIV 50), y22, x36, y9, LightWhite);
+    Line(x + (Width * 42 DIV 50), y22, x37, y10, LightestWhite);
+    Ellipse(x37, y22, Width DIV 10, Width DIV 25, Yellow, TRUE);
+
 END DrawPlane;
 
 PROCEDURE CheckSpecialKeys;
@@ -598,7 +636,7 @@ BEGIN
             PlaneX := PlaneX - 5;
         END;
         Graph.PutImage(0, 100, GroundAddress, Graph._GPSET);
-        DrawPlane(PlaneX, PlaneY, ((PlaneY - 100) DIV 2), ((PlaneY - 100) DIV 4));
+        DrawPlane(PlaneX, PlaneY, (PlaneY - 100) DIV 2);
         Delay(40);
     END;
     Graph.ClearScreen(Graph._GCLEARSCREEN);

@@ -17,7 +17,7 @@ FROM Exobius IMPORT
     EnemyYStart, CollisionY,
     Black, DarkestGrey, DarkGrey, Grey, LightGrey, LightestGrey,
     DarkestWhite, DarkWhite, White, LightWhite, LightestWhite, LightBlue,
-    PlaneX, BulletX, BulletY, PlaneY, Width, Height,
+    PlaneX, BulletX, BulletY, PlaneY,
     Enemy1X, Enemy2X, Enemy3X, Enemy4X, Enemy5X, Enemy6X,
     OneAlive, TwoAlive, ThreeAlive, FourAlive, FiveAlive, SixAlive,
     Enemies, Xs, Ys,
@@ -160,23 +160,23 @@ PROCEDURE Screen3;
 VAR
     DotX, DotY, GroundDots, RectY, CloudCount : CARDINAL;
 BEGIN
-   DrawPlane (PlaneX, PlaneY, Width, Height);
+   DrawPlane (PlaneX, PlaneY, PlaneWidth);
    FOR RectY := 100 TO 0 BY -10 DO
        Rectangle (RectY, RectY, 320 - RectY, 200 - RectY, Black ,TRUE);
    END;
-   DrawPlane (PlaneX, PlaneY, Width, Height);
+   DrawPlane (PlaneX, PlaneY, PlaneWidth);
    FOR RectY := 100 TO 0 BY -10 DO
        Rectangle (RectY, RectY, 320 - RectY, 200 - RectY, Grey ,TRUE);
    END;
-   DrawPlane (PlaneX, PlaneY, Width, Height);
+   DrawPlane (PlaneX, PlaneY, PlaneWidth);
    FOR RectY := 100 TO 0 BY -10 DO
        Rectangle (RectY, RectY, 320 - RectY, 200 - RectY, DarkestWhite ,TRUE);
    END;
-   DrawPlane (PlaneX, PlaneY, Width, Height);
+   DrawPlane (PlaneX, PlaneY, PlaneWidth);
    FOR RectY := 100 TO 0 BY -10 DO
        Rectangle (RectY, RectY, 320 - RectY, 200 - RectY, White ,TRUE);
    END;
-   DrawPlane (PlaneX, PlaneY, Width, Height);
+   DrawPlane (PlaneX, PlaneY, PlaneWidth);
    FOR RectY := 100 TO 0 BY -10 DO
        Rectangle (RectY, RectY, 320 - RectY, 100, LightBlue, TRUE);
        Rectangle (RectY, 100, 320 - RectY, 200 - RectY, LightestWhite ,TRUE);
@@ -206,7 +206,7 @@ BEGIN
             Plot (DotX, DotY, LightBlue);
             CheckMouse;
             BlankGround3;
-            DrawPlane(PlaneX, PlaneY, PlaneWidth, PlaneHeight);
+            DrawPlane(PlaneX, PlaneY, PlaneWidth);
             Update3DBullet;
             Lib.Delay (GameSpeed);
          END;   (* This "END" from Ground Dots *)
@@ -220,7 +220,7 @@ BEGIN
           IF NOT (GameOver) THEN
             CheckMouse;
             BlankGround3;
-            DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
+            DrawPlane (PlaneX, PlaneY, PlaneWidth);
             Update3DBullet;
             DrawEnemies3;
             IF (BulletY > 99) THEN

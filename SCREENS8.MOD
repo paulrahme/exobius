@@ -22,7 +22,7 @@ FROM Exobius IMPORT
   Brown, LightBrown, LightestBrown, DarkestGreen, DarkGreen, Green, LightGreen,
   LightestGreen, DarkestYellow, DarkYellow, Yellow, LightYellow,
   LightestYellow, PlaneX,  Enemy1X, Enemy2X, Enemy3X, Enemy4X, Enemy5X,
-  Enemy6X, Enemies, BulletX, BulletY, PlaneY, Width, Height, CoverRectangleX,
+  Enemy6X, Enemies, BulletX, BulletY, PlaneY, CoverRectangleX,
   Count, Lives, EnemyY, BkColour,
   OldBkColor,  Xs, Ys, OneAlive, TwoAlive, ThreeAlive, FourAlive, FiveAlive,
   SixAlive, ScreenComplete, GameOver,  MouseButtons,  MouseMove, GameSpeed,
@@ -328,7 +328,7 @@ PROCEDURE UpBullet8;
 BEGIN
   Line (UpBulletX, UpBulletY, UpBulletX, UpBulletY + 11, Black);
   IF (UpBulletY = 170) THEN
-     UpBulletX := PlaneX + (Width DIV 2);
+     UpBulletX := PlaneX + (PlaneWidth DIV 2);
      Rectangle (UpBulletX - 1, UpBulletY, UpBulletX + 1, UpBulletY + 15, Black, TRUE);
      Line (UpBulletX, UpBulletY, UpBulletX, UpBulletY + 15, Black);
   END;
@@ -421,7 +421,7 @@ BEGIN
                  CheckMouse8;
                  ClearScreen (Graph._GCLEARSCREEN);
                  DrawPlanet (PlanetX, PlanetY, PlanetRadius);
-                 DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
+                 DrawPlane (PlaneX, PlaneY, PlaneWidth);
                  DrawBullet8;
                  UpBullet8;
                  DrawStars8;
@@ -440,7 +440,7 @@ BEGIN
                     PlanetRadius := PlanetRadius + 1;
                  END;
                  DrawPlanet (PlanetX, PlanetY, PlanetRadius);
-                 DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
+                 DrawPlane (PlaneX, PlaneY, PlaneWidth);
                  DrawEnemies8;
                  DrawBullet8;
                  UpBullet8;

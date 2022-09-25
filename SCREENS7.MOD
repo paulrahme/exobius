@@ -21,7 +21,7 @@ FROM Exobius IMPORT
   Brown, LightBrown, LightestBrown, DarkestGreen, DarkGreen, Green, LightGreen,
   LightestGreen, DarkestYellow, DarkYellow, Yellow, LightYellow,
   LightestYellow, PlaneX,  Enemy1X, Enemy2X, Enemy3X, Enemy4X, Enemy5X,
-  Enemy6X, Enemies, BulletX, BulletY, PlaneY, Width, Height, CoverRectangleX,
+  Enemy6X, Enemies, BulletX, BulletY, PlaneY, CoverRectangleX,
   Count, Lives, EnemyY, BkColour,
   OldBkColor,  Xs, Ys, OneAlive, TwoAlive, ThreeAlive, FourAlive, FiveAlive,
   SixAlive, ScreenComplete, GameOver,  MouseButtons,  MouseMove, GameSpeed,
@@ -108,7 +108,7 @@ BEGIN
     PlaneX := 145; PlaneY := 175; PlaneInMemory := FALSE;
     Rectangle (0, 0, 320, 100, DarkestGrey, TRUE);
     Rectangle (0, 100, 320, 200, DarkBrown, TRUE);
-    DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
+    DrawPlane (PlaneX, PlaneY, PlaneWidth);
     Graph.GetImage (PlaneX, PlaneY, PlaneX + PlaneWidth, PlaneY + PlaneHeight, PlaneAddress);
     PlaneInMemory := FALSE;
     FOR PillarCount := 105 TO 200 DO
@@ -119,12 +119,12 @@ BEGIN
            Rectangle (0, 0, 320, 100, Black, TRUE);
            Ellipse (CARDINAL(PlaneX - 8) + (PillarCount*13 DIV 200), PillarCount, PillarCount*13 DIV 200, PillarCount*5 DIV 200, White, TRUE);
         END;
-        DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
+        DrawPlane (PlaneX, PlaneY, PlaneWidth);
         Delay (GameSpeed);
     END;
     FOR PillarCount := 90 TO 200 BY 8 DO
         Rectangle (0, 98, 320, PillarCount, Black, TRUE);
-        DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
+        DrawPlane (PlaneX, PlaneY, PlaneWidth);
         NoSound;
         Sound (PillarCount*5);
     END;
@@ -185,7 +185,7 @@ BEGIN
                     PlaneOnPillars := FALSE;
                  END;
               END;
-              DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
+              DrawPlane (PlaneX, PlaneY, PlaneWidth);
           END;
     END;
     IF (PlaneOnPillars) THEN
@@ -207,7 +207,7 @@ BEGIN
            DrawPillarTop (Pillar3X, Pillar2Y+20);
            DrawPillarTop (Pillar4X, Pillar2Y+40);
            DrawPillarTop (Pillar5X, Pillar2Y+60);
-           DrawPlane (PlaneX, PlaneY, PlaneWidth ,PlaneHeight);
+           DrawPlane (PlaneX, PlaneY, PlaneWidth);
        END;
        NoSound;
        FOR BlueCircles := 1 TO NoOfCircles DO
@@ -245,7 +245,7 @@ BEGIN
          OldPlaneX := PlaneX;
          CheckMouse;
          PlaneX := OldPlaneX;
-         DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
+         DrawPlane (PlaneX, PlaneY, PlaneWidth);
          IF (PlaneX<145) THEN
             PlaneX := PlaneX + INTEGER(RANDOM(5))
          ELSIF (PlaneX>145) THEN
@@ -258,7 +258,7 @@ BEGIN
      Graph.ClearScreen(Graph._GCLEARSCREEN);
      FOR PillarCount := 200 TO 100 BY -8 DO
          Rectangle (0, PillarCount, 320, 201, DarkBrown, TRUE);
-         DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
+         DrawPlane (PlaneX, PlaneY, PlaneWidth);
          NoSound;
          Sound (PillarCount*5);
      END;
@@ -309,7 +309,7 @@ BEGIN
                IF (Graph.Point(315, 195)=Black) THEN
                   Rectangle (250, 190, 320, 200, DarkBrown, TRUE);
                END;
-               DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
+               DrawPlane (PlaneX, PlaneY, PlaneWidth);
              END;
            END;
            Rectangle (Pillar5X, 0, Pillar5X + 27, 100, Black, TRUE);
@@ -319,7 +319,7 @@ BEGIN
      IF NOT GameOver THEN
         FOR PillarCount := 100 TO 300 BY 8 DO
             Rectangle (0, 0, 320, PillarCount, Black, TRUE);
-            DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
+            DrawPlane (PlaneX, PlaneY, PlaneWidth);
             NoSound;
             Sound (PillarCount*5);
         END;

@@ -21,7 +21,7 @@ FROM Exobius IMPORT
     DarkestBrown, DarkBrown, Brown, LightBrown, LightestBrown,
     DarkestGreen, DarkGreen, Green, LightGreen, LightestGreen,
     DarkestYellow, DarkYellow, Yellow, LightYellow, LightestYellow,
-    DrawPlane, PlaneX, PlaneY, Width, Height,
+    DrawPlane, PlaneX, PlaneY,
     Count, GameSpeed,
     A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z;
 
@@ -1465,7 +1465,7 @@ END DrawVGAPlanet;
 PROCEDURE PlaneToPlanet;
 VAR
     NegPlaneAddress : ADDRESS;
-    NegPlaneSize, RandomRed : CARDINAL;
+    NegPlaneSize, RandomRed, Width : CARDINAL;
     Skipped : BOOLEAN;
 BEGIN
     Graph.ClearScreen(Graph._GCLEARSCREEN);
@@ -1480,24 +1480,20 @@ BEGIN
         Plot (Lib.RANDOM(320), Lib.RANDOM(200), Lib.RANDOM(10) + 109);
     END;
     Graph.GetImage (249, 59, 319, 151, NegPlaneAddress);
-    PlaneX := 250; Width := 30; Height := 15;
+    PlaneX := 250; Width := 30;
     FOR PlaneY := 60 TO 150 DO
         Skipped := KeyPressed();
         IF NOT (Skipped) THEN
-            DrawPlane (PlaneX, PlaneY, Width, Height);
+            DrawPlane (PlaneX, PlaneY, Width);
             Lib.Delay (40);
             IF (PlaneY MOD 2 = 0) THEN
                 PlaneX := PlaneX + 1;
             END;
             IF (PlaneY MOD 3 = 0) THEN
                 Width := Width - 2;
-                Height := Height - 1;
             END;
             IF (Width < 0) THEN
                 Width := 0;
-            END;
-            IF (Height < 0) THEN
-                Height := 0;
             END;
             Graph.PutImage (249, 59, NegPlaneAddress, Graph._GPSET);
         END;

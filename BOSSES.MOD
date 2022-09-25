@@ -21,7 +21,7 @@ FROM Exobius IMPORT
   Brown, LightBrown, LightestBrown, DarkestGreen, DarkGreen, Green, LightGreen,
   LightestGreen, DarkestYellow, DarkYellow, Yellow, LightYellow,
   LightestYellow, PlaneX,  Enemy1X, Enemy2X, Enemy3X, Enemy4X, Enemy5X,
-  Enemy6X, Enemies, BulletX, BulletY, PlaneY, Width, Height, CoverRectangleX,
+  Enemy6X, Enemies, BulletX, BulletY, PlaneY, CoverRectangleX,
   Count, Lives, EnemyY, BkColour,
   OldBkColor,  Xs, Ys, OneAlive, TwoAlive, ThreeAlive, FourAlive, FiveAlive,
   SixAlive, ScreenComplete, GameOver,  MouseButtons,  MouseMove, GameSpeed,
@@ -201,7 +201,7 @@ BEGIN
         Disc (160, MouthY, 5, Black);   (* Open Boss' Mouth *)
         Graph.GetImage (0, 0, 320, 200, BkAddress);
         CheckMouse;
-        DrawPlane (PlaneX, PlaneY, Width, Height);
+        DrawPlane (PlaneX, PlaneY, PlaneWidth);
         Update3DBullet;
         IF (BulletY  > 99) THEN
                 BulletY := BulletY - 1;
@@ -220,7 +220,7 @@ BEGIN
                                 Die;
                         END;
                         CheckMouse;
-                        DrawPlane (PlaneX, PlaneY, Width, Height);
+                        DrawPlane (PlaneX, PlaneY, PlaneWidth);
                         Update3DBullet;
                         IF (BulletX > 140) AND (BulletX < 170) AND (BulletY < 3) THEN
                                 Disc (160, 110, 40, LightestWhite);
@@ -437,7 +437,7 @@ BEGIN
         PlaneX := PlaneX - 5;
      END;
      Graph.ClearScreen (Graph._GCLEARSCREEN);
-     DrawPlane (PlaneX, PlaneY, ((PlaneY - 100) DIV 2), ((PlaneY - 100) DIV 4));
+     DrawPlane (PlaneX, PlaneY, ((PlaneY - 100) DIV 2));
      Delay (40);
   END;
   Graph.ClearScreen(Graph._GCLEARSCREEN);
@@ -456,7 +456,7 @@ VAR
 BEGIN
     PlaneX := 145; PlaneY := 174;
     Graph.ClearScreen(Graph._GCLEARSCREEN);
-    DrawPlane(PlaneX, PlaneY, PlaneWidth, PlaneHeight);
+    DrawPlane(PlaneX, PlaneY, PlaneWidth);
     Graph.GetImage (PlaneX, PlaneY, PlaneX + PlaneWidth, PlaneY + PlaneHeight, PlaneAddress);
     DrawSpinners(Boss1X, 0, 100);
     Storage.ALLOCATE (BossAddressA, CARDINAL(Graph.ImageSize(Boss1X, 0, Boss1X + 100, 100)));
@@ -464,21 +464,21 @@ BEGIN
     Graph.PutImage (Boss2X, 0, BossAddressA, Graph._GPSET);
     Graph.PutImage (Boss3X, 0, BossAddressA, Graph._GPSET);
     Graph.ClearScreen (Graph._GCLEARSCREEN);
-    DrawPlane(PlaneX, PlaneY, PlaneWidth, PlaneHeight);
+    DrawPlane(PlaneX, PlaneY, PlaneWidth);
     DrawSpinners(Boss1X, 1, 100);
     Storage.ALLOCATE (BossAddressB, CARDINAL(Graph.ImageSize(Boss1X, 1, Boss1X + 100, 101)));
     Graph.GetImage (Boss1X, 1, Boss1X + 100, 101, BossAddressB);
     Graph.PutImage (Boss2X, 1, BossAddressB, Graph._GPSET);
     Graph.PutImage (Boss3X, 1, BossAddressB, Graph._GPSET);
     Graph.ClearScreen (Graph._GCLEARSCREEN);
-    DrawPlane(PlaneX, PlaneY, PlaneWidth, PlaneHeight);
+    DrawPlane(PlaneX, PlaneY, PlaneWidth);
     DrawSpinners(Boss1X, 2, 100);
     Storage.ALLOCATE (BossAddressC, CARDINAL(Graph.ImageSize(Boss1X, 2, Boss1X + 100, 102)));
     Graph.GetImage (Boss1X, 2, Boss1X + 100, 102, BossAddressC);
     Graph.PutImage (Boss2X, 2, BossAddressC, Graph._GPSET);
     Graph.PutImage (Boss3X, 2, BossAddressC, Graph._GPSET);
     Graph.ClearScreen (Graph._GCLEARSCREEN);
-    DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
+    DrawPlane (PlaneX, PlaneY, PlaneWidth);
     FOR BossFall := 4 TO 50 BY 2 DO
         Rectangle (0, BossFall - 4, 320, BossFall - 1, Black, TRUE);
         CASE (BossFall MOD 3) OF
@@ -546,7 +546,7 @@ BEGIN
                  Boss3Y := BossFall;
               END;
               Rectangle (0, PlaneY - 2, 320, 200, Black, TRUE);
-              DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
+              DrawPlane (PlaneX, PlaneY, PlaneWidth);
               CASE (BossFall MOD 3) OF
                    | 1 : DrawBoss2A(Boss1X, Boss1Y, Boss2X, Boss2Y, Boss3X, Boss3Y);
                    | 2 : DrawBoss2B(Boss1X, Boss1Y, Boss2X, Boss2Y, Boss3X, Boss3Y);
@@ -586,7 +586,7 @@ BEGIN
                  Boss3Y := BossFall;
               END;
               Rectangle (0, PlaneY - 2, 320, 200, Black, TRUE);
-              DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
+              DrawPlane (PlaneX, PlaneY, PlaneWidth);
               CASE (BossFall MOD 3) OF
                    | 1 : DrawBoss2A(Boss1X, Boss1Y, Boss2X, Boss2Y, Boss3X, Boss3Y);
                    | 2 : DrawBoss2B(Boss1X, Boss1Y, Boss2X, Boss2Y, Boss3X, Boss3Y);
@@ -693,7 +693,7 @@ BEGIN
         PlaneX := PlaneX - 5;
      END;
      Graph.PutImage (0, 0, BkAddress, Graph._GPSET);
-     DrawPlane (PlaneX, PlaneY, ((PlaneY - 100) DIV 2), ((PlaneY - 100) DIV 4));
+     DrawPlane (PlaneX, PlaneY, ((PlaneY - 100) DIV 2));
      DrawStars8;
      Delay (40);
   END;
@@ -757,7 +757,7 @@ BEGIN
     BossDiving := FALSE;
     FOR Boss3Y3 := 200 TO Boss3YTop BY -(BossDive) DO
         Graph.PutImage (0, 0, BkAddress, Graph._GPSET);
-        DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
+        DrawPlane (PlaneX, PlaneY, PlaneWidth);
         DrawBoss3 (Boss3X3, Boss3Y3);
     END;
     WHILE NOT (GameOver) AND NOT (ScreenComplete) DO
@@ -765,7 +765,7 @@ BEGIN
              Delay (GameSpeed);
              Boss3Move := Lib.RANDOM(5)+1;
              Graph.PutImage (0, 0, BkAddress, Graph._GPSET);
-             DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
+             DrawPlane (PlaneX, PlaneY, PlaneWidth);
              IF (PlaneX<Boss3X3) THEN
                 Boss3X3 := Boss3X3 - Boss3Move
              ELSIF (PlaneX>Boss3X3) THEN
@@ -786,7 +786,7 @@ BEGIN
                     Delay (GameSpeed);
                     Graph.PutImage (0, 0, BkAddress, Graph._GPSET);
                     DrawBoss3 (Boss3X3, Boss3Y3);
-                    DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
+                    DrawPlane (PlaneX, PlaneY, PlaneWidth);
                     CheckMouse;
                     IF (BulletY=5) THEN
                        BulletY := 0;
@@ -805,7 +805,7 @@ BEGIN
                     Delay (GameSpeed);
                     Graph.PutImage (0, 0, BkAddress, Graph._GPSET);
                     DrawBoss3 (Boss3X3, Boss3Y3);
-                    DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
+                    DrawPlane (PlaneX, PlaneY, PlaneWidth);
                     CheckMouse;
                     IF (BulletY=5) THEN
                        BulletY := 0;
@@ -834,7 +834,7 @@ BEGIN
     END;
 END Boss3;
 
-PROCEDURE WritePlayExobius(x,y,Width : CARDINAL);
+PROCEDURE WritePlayExobius(x, y, Width : CARDINAL);
 BEGIN
     Line (x+Width*59 DIV 150,y+Width*120 DIV 150,x+Width*79 DIV 150,y+Width*133 DIV 150,Red);
     Line (x+Width*41 DIV 150,y+Width*120 DIV 150,x+Width*21 DIV 150,y+Width*133 DIV 150,DarkRed);
@@ -957,7 +957,7 @@ BEGIN
      IF (PlaneX>155) THEN
         PlaneX := PlaneX - 5;
      END;
-     DrawPlane (PlaneX, PlaneY, PlaneY DIV 3, PlaneY DIV 2);
+     DrawPlane (PlaneX, PlaneY, PlaneY DIV 3);
      Delay (40);
      NoSound;
  END; (* WHILE *)
@@ -980,7 +980,7 @@ BEGIN
     FOR Boss4Width := 1 TO 150 BY 3 DO
         Graph.PutImage (0, 0, BkAddress, Graph._GPSET);
         DrawBoss4 ((160-Boss4Width DIV 2), (100-Boss4Width DIV 2), Boss4Width);
-        DrawPlane (PlaneX, PlaneY, PlaneWidth, PlaneHeight);
+        DrawPlane (PlaneX, PlaneY, PlaneWidth);
         CheckMouse;
     END;
     Graph.PutImage (0, 0, BkAddress, Graph._GPSET);
@@ -991,7 +991,7 @@ BEGIN
 
         Graph.PutImage (0, 0, BkAddress, Graph._GPSET);
         CheckMouse;
-        DrawPlane (PlaneX, PlaneY, Width, Height);
+        DrawPlane (PlaneX, PlaneY, PlaneWidth);
         Update3DBullet;
         IF (BulletY  > 99) THEN
                 BulletY := BulletY - 1;
@@ -1026,7 +1026,7 @@ BEGIN
                                 Die;
                         END;
                         CheckMouse;
-                        DrawPlane (PlaneX, PlaneY, Width, Height);
+                        DrawPlane (PlaneX, PlaneY, PlaneWidth);
                         Update3DBullet;
                         IF (BulletY  < 6) AND (BulletY > 0) THEN
                                 BulletY := BulletY - 1;

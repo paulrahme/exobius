@@ -25,7 +25,7 @@ CONST
 
 VAR
     Key : CHAR;
-    Width, Height, PlaneX : INTEGER;
+    PlaneX : INTEGER;
     Enemy1X, Enemy2X, Enemy3X, Enemy4X, Enemy5X, Enemy6X, Enemies,
     BulletX, BulletY, OldBulletX, OldBulletY, PlaneY, CoverRectangleX, Count, Lives, EnemyY,
     NegPlaneSize, Score, BkSize, GroundSize : CARDINAL;
@@ -44,7 +44,7 @@ PROCEDURE DisableVGAPageSwapping;
 PROCEDURE PutPixel(x, y : CARDINAL; color : BYTE);
 PROCEDURE SetPixel(pixPos : CARDINAL; Color : BYTE);
 PROCEDURE GetPixel(x, y : CARDINAL) : SHORTCARD;
-PROCEDURE DrawPlane(x, y, Width, Height : CARDINAL);
+PROCEDURE DrawPlane(x, y, Width : CARDINAL);
 PROCEDURE Update3DBullet;
 PROCEDURE CheckSpecialKeys;
 PROCEDURE CheckMouseAndSpecialKeys;
