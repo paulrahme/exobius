@@ -410,10 +410,10 @@ BEGIN
         IF (Key="q") OR (Key="Q") THEN
             GameOver := TRUE;
         ELSIF (Key="p") OR (Key="P") THEN
-            TextPos := Graph.SetTextPosition(25, 33);
+            TextPos := Graph.SetTextPosition(25, 19);
             Graph.OutText('PAUSED');
             Key := IO.RdKey();
-            Rectangle (250, 190, 320, 200, Black, TRUE);
+            Rectangle (140, 190, 180, 199, Black, TRUE);
         END;
     END;
 END CheckSpecialKeys;
@@ -598,6 +598,11 @@ END Die;
 PROCEDURE DrawGameOver;
 BEGIN
     ClearTheBuffer;
+    Rectangle(100, 20, 230, 90, DarkestRed, TRUE);
+    Rectangle(99, 19, 231, 91, DarkRed, FALSE);
+    Rectangle(98, 18, 232, 92, Red, FALSE);
+    Rectangle(97, 17, 233, 93, LightRed, FALSE);
+    Rectangle(96, 16, 234, 94, LightestRed, FALSE);
     G(110, 30); A(140, 30); M(170, 30); E(200, 30);
     O(110, 60); V(140, 60); E(170, 60); R(200, 60);
     Key := IO.RdKey();

@@ -31,7 +31,6 @@ FROM Exobius IMPORT
     ScreenComplete, GameOver,  MouseButtons,  MouseMove, GameSpeed,
     Update3DBullet, DrawPlane, CheckMouse, CheckMouseAndSpecialKeys, Die, DrawGameOver,
     FinishScreen, CheckDeath1,
-    GroundAddress, GroundSize,
     CheckSpecialKeys, ClearTheBuffer, DrawGameOver;
 
 FROM Sprites IMPORT
@@ -245,7 +244,7 @@ BEGIN
 
             (* Calculate X perspective using final X and current y *)
             YOffsetMult := YOffset + 8;                         (* convert to 100 -> 0 for perspective calc *)
-            XOffset := (FinalXOffset * YOffsetMult) DIV 116;    (* starts at 1/16th distance from centre, ends at full distance *)
+            XOffset := (FinalXOffset * YOffsetMult) DIV 118;    (* starts at just under 1/16th distance from centre, ends at full distance *)
             IF XOffsetIsOnRight THEN
                 CurrX := 160 + XOffset;
             ELSE
@@ -284,8 +283,8 @@ BEGIN
         Plot(Lib.RANDOM(320), Lib.RANDOM(40) + 160, LightestGreen);
     END;
     (* Draw path *)
-    Xs[0] := 0; Xs[1] := 150; Xs[2] := 170; Xs[3] := 320;
-    Ys[0] := 200; Ys[1] := 100; Ys[2] := 100; Ys[3] := 200;
+    Xs[0] := 0; Xs[1] := 150; Xs[2] := 170; Xs[3] := 319;
+    Ys[0] := 199; Ys[1] := 100; Ys[2] := 100; Ys[3] := 199;
     Polygon(4, Xs, Ys, DarkestBrown);
     (* Draw mountain entrance *)
     Rectangle(150, 87, 170, 100, Black, TRUE);
@@ -331,7 +330,6 @@ BEGIN
     Line (171, 100, 320, 199, DarkBrown);
     Line (148, 100, 0, 198, DarkestBrown);
     Line (172, 100, 320, 198, DarkestBrown);
-    GroundSize := CARDINAL(Graph.ImageSize(0, 100, 319, 199));
 
     FOR DotIdx := 0 TO (NumGroundDots-1) DO
         WITH GroundDots[DotIdx] DO
@@ -344,8 +342,6 @@ BEGIN
 
     (* Gameplay Starts *)
 
-    Storage.ALLOCATE(GroundAddress, GroundSize);
-    Graph.GetImage(0, 100, 319, 199, GroundAddress);
     DrawPlane(PlaneX, PlaneY, PlaneWidth);
     ScreenComplete := FALSE;
     Enemies := 1;
@@ -355,7 +351,7 @@ BEGIN
         (* Between waves of enemies *)
         FOR FrameBetweenWaves := 1 TO 20 DO
             CheckMouse();
-            Graph.PutImage(0, 100, GroundAddress, Graph._GPSET);
+            Polygon(4, Xs, Ys, LightBrown);
             UpdateGroundDots();
             Update3DBullet();
             DrawPlane(PlaneX, PlaneY, PlaneWidth);
@@ -367,7 +363,7 @@ BEGIN
         FOR EnemyY := 101 TO 200 DO
             IF (GameOver=FALSE) AND (ScreenComplete=FALSE) THEN
                 CheckMouse;
-                Graph.PutImage(0, 100, GroundAddress, Graph._GPSET);
+                Polygon(4, Xs, Ys, LightBrown);
                 UpdateGroundDots();
                 DrawEnemies1();
                 Update3DBullet();
@@ -384,7 +380,6 @@ BEGIN
         Enemies := Enemies + 1;
     END;
 
-    Storage.DEALLOCATE(GroundAddress, GroundSize);
 
     IF GameOver THEN
         DrawGameOver;
