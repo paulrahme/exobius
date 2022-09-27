@@ -12,8 +12,8 @@ FROM Lib IMPORT
      Sound, NoSound, Delay, RANDOM;
 
 FROM Exobius IMPORT
-  SolidFill, PlaneWidth, PlaneHeight, PlaneMovement,
-  EnemyYStart, PlaneXMin, CollisionY, NegPlaneSize,
+  SolidFill, PlaneWidth, PlaneHeight,
+  EnemyYStart, PlaneXMin, CollisionY,
   Black, DarkestGrey, DarkGrey, Grey, LightGrey, LightestGrey,
   DarkestWhite, DarkWhite, White, LightWhite, LightestWhite,
   DarkestBlue, DarkBlue, Blue, LightBlue, LightestBlue, DarkestRed,
@@ -28,7 +28,7 @@ FROM Exobius IMPORT
   Update3DBullet, DrawPlane, CheckMouse, Die, A, B,
   C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z,
   FinishScreen, Key, PlaneXMove, Score,
-  PlaneAddress, BkAddress, BkSize, GroundAddress, GroundSize,
+  BkAddress, BkSize, GroundAddress, GroundSize,
   DrawGameOver;
 
 FROM Storage IMPORT
@@ -46,8 +46,8 @@ CONST
     Boss3X = 220;
     MouthY = 60;
 VAR
-  Boss1Y, Boss2Y, Boss3Y, Boss3Y3, Boss1Lives, Boss2Lives : CARDINAL;
-  Boss3X3, Boss3Lives : INTEGER;
+  Boss1Y, Boss2Y, Boss3Y, Boss3Y3, Boss1Lives, Boss2Lives, Boss3X3 : CARDINAL;
+  Boss3Lives : INTEGER;
   TextPos : Graph.TextCoords;
   BossAddressA, BossAddressB, BossAddressC : ADDRESS;
   OneDead, TwoDead, ThreeDead, BossDiving : BOOLEAN;
@@ -457,7 +457,6 @@ BEGIN
     PlaneX := 145; PlaneY := 174;
     Graph.ClearScreen(Graph._GCLEARSCREEN);
     DrawPlane(PlaneX, PlaneY, PlaneWidth);
-    Graph.GetImage (PlaneX, PlaneY, PlaneX + PlaneWidth, PlaneY + PlaneHeight, PlaneAddress);
     DrawSpinners(Boss1X, 0, 100);
     Storage.ALLOCATE (BossAddressA, CARDINAL(Graph.ImageSize(Boss1X, 0, Boss1X + 100, 100)));
     Graph.GetImage (Boss1X, 0, Boss1X + 100, 100, BossAddressA);
@@ -729,18 +728,22 @@ BEGIN
 END KillBoss3;
 
 PROCEDURE DrawBullet8Boss;
+VAR
+    BossLeft, BossRight : CARDINAL;
 BEGIN
     Line (PlaneX + (PlaneWidth DIV 2), PlaneY-1, PlaneX + (PlaneWidth DIV 2), 0, White);
     Line (PlaneX + (PlaneWidth DIV 2)-1, PlaneY-1, PlaneX + (PlaneWidth DIV 2), 0, LightBlue);
     Line (PlaneX + (PlaneWidth DIV 2)+1, PlaneY-1, PlaneX + (PlaneWidth DIV 2), 0, LightBlue);
-    IF (PlaneX>(Boss3X3-30)) AND (PlaneX<(Boss3X3+80)) THEN
+    IF (Boss3X3 < 30) THEN BossLeft := 0; ELSE BossLeft := Boss3X3 - 30; END;
+    IF (Boss3X3 > 239) THEN BossRight := 319; ELSE BossRight := Boss3X3 + 80; END;
+    IF (PlaneX > BossLeft) AND (PlaneX < BossRight) THEN
        HurtBoss3;
     END;
 END DrawBullet8Boss;
 
 PROCEDURE Boss3;
 VAR
-  Boss3Move : INTEGER;
+    Boss3Move : CARDINAL;
 CONST
     BossDive = 20;
     Boss3YTop = 20;
@@ -767,7 +770,7 @@ BEGIN
              Graph.PutImage (0, 0, BkAddress, Graph._GPSET);
              DrawPlane (PlaneX, PlaneY, PlaneWidth);
              IF (PlaneX<Boss3X3) THEN
-                Boss3X3 := Boss3X3 - Boss3Move
+                Boss3X3 := Boss3X3 - Boss3Move;
              ELSIF (PlaneX>Boss3X3) THEN
                 Boss3X3 := Boss3X3 + Boss3Move;
              END;
@@ -1011,7 +1014,7 @@ BEGIN
                  WHILE (SpitY < 200) AND NOT ScreenComplete DO
                         Graph.PutImage (0, 0, BkAddress, Graph._GPSET);
                         Graph.GetImage (0, 0, 320, 200, BkAddress);
-                        IF ((PlaneX+PlaneWidth DIV 2)>INTEGER(SpitX)) THEN
+                        IF ((PlaneX+PlaneWidth DIV 2) > SpitX) THEN
                            SpitX := SpitX + Lib.RANDOM(10) + 20
                         ELSE
                            IF (SpitX>10) THEN
@@ -1022,7 +1025,7 @@ BEGIN
                         END;
                         Ellipse (SpitX, SpitY, (SpitY - MouthY)*4 DIV 15, (SpitY - MouthY)*2 DIV 15, Blue, TRUE);
                         Ellipse (SpitX, SpitY, (SpitY + 1 - MouthY)*4 DIV 15, (SpitY + 2 - MouthY)*2 DIV 15, LightestBlue, FALSE);
-                        IF (SpitY > SpitHitY) AND (PlaneX + (PlaneWidth DIV 2) > INTEGER(SpitX-30)) AND (PlaneX + (PlaneWidth DIV 2) < INTEGER(SpitX + 30)) THEN
+                        IF (SpitY > SpitHitY) AND (PlaneX + (PlaneWidth DIV 2) > SpitX-30) AND (PlaneX + (PlaneWidth DIV 2) < SpitX + 30) THEN
                                 Die;
                         END;
                         CheckMouse;

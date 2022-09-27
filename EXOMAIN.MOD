@@ -15,7 +15,7 @@ FROM Lib IMPORT
 
 FROM Exobius IMPORT
     SetVGAMode, SetTextMode, Cheat, Key,
-    GameOver, ScreenComplete, PlaneInMemory, Score, ClearTheBuffer, Lives,
+    GameOver, ScreenComplete, Score, ClearTheBuffer, Lives,
     Black, DarkestGrey, DarkGrey, Grey, LightGrey, LightestGrey,
     DarkestBlue, DarkBlue, Blue, LightBlue, LightestBlue,
     DarkestBrown, DarkBrown, Brown, LightBrown, LightestBrown,
@@ -39,7 +39,6 @@ FROM Bosses IMPORT Boss1, Boss2, Boss3, Boss4;
 (* Main loop *)
 BEGIN
     SetVGAMode;
-    PlaneInMemory := FALSE;
     Score := 0;
     GameOver := FALSE;
     ScreenComplete := FALSE;

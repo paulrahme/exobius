@@ -12,7 +12,7 @@ FROM Lib IMPORT
     Delay;
 
 FROM Exobius IMPORT
-    SwapVGAPages, DisableVGAPageSwapping, PutPixel,
+    PutPixel,
     Black,
     DarkestGrey, DarkGrey, Grey, LightGrey, LightestGrey,
     DarkestWhite, DarkWhite, White, LightWhite, LightestWhite,
@@ -30,7 +30,6 @@ CONST
 
 PROCEDURE Infinite_Software;
 BEGIN
-    DisableVGAPageSwapping;
     FOR Count := 40 TO 265 BY 30 DO
         CASE Count OF
             |40: I(Count, 40);
@@ -62,11 +61,9 @@ BEGIN
     Colors[5] := DarkestWhite; Colors[6] := DarkWhite; Colors[7] := White; Colors[8] := LightWhite; Colors[9] := LightestWhite;
     FlashDelay := NoteDelay DIV 4;
 
-    SwapVGAPages();
     FOR FlashIdx := 0 TO 9 DO
         Rectangle(0, 0, 320, 200, Colors[FlashIdx], TRUE);
         Infinite_Software;
-        SwapVGAPages();
         Lib.Delay(FlashDelay);
         IF (KeyPressed()) THEN RETURN FALSE; END;
     END;
@@ -263,7 +260,6 @@ VAR
     LetterOffsetX, RectangleX, RectangleY, RectY2, TopCornerOffset, AtmosX, BeamColor : CARDINAL;
     MusicByProgress : REAL;
 BEGIN
-    SwapVGAPages();
     Graph.ClearScreen(Graph._GCLEARSCREEN);
     DrawStars;
     MusicByProgress := -1.0;
@@ -280,7 +276,6 @@ BEGIN
         B(150 + CARDINAL(MusicByProgress * 75.0), LettersY);
         Y(150 + CARDINAL(MusicByProgress * 105.0), LettersY);
 
-        SwapVGAPages();
         IF (KeyPressed()) THEN RETURN FALSE; END;
         MusicByProgress := MusicByProgress + 0.03;
     END;

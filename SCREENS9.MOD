@@ -14,8 +14,8 @@ FROM Lib IMPORT
   Sound, NoSound, Delay, RANDOM;
 
 FROM Exobius IMPORT
-  SolidFill, PlaneWidth, PlaneHeight, PlaneMovement,
-  EnemyYStart, CollisionY, NegPlaneSize,
+  SolidFill, PlaneWidth, PlaneHeight,
+  EnemyYStart, CollisionY,
   Black, DarkestGrey, DarkGrey, Grey, LightGrey, LightestGrey,
   DarkestWhite, DarkWhite, White, LightWhite, LightestWhite,
   DarkestBlue, DarkBlue, Blue, LightBlue, LightestBlue, DarkestRed,
@@ -30,7 +30,7 @@ FROM Exobius IMPORT
   DrawPlane, CheckMouse, Die, A, B,
   C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z,
   FinishScreen, PlaneXMove, CheckDeath1, Score,
-  PlaneInMemory, PlaneAddress, BkAddress, BkSize, ClearTheBuffer, Cheat,
+  BkAddress, BkSize, ClearTheBuffer, Cheat,
   DrawGameOver;
 
 FROM Screens7 IMPORT
@@ -103,7 +103,7 @@ BEGIN
     Rectangle (0,91,320,97,180,TRUE);
     Rectangle (0,98,319,104,181,TRUE);
     ClearTheBuffer;
-    PlaneX := 145; PlaneY := 175; PlaneInMemory := FALSE;
+    PlaneX := 145; PlaneY := 175;
     PillarCount := 0;
     Pillar1X := (RANDOM(11)+1)*25; Pillar2X := (RANDOM(11)+1)*25;
     Pillar3X := 325; Pillar4X := 325; Pillar5X := 325;

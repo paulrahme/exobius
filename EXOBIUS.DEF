@@ -13,7 +13,7 @@ CONST
     GameSpeed = 5;
     PlaneWidth = 50; PlaneHeight = 25;
     EnemyYStart = 87;  (* 200 - EnemyYStart is actually the y-coordinate *)
-    PlaneXMin = 15; PlaneXMax = 255; PlaneMovement = 5; PlaneXMove = 25; CollisionY = 158;
+    PlaneXMin = 15; PlaneXMax = 255; PlaneMoveDiv = 5; PlaneXMove = 25; CollisionY = 158;
     Black = 0;
     DarkestGrey = 17; DarkGrey = 19; Grey = 21; LightGrey = 23; LightestGrey = 25;
     DarkestWhite = 26; DarkWhite = 27; White = 28; LightWhite = 29; LightestWhite = 30;
@@ -25,26 +25,25 @@ CONST
 
 VAR
     Key : CHAR;
-    PlaneX : INTEGER;
-    Enemy1X, Enemy2X, Enemy3X, Enemy4X, Enemy5X, Enemy6X, Enemies,
-    BulletX, BulletY, OldBulletX, OldBulletY, PlaneY, CoverRectangleX, Count, Lives, EnemyY,
-    NegPlaneSize, Score, BkSize, GroundSize : CARDINAL;
-    PlaneAddress, BkAddress, GroundAddress : ADDRESS;
+    PlaneX, PlaneY, BulletX, BulletY, OldBulletX, OldBulletY,
+    Enemies, Enemy1X, Enemy2X, Enemy3X, Enemy4X, Enemy5X, Enemy6X, EnemyY,
+    CoverRectangleX, Count, Lives,
+    Score, BkSize, GroundSize : CARDINAL;
+    BkAddress, GroundAddress : ADDRESS;
     BkColour, OldBkColor : LONGCARD;
     Xs, Ys : CoordArray;
     OneAlive, TwoAlive, ThreeAlive, FourAlive, FiveAlive, SixAlive,
-    ScreenComplete, GameOver, Cheat, PlaneInMemory : BOOLEAN;
+    ScreenComplete, GameOver, Cheat : BOOLEAN;
     MouseButtons : MsMouse.MsData;
     MouseMove : MsMouse.MsMotion;
 
 PROCEDURE SetVGAMode;
 PROCEDURE SetTextMode;
-PROCEDURE SwapVGAPages;
-PROCEDURE DisableVGAPageSwapping;
 PROCEDURE PutPixel(x, y : CARDINAL; color : BYTE);
 PROCEDURE SetPixel(pixPos : CARDINAL; Color : BYTE);
 PROCEDURE GetPixel(x, y : CARDINAL) : SHORTCARD;
 PROCEDURE DrawPlane(x, y, Width : CARDINAL);
+PROCEDURE DrawPlane5025;
 PROCEDURE Update3DBullet;
 PROCEDURE CheckSpecialKeys;
 PROCEDURE CheckMouseAndSpecialKeys;

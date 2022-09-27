@@ -13,8 +13,8 @@ FROM Lib IMPORT
   Sound, NoSound, Delay, RANDOM;
 
 FROM Exobius IMPORT
-  SolidFill, PlaneWidth, PlaneHeight, PlaneMovement,
-  EnemyYStart, CollisionY, NegPlaneSize,
+  SolidFill, PlaneWidth, PlaneHeight,
+  EnemyYStart, CollisionY,
   Black, DarkestGrey, DarkGrey, Grey, LightGrey, LightestGrey,
   DarkestWhite, DarkWhite, White, LightWhite, LightestWhite,
   DarkestBlue, DarkBlue, Blue, LightBlue, LightestBlue, DarkestRed,
@@ -29,7 +29,7 @@ FROM Exobius IMPORT
   DrawPlane, CheckMouse, Die,
   A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z,
   FinishScreen, PlaneXMove, CheckDeath1, Score,
-  PlaneInMemory, PlaneAddress, BkAddress, BkSize, Cheat,
+  BkAddress, BkSize, Cheat,
   DrawGameOver;
 
 CONST
@@ -405,7 +405,7 @@ END DrawPlanet;
 PROCEDURE Screen8;
 BEGIN
     Enemies := 0; BulletY := 0; UpBulletY := 65000; PlaneX := 145;
-    PlaneY := 175; UpBulletX := 65000; PlaneInMemory := FALSE; EnemyY := 0;
+    PlaneY := 175; UpBulletX := 65000; EnemyY := 0;
     ScreenComplete := FALSE; PlanetRadius := 2;
     NoSound;
     Graph.ClearScreen (Graph._GCLEARSCREEN);

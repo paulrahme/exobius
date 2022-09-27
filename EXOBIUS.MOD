@@ -6,7 +6,7 @@ IMPORT
     Str, Lib, IO, Graph, Window, Storage, MsMouse, Bosses;
 
 FROM Graph IMPORT
-    SetVideoMode, _MRES256COLOR, _DEFAULTMODE, SetActivePage, SetVisualPage, Line, Polygon, Circle, Disc, Ellipse, Rectangle, Plot;
+    SetVideoMode, _MRES256COLOR, _DEFAULTMODE, Line, Polygon, Circle, Disc, Ellipse, Rectangle, Plot;
 
 FROM Lib IMPORT
     Sound, NoSound, Delay;
@@ -14,15 +14,11 @@ FROM Lib IMPORT
 TYPE
     BYTEPTR = POINTER TO BYTE;
 
-VAR
-    ActivePage, PrevPage : CARDINAL;
-
 PROCEDURE SetVGAMode;
 VAR
     VideoMode : BOOLEAN;
 BEGIN
     VideoMode := SetVideoMode(_MRES256COLOR);
-    ActivePage := 0;
     Graph.SetFillMask(SolidFill);
 END SetVGAMode;
 
@@ -32,20 +28,6 @@ VAR
 BEGIN
     VideoMode := SetVideoMode(_DEFAULTMODE);
 END SetTextMode;
-
-PROCEDURE SwapVGAPages;
-BEGIN
-    PrevPage := SetVisualPage(ActivePage);
-    ActivePage := 1 - ActivePage;
-    PrevPage := SetActivePage(ActivePage);
-END SwapVGAPages;
-
-PROCEDURE DisableVGAPageSwapping;
-BEGIN
-    ActivePage := 0;
-    PrevPage := SetVisualPage(ActivePage);
-    PrevPage := SetActivePage(ActivePage);
-END DisableVGAPageSwapping;
 
 PROCEDURE WaitVSync();
 VAR
@@ -334,7 +316,7 @@ BEGIN
     Polygon (4, Xs, Ys, LightGrey);
 END Z;
 
-PROCEDURE DrawPlane (x, y, Width : CARDINAL);
+PROCEDURE DrawPlane(x, y, Width : CARDINAL);
 VAR
     Xs, Ys : ARRAY [0..3] OF CARDINAL;
     x9, x13, x14, x15, x16, x17, x18, x25,
@@ -398,8 +380,54 @@ BEGIN
     Line(x + (Width * 41 DIV 50), y22, x36, y9, LightWhite);
     Line(x + (Width * 42 DIV 50), y22, x37, y10, LightestWhite);
     Ellipse(x37, y22, Width DIV 10, Width DIV 25, Yellow, TRUE);
-
 END DrawPlane;
+
+PROCEDURE DrawPlane5025();
+VAR
+    Xs, Ys : ARRAY [0..3] OF CARDINAL;
+    x9, x13, x14, x15, x16, x17, x18, x25,
+    x32, x33, x34, x35, x36, x37,
+    y8, y9, y10, y22, y25 : CARDINAL;
+BEGIN
+    x9 := PlaneX + 9; x13 := PlaneX + 13; x14 := PlaneX + 14; x15 := PlaneX + 15; x16 := PlaneX + 16; x17 := PlaneX + 17; x18 := PlaneX + 18;
+    x25 := PlaneX + 25; x32 := PlaneX + 32; x33 := PlaneX + 33; x34 := PlaneX + 34; x35 := PlaneX + 35; x36 := PlaneX + 36; x37 := PlaneX + 37;
+    y8 := PlaneY + 8; y9 := PlaneY + 9; y10 := PlaneY + 10; y22 := PlaneY + 22; y25 := PlaneY + 25;
+
+    (* Main ship body *)
+    Xs[0] := PlaneX; Ys[0] := y25; Xs[1] := x25; Ys[1] := PlaneY + 20; Xs[2] := x25; Ys[2] := PlaneY; Xs[3] := PlaneX; Ys[3] := y25;
+    Polygon(4, Xs, Ys, DarkBlue);
+    Xs[0] := PlaneX + 50; Xs[3] := PlaneX + 50;
+    Polygon(4, Xs, Ys, LightBlue);
+
+    (* Left engine *)
+    Line(x18, y22, x18, y9, LightestWhite);
+    Line(x17, y22, x18, y9, LightWhite);
+    Line(x16, y22, x18, y9, White);
+    Line(x15, y22, x17, y9, DarkWhite);             Plot(x17, y8, DarkWhite);
+    Line(x14, y22, x16, y9, DarkestWhite);
+    Line(x13, y22, x16, y9, LightestGrey);          Plot(x16, y8, DarkestGrey);
+    Line(PlaneX + 12, y22, x15, y9, LightGrey);
+    Line(PlaneX + 11, y22, x15, y9, Grey);          Plot(x15, y8, LightGrey);
+    Line(PlaneX + 10, y22, x14, y9, DarkGrey);
+    Line(x9, y22, x14, y9, DarkGrey);
+    Line(PlaneX + 8, y22, x13, y10, DarkestGrey);
+    Ellipse(x13, y22, 5, 2, Yellow, TRUE);
+
+    (* Right engine *)
+    Line(x32, y22, x32, y9, DarkestGrey);
+    Line(x33, y22, x32, y9, DarkGrey);
+    Line(x34, y22, x32, y9, Grey);
+    Line(x35, y22, x32, y9, LightGrey);             Plot(x33, y8, LightGrey);
+    Line(x36, y22, x34, y9, LightestGrey);
+    Line(x37, y22, x34, y9, DarkestWhite);          Plot(x34, y8, DarkestWhite);
+    Line(PlaneX + 39, y22, x35, y9, DarkWhite);     Plot(x35, y8, DarkWhite);
+    Line(PlaneX + 38, y22, x35, y9, DarkWhite);
+    Line(PlaneX + 40, y22, x36, y9, White);
+    Line(PlaneX + 41, y22, x36, y9, LightWhite);
+    Line(PlaneX + 42, y22, x37, y10, LightestWhite);
+    Ellipse(x37, y22, 5, 2, Yellow, TRUE);
+END DrawPlane5025;
+
 
 PROCEDURE CheckSpecialKeys;
 VAR
@@ -426,23 +454,29 @@ BEGIN
 END CheckMouseAndSpecialKeys;
 
 PROCEDURE CheckMouse;
+VAR
+    DeltaX : CARDINAL;
 BEGIN
     CheckMouseAndSpecialKeys();
     IF (MouseButtons.left_pressed) OR (MouseButtons.right_pressed) OR (MouseButtons.middle_pressed) THEN
         BulletX := PlaneX + 25;
         BulletY := 5;
     END;
-    IF (MouseMove.horiz <> 0) AND (PlaneX + MouseMove.horiz >= 0) THEN
-        INC (PlaneX, MouseMove.horiz DIV PlaneMovement);
-    END;
-    IF (PlaneX + MouseMove.horiz < 0) THEN
-        PlaneX := 0;
-    END;
-    IF (PlaneX < PlaneXMin) THEN
-        PlaneX := PlaneXMin;
-    END;
-    IF (PlaneX > PlaneXMax) THEN
-        PlaneX := PlaneXMax;
+    DeltaX := ABS(MouseMove.horiz) DIV PlaneMoveDiv;
+    IF (MouseMove.horiz < 0) THEN
+        (* Moving left *)
+        IF (PlaneX < PlaneXMin + DeltaX) THEN
+            PlaneX := PlaneXMin;
+        ELSE
+            PlaneX := PlaneX - DeltaX;
+        END;
+    ELSIF (MouseMove.horiz > 0) THEN
+        (* Moving right *)
+        IF (PlaneX > PlaneXMax - DeltaX) THEN
+            PlaneX := PlaneXMax;
+        ELSE
+            PlaneX := PlaneX + DeltaX;
+        END;
     END;
 END CheckMouse;
 

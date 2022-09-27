@@ -13,7 +13,7 @@ FROM Lib IMPORT
     Sound, NoSound, Delay, RANDOM;
 
 FROM Exobius IMPORT
-    PutPixel, SetPixel, SwapVGAPages,
+    PutPixel, SetPixel,
     PlaneWidth, PlaneHeight,
     EnemyYStart, CollisionY,
     Black, DarkestGrey, DarkGrey, Grey, LightGrey, LightestGrey,
@@ -27,7 +27,7 @@ FROM Exobius IMPORT
     PlaneX, BulletX, BulletY, OldBulletX, OldBulletY, PlaneY,
     OneAlive, TwoAlive, ThreeAlive, FourAlive, FiveAlive, SixAlive,
     Enemies, Xs, Ys, Count, Lives, EnemyY,
-    BkAddress, BkSize, PlaneAddress,
+    BkAddress, BkSize,
     ScreenComplete, GameOver,  MouseButtons,  MouseMove, GameSpeed,
     DrawPlane, CheckMouse, CheckSpecialKeys, CheckMouseAndSpecialKeys, Die, DrawGameOver,
     FinishScreen, Key, CheckDeath1,
@@ -212,7 +212,6 @@ BEGIN
                 END;
             END;
         END;
-        GetImage(145, 175, 195, 200, PlaneAddress);
         CheckSpecialKeys();
     END;
 
@@ -235,8 +234,6 @@ BEGIN
 
     (* Main game loop *)
     WHILE NOT ScreenComplete AND NOT GameOver DO
-        SwapVGAPages;
-
         (* Update player *)
         OldPlaneX := PlaneX;
         CheckMouse();
@@ -280,7 +277,7 @@ BEGIN
                     GY := 65000;
                     GlowsAlive := GlowsAlive - 1;
                 (* Hit player? *)
-                ELSIF (GY > PlaneY - 25) AND (INTEGER(GX) > PlaneX - 15) AND (INTEGER(GX) < PlaneX + PlaneWidth + 15) THEN
+                ELSIF (GY > PlaneY - 25) AND (GX > PlaneX - 15) AND (GX < PlaneX + PlaneWidth + 15) THEN
                     Disc(GX + (GlowWidth DIV 2), GY + (GlowHeight DIV 2), 10, DarkestRed);
                     OldPlaneX := PlaneX;
                     Die;

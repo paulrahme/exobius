@@ -12,8 +12,8 @@ FROM Lib IMPORT
   Sound, NoSound, Delay, RANDOM;
 
 FROM Exobius IMPORT
-  SolidFill, PlaneWidth, PlaneHeight, PlaneMovement,
-  EnemyYStart, CollisionY, NegPlaneSize,
+  SolidFill, PlaneWidth, PlaneHeight,
+  EnemyYStart, CollisionY,
   Black, DarkestGrey, DarkGrey, Grey, LightGrey, LightestGrey,
   DarkestWhite, DarkWhite, White, LightWhite, LightestWhite,
   DarkestBlue, DarkBlue, Blue, LightBlue, LightestBlue, DarkestRed,
@@ -28,7 +28,7 @@ FROM Exobius IMPORT
   DrawPlane, CheckMouse, Die, A, B,
   C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z,
   FinishScreen, PlaneXMove, CheckDeath1, Score,
-  PlaneInMemory, PlaneAddress, BkAddress, BkSize, ClearTheBuffer, Cheat,
+  BkAddress, BkSize, ClearTheBuffer, Cheat,
   DrawGameOver;
 
 FROM Sprites IMPORT
@@ -199,9 +199,9 @@ BEGIN
   WHILE (PlaneX <> 65) DO
         Rectangle (PlaneX, PlaneY, PlaneX + PlaneWidth, PlaneY + PlaneHeight, Black, TRUE);
         IF PlaneX < 65 THEN
-           PlaneX := PlaneX + INTEGER(RANDOM(3))
+           PlaneX := PlaneX + RANDOM(3)
         ELSIF (PlaneX > 65) THEN
-           PlaneX := PlaneX - INTEGER(RANDOM(3));
+           PlaneX := PlaneX - RANDOM(3);
         END;
         DrawPlane (PlaneX, PlaneY, PlaneWidth);
   END;
@@ -233,7 +233,7 @@ BEGIN
       END;
       LeftSide := LeftSide + RANDOM(20) - 10;
       Delay (GameSpeed);
-      IF (PlaneX < INTEGER(LeftSide+15)) OR (PlaneX > INTEGER(LeftSide + 145)) THEN
+      IF (PlaneX < LeftSide+15) OR (PlaneX > LeftSide + 145) THEN
          Die;
          PlaneX := LeftSide + 55;
       END;
@@ -262,18 +262,18 @@ BEGIN
             END;
         END;
         IF (PlaneX < 145) THEN
-           PlaneX := PlaneX + INTEGER(RANDOM(3))
+           PlaneX := PlaneX + RANDOM(3)
         ELSIF (PlaneX > 145) THEN
-           PlaneX := PlaneX - INTEGER(RANDOM(3));
+           PlaneX := PlaneX - RANDOM(3);
         END;
         DrawPlane (PlaneX, PlaneY, PlaneWidth);
       END;
     FOR LeftSide := 80 TO 0 BY -1 DO
       Rectangle (LeftSide, 0, 320 - LeftSide, 200, Black, TRUE);
         IF (PlaneX < 145) THEN
-           PlaneX := PlaneX + INTEGER(RANDOM(3))
+           PlaneX := PlaneX + RANDOM(3)
         ELSIF (PlaneX > 145) THEN
-           PlaneX := PlaneX - INTEGER(RANDOM(3));
+           PlaneX := PlaneX - RANDOM(3);
         END;
       DrawPlane (PlaneX, PlaneY, PlaneWidth);
     END;
@@ -319,13 +319,11 @@ PROCEDURE Screen6;
 VAR
   RectY, Count, TunnelDots : CARDINAL;
 BEGIN
-  PlaneInMemory := FALSE;
   Rectangle (0, 100, 320, 200, DarkBrown, TRUE);
   FOR PlaneY := 200 TO 175 BY -1 DO
       PlaneX := (200-PlaneY)*29 DIV 5;
       Rectangle (0, 170, 320, 200, DarkBrown, TRUE);
       DrawPlane (PlaneX, PlaneY, (160 - PlaneX)*3);
-      PlaneInMemory := FALSE;
       Lib.Delay (40);
   END;
   PlaneX := 145; PlaneY := 175;
@@ -338,8 +336,6 @@ BEGIN
   END;
   Graph.ClearScreen (Graph._GCLEARSCREEN);
   DrawPlane (PlaneX, PlaneY, PlaneWidth);
-  Graph.GetImage (PlaneX, PlaneY, PlaneX+PlaneWidth, PlaneY+PlaneHeight, PlaneAddress);
-  PlaneInMemory := TRUE;
   Graph.ClearScreen (Graph._GCLEARSCREEN);
   FOR TunnelDots := 1 TO 50 DO
       Plot (RANDOM(320), RANDOM(15), DarkBrown);

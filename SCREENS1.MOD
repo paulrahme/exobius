@@ -6,13 +6,14 @@ IMPORT
     Str, Graph, Lib, IO, Window, Storage, Exobius;
 
 FROM Graph IMPORT
-    ClearScreen, _GCLEARSCREEN, SetClipRgn, GetImage, PutImage,
+    ClearScreen, _GCLEARSCREEN, SetClipRgn,
     Rectangle, Polygon, Line, HLine, Circle, Ellipse, Disc, Plot, Arc, Point;
 
 FROM Lib IMPORT
-    Sound, NoSound, Delay, RANDOM;
+    Delay, RANDOM;
 
 FROM Exobius IMPORT
+    PlaneX, PlaneY, BulletX, BulletY,
     PutPixel, GetPixel,
     PlaneWidth, PlaneHeight,
     EnemyYStart, CollisionY,
@@ -23,13 +24,12 @@ FROM Exobius IMPORT
     DarkestYellow, DarkYellow, Yellow, LightYellow, LightestYellow,
     DarkestWhite, DarkWhite, White, LightWhite, LightestWhite,
     DarkestGreen, DarkGreen, Green, LightGreen, LightestGreen,
-    PlaneX, BulletX, BulletY, PlaneY,
     Enemy1X, Enemy2X, Enemy3X, Enemy4X, Enemy5X, Enemy6X,
     OneAlive, TwoAlive, ThreeAlive, FourAlive, FiveAlive, SixAlive,
     Enemies, Xs, Ys,
     Count, Lives, EnemyY,
     ScreenComplete, GameOver,  MouseButtons,  MouseMove, GameSpeed,
-    Update3DBullet, DrawPlane, CheckMouse, CheckMouseAndSpecialKeys, Die, DrawGameOver,
+    Update3DBullet, DrawPlane, DrawPlane5025, CheckMouse, CheckMouseAndSpecialKeys, Die, DrawGameOver,
     FinishScreen, CheckDeath1,
     CheckSpecialKeys, ClearTheBuffer, DrawGameOver;
 
@@ -305,23 +305,23 @@ BEGIN
 
     (* Flash the ground *)
     Polygon (4, Xs, Ys, DarkestBrown);
-    DrawPlane (PlaneX, PlaneY, PlaneWidth);
+    DrawPlane5025();
     Lib.Delay (20);
     Polygon (4, Xs, Ys, Brown);
-    DrawPlane (PlaneX, PlaneY, PlaneWidth);
+    DrawPlane5025();
     Lib.Delay (20);
     Polygon (4, Xs, Ys, DarkestBrown);
-    DrawPlane (PlaneX, PlaneY, PlaneWidth);
+    DrawPlane5025();
     Lib.Delay (20);
     Polygon (4, Xs, Ys, Brown);
-    DrawPlane (PlaneX, PlaneY, PlaneWidth);
+    DrawPlane5025();
     Lib.Delay (20);
     Polygon (4, Xs, Ys, LightBrown);
-    DrawPlane (PlaneX, PlaneY, PlaneWidth);
+    DrawPlane5025();
     Lib.Delay (20);
     Rectangle (0, 101, 320, 200, LightGreen, TRUE);
     Polygon (4, Xs, Ys, Brown);
-    DrawPlane (PlaneX, PlaneY, PlaneWidth);
+    DrawPlane5025();
     Lib.Delay (20);
     Polygon (4, Xs, Ys, LightBrown);
     Line (150, 100, 0, 200, Brown);
@@ -342,7 +342,7 @@ BEGIN
 
     (* Gameplay Starts *)
 
-    DrawPlane(PlaneX, PlaneY, PlaneWidth);
+    DrawPlane5025();
     ScreenComplete := FALSE;
     Enemies := 1;
     BulletY := 0;
@@ -354,7 +354,7 @@ BEGIN
             Polygon(4, Xs, Ys, LightBrown);
             UpdateGroundDots();
             Update3DBullet();
-            DrawPlane(PlaneX, PlaneY, PlaneWidth);
+            DrawPlane5025();
             Lib.Delay(GameSpeed);
         END;
 
@@ -367,7 +367,7 @@ BEGIN
                 UpdateGroundDots();
                 DrawEnemies1();
                 Update3DBullet();
-                DrawPlane(PlaneX, PlaneY, PlaneWidth);
+                DrawPlane5025();
                 IF (BulletY > 99) THEN
                     BulletY := BulletY - 1;
                 END;

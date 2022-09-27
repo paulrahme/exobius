@@ -12,8 +12,8 @@ FROM Lib IMPORT
   Sound, NoSound, Delay;
 
 FROM Exobius IMPORT
-  SolidFill, PlaneWidth, PlaneHeight, PlaneMovement,
-  EnemyYStart, CollisionY, NegPlaneSize,
+  SolidFill, PlaneWidth, PlaneHeight,
+  EnemyYStart, CollisionY,
   Black, DarkestGrey, DarkGrey, Grey, LightGrey, LightestGrey,
   DarkestWhite, DarkWhite, White, LightWhite, LightestWhite,
   DarkestBlue, DarkBlue, Blue, LightBlue, LightestBlue, DarkestRed,
@@ -30,7 +30,7 @@ FROM Exobius IMPORT
   DrawPlane, CheckMouse, Die,
   A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z,
   FinishScreen, PlaneXMove, CheckDeath1, Score,
-  PlaneInMemory, PlaneAddress, BkAddress, BkSize, ClearTheBuffer, Cheat,
+  BkAddress, BkSize, ClearTheBuffer, Cheat,
   DrawGameOver;
 
 FROM Sprites IMPORT
@@ -138,7 +138,6 @@ BEGIN
         DrawPlane (PlaneX, PlaneY, PlaneWidth);
      END;
      Lib.Delay (50);
-     PlaneInMemory := FALSE;
      FOR LineY := 100 TO 0 BY -1 DO
          Rectangle (0, LineY, 320, 200, Blue, TRUE);
          Xs[0] := 150; Xs[1] := 150 - (LineY*3 DIV 2); Xs[2] := 170 + (LineY*3 DIV 2); Xs[3] := 170;
@@ -253,7 +252,7 @@ BEGIN
      Delay (GameSpeed);
     END;
     IF NOT GameOver THEN
-        PlaneInMemory := FALSE; PlaneY := 175;
+        PlaneY := 175;
         FOR LineY := 2 TO 100 BY 2 DO
             Rectangle (0, LineY, 320, 200, Blue, TRUE);
             HLine (0, LineY - 1, 320, LightBlue);
@@ -271,7 +270,6 @@ BEGIN
                Plot (DotX, DotY, DarkGrey);
             END;
         END;
-        PlaneInMemory := TRUE;
         FOR LineY := 100 TO 200 DO
             HLine (0, LineY, 320, LightWhite);
             DrawPlane (PlaneX, PlaneY, PlaneWidth);

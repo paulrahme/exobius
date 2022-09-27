@@ -12,8 +12,8 @@ FROM Lib IMPORT
   Sound, NoSound, Delay, RANDOM;
 
 FROM Exobius IMPORT
-  SolidFill, PlaneWidth, PlaneHeight, PlaneMovement,
-  EnemyYStart, CollisionY, NegPlaneSize,
+  SolidFill, PlaneWidth, PlaneHeight,
+  EnemyYStart, CollisionY,
   Black, DarkestGrey, DarkGrey, Grey, LightGrey, LightestGrey,
   DarkestWhite, DarkWhite, White, LightWhite, LightestWhite,
   DarkestBlue, DarkBlue, Blue, LightBlue, LightestBlue, DarkestRed,
@@ -28,7 +28,7 @@ FROM Exobius IMPORT
   DrawPlane, CheckMouse, Die,
   A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z,
   FinishScreen, PlaneXMove, CheckDeath1, Score,
-  PlaneInMemory, PlaneAddress, BkAddress, BkSize, ClearTheBuffer, Cheat,
+  BkAddress, BkSize, ClearTheBuffer, Cheat,
   DrawGameOver;
 
 PROCEDURE DrawPillarBottom(x, y : CARDINAL);
@@ -105,12 +105,10 @@ VAR
   PlaneOnPillars : BOOLEAN;
 BEGIN
     ClearTheBuffer;
-    PlaneX := 145; PlaneY := 175; PlaneInMemory := FALSE;
+    PlaneX := 145; PlaneY := 175;
     Rectangle (0, 0, 320, 100, DarkestGrey, TRUE);
     Rectangle (0, 100, 320, 200, DarkBrown, TRUE);
     DrawPlane (PlaneX, PlaneY, PlaneWidth);
-    Graph.GetImage (PlaneX, PlaneY, PlaneX + PlaneWidth, PlaneY + PlaneHeight, PlaneAddress);
-    PlaneInMemory := FALSE;
     FOR PillarCount := 105 TO 200 DO
         Rectangle (0, 100, 320, 200, DarkBrown, TRUE);
         IF (PillarCount >150) THEN
@@ -247,9 +245,9 @@ BEGIN
          PlaneX := OldPlaneX;
          DrawPlane (PlaneX, PlaneY, PlaneWidth);
          IF (PlaneX<145) THEN
-            PlaneX := PlaneX + INTEGER(RANDOM(5))
+            PlaneX := PlaneX + RANDOM(5);
          ELSIF (PlaneX>145) THEN
-            PlaneX := PlaneX - INTEGER(RANDOM(5));
+            PlaneX := PlaneX - RANDOM(5);
          END;
         END;
      END;
@@ -267,7 +265,7 @@ BEGIN
      PillarCount := 0;
      Pillar1X := (RANDOM(11)+1)*25; Pillar2X := (RANDOM(11)+1)*25;
      Pillar3X := (RANDOM(11)+1)*25; Pillar4X := (RANDOM(11)+1)*25;
-     Pillar5X := (RANDOM(11)+1)*25; PlaneInMemory := TRUE;
+     Pillar5X := (RANDOM(11)+1)*25;
      WHILE (PillarCount<NewNoOfPillars) AND NOT (GameOver) DO
            PillarCount := PillarCount + 1;
            Pillar5X := Pillar4X; Pillar4X := Pillar3X; Pillar3X := Pillar2X;
@@ -315,7 +313,6 @@ BEGIN
            Rectangle (Pillar5X, 0, Pillar5X + 27, 100, Black, TRUE);
            Rectangle (Pillar5X, 100, Pillar5X + 27, 200, DarkBrown, TRUE);
      END; (* PlaneOnGround *)
-     PlaneInMemory := FALSE;
      IF NOT GameOver THEN
         FOR PillarCount := 100 TO 300 BY 8 DO
             Rectangle (0, 0, 320, PillarCount, Black, TRUE);
