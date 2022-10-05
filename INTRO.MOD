@@ -1464,8 +1464,8 @@ VAR
     Skipped : BOOLEAN;
 BEGIN
     Graph.ClearScreen(Graph._GCLEARSCREEN);
-    NegPlaneSize := CARDINAL (Graph.ImageSize (249, 59, 319, 151));
-    Storage.ALLOCATE (NegPlaneAddress, NegPlaneSize);
+    NegPlaneSize := CARDINAL(Graph.ImageSize(249, 59, 319, 151));
+    Storage.ALLOCATE(NegPlaneAddress, NegPlaneSize);
     DrawVGAPlanet;
     FOR Count := 1 TO 100 DO
         RandomRed := Lib.RANDOM(4) + 109;
@@ -1474,29 +1474,26 @@ BEGIN
     FOR Count := 1 TO 50 DO
         Plot (Lib.RANDOM(320), Lib.RANDOM(200), Lib.RANDOM(10) + 109);
     END;
-    Graph.GetImage (249, 59, 319, 151, NegPlaneAddress);
+    Graph.GetImage(249, 59, 319, 151, NegPlaneAddress);
     PlaneX := 250; Width := 30;
     FOR PlaneY := 60 TO 150 DO
         Skipped := KeyPressed();
-        IF NOT (Skipped) THEN
-            DrawPlane (PlaneX, PlaneY, Width);
-            Lib.Delay (40);
+        IF (NOT Skipped) THEN
             IF (PlaneY MOD 2 = 0) THEN
                 PlaneX := PlaneX + 1;
+            ELSE
+                Width := (Width * 99) DIV 100;
             END;
-            IF (PlaneY MOD 3 = 0) THEN
-                Width := Width - 2;
-            END;
-            IF (Width < 0) THEN
-                Width := 0;
-            END;
-            Graph.PutImage (249, 59, NegPlaneAddress, Graph._GPSET);
+            Graph.PutImage(249, 59, NegPlaneAddress, Graph._GPSET);
+            DrawPlane(PlaneX, PlaneY, Width);
+            Lib.Delay(GameSpeed * 3);
         END;
     END;
     IF (NOT Skipped) THEN
-        Lib.Delay (500);
+        Graph.PutImage(249, 59, NegPlaneAddress, Graph._GPSET);
+        Lib.Delay(100);
     END;
-    Storage.DEALLOCATE (NegPlaneAddress, NegPlaneSize);
+    Storage.DEALLOCATE(NegPlaneAddress, NegPlaneSize);
 END PlaneToPlanet;
 
 END Intro.
