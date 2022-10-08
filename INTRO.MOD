@@ -28,48 +28,61 @@ FROM Exobius IMPORT
 CONST
     NoteDelay = 125;
 
-PROCEDURE Infinite_Software;
+PROCEDURE DrawInfiniteSoftwarePair(XPos : CARDINAL);
 BEGIN
-    FOR Count := 40 TO 265 BY 30 DO
-        CASE Count OF
-            |40: I(Count, 40);
-                S(Count, 120);
-            |70: N(Count, 40);
-                O(Count, 120);
-            |100: F(Count, 40);
-                F(Count, 120);
-            |130: I(Count, 40);
-                T(Count, 120);
-            |160: N(Count, 40);
-                W(Count, 120);
-            |190: I(Count, 40);
-                A(Count, 120);
-            |220: T(Count, 40);
-                R(Count, 120);
-            |250: E(Count, 40);
-                E(Count, 120);
-         END;
-     END;
-END Infinite_Software;
+    CASE XPos OF
+        |40:  I(XPos, 40); S(XPos, 120);
+        |70:  N(XPos, 40); O(XPos, 120);
+        |100: F(XPos, 40); F(XPos, 120);
+        |130: I(XPos, 40); T(XPos, 120);
+        |160: N(XPos, 40); W(XPos, 120);
+        |190: I(XPos, 40); A(XPos, 120);
+        |220: T(XPos, 40); R(XPos, 120);
+        |250: E(XPos, 40); E(XPos, 120);
+    END;
+END DrawInfiniteSoftwarePair;
 
-PROCEDURE FlashScreen() : BOOLEAN;
+PROCEDURE DrawInfiniteSoftwareAll;
+BEGIN
+    DrawInfiniteSoftwarePair(40);
+    DrawInfiniteSoftwarePair(70);
+    DrawInfiniteSoftwarePair(100);
+    DrawInfiniteSoftwarePair(130);
+    DrawInfiniteSoftwarePair(160);
+    DrawInfiniteSoftwarePair(190);
+    DrawInfiniteSoftwarePair(220);
+    DrawInfiniteSoftwarePair(250);
+END DrawInfiniteSoftwareAll;
+
+PROCEDURE InfiniteSoftware() : BOOLEAN;
 VAR
-    Colors : ARRAY[0..9] OF CARDINAL;
-    FlashIdx, FlashDelay : CARDINAL;
+    LetterXs, RectYs : ARRAY[0..7] OF CARDINAL;
 BEGIN
-    Colors[0] := DarkestGrey; Colors[1] := DarkGrey; Colors[2] := Grey; Colors[3] := LightGrey; Colors[4] := LightestGrey;
-    Colors[5] := DarkestWhite; Colors[6] := DarkWhite; Colors[7] := White; Colors[8] := LightWhite; Colors[9] := LightestWhite;
-    FlashDelay := NoteDelay DIV 4;
-
-    FOR FlashIdx := 0 TO 9 DO
-        Rectangle(0, 0, 320, 200, Colors[FlashIdx], TRUE);
-        Infinite_Software;
-        Lib.Delay(FlashDelay);
+    (* Draw letters in pairs on each beat *)
+    LetterXs[0] := 40; LetterXs[1] := 250; LetterXs[2] := 70; LetterXs[3] := 220;
+    LetterXs[4] := 100; LetterXs[5] := 190; LetterXs[6] := 130; LetterXs[7] := 160;
+    FOR Count := 0 TO 7 DO
+        DrawInfiniteSoftwarePair(LetterXs[Count]);
+        Delay(NoteDelay);
         IF (KeyPressed()) THEN RETURN FALSE; END;
     END;
 
+    (* Fill in bg segments on each beat *)
+    RectYs[0] := 175; RectYs[1] := 0; RectYs[2] := 150; RectYs[3] := 25;
+    RectYs[4] := 125; RectYs[5] := 50; RectYs[6] := 100; RectYs[7] := 75;
+    FOR Count := 0 TO 7 DO
+        Rectangle(0, RectYs[Count], 320, RectYs[Count] + 25, Grey, TRUE);
+        IF (Count > 0) THEN
+            Rectangle(0, RectYs[Count-1], 320, RectYs[Count-1] + 25, LightWhite, TRUE);
+        END;
+        DrawInfiniteSoftwareAll();
+        Lib.Delay(NoteDelay);
+        IF (KeyPressed()) THEN RETURN FALSE; END;
+    END;
+
+    Rectangle(0, 0, 319, 199, LightestWhite, TRUE);
     RETURN TRUE;
-END FlashScreen;
+END InfiniteSoftware;
 
 PROCEDURE SpinRectangle() : BOOLEAN;
 CONST
@@ -148,14 +161,16 @@ BEGIN
 END MakeDiamond;
 
 PROCEDURE ExoLogo() : BOOLEAN;
-CONST
-    LineDelay = 3;
 BEGIN
     E(60, 90); X(90, 90); O(120, 90); B(150, 90); I(180, 90); U(210, 90); S(240, 90);
     FOR Count := 50 TO 270 DO
         Rectangle(Count - 1, 70, Count, 130, Black, TRUE);
+        PutPixel(Count, 70 + Lib.RANDOM(19), DarkYellow);
         PutPixel(Count, 70 + Lib.RANDOM(19), Yellow);
+        PutPixel(Count, 70 + Lib.RANDOM(19), LightYellow);
+        PutPixel(Count, 130 - Lib.RANDOM(19), LightYellow);
         PutPixel(Count, 130 - Lib.RANDOM(19), Yellow);
+        PutPixel(Count, 130 - Lib.RANDOM(19), DarkYellow);
         IF (Count < 80) THEN E(60, 90);
         ELSIF (Count < 110) THEN X(90, 90);
         ELSIF (Count < 140) THEN O(120, 90);
@@ -164,13 +179,13 @@ BEGIN
         ELSIF (Count < 230) THEN U(210, 90);
         ELSE S(240, 90);
         END;
-        Lib.Delay(LineDelay);
+        Lib.Delay(GameSpeed);
         IF (KeyPressed()) THEN RETURN FALSE; END;
     END;
     Rectangle(269, 70, 270, 130, Black, FALSE);
 
     FOR Count := 1 TO 5 DO
-        Lib.Delay(1000);
+        Lib.Delay(500);
         IF (KeyPressed()) THEN RETURN FALSE; END;
     END;
 
@@ -216,9 +231,9 @@ BEGIN
         END;
         NameYCard := CARDINAL(NameY);
 
-        Graph.PutImage (NameLeft, NameYCard, NameAddress, Graph._GPSET);
+        Graph.PutImage(NameLeft, NameYCard, NameAddress, Graph._GPSET);
         B(135 ,95); Y(165, 95);
-        Lib.Delay(GameSpeed);
+        Lib.Delay(GameSpeed * 2);
 
         IF (KeyPressed()) THEN Bounces := 1000; END;
     END;
@@ -277,7 +292,7 @@ BEGIN
         Y(150 + CARDINAL(MusicByProgress * 105.0), LettersY);
 
         IF (KeyPressed()) THEN RETURN FALSE; END;
-        MusicByProgress := MusicByProgress + 0.03;
+        MusicByProgress := MusicByProgress + 0.015;
     END;
     Lib.Delay(500);
 
@@ -487,6 +502,7 @@ PROCEDURE WriteThinks() : BOOLEAN;
 VAR
     WritingAddress : ADDRESS;
     NotSkipped : BOOLEAN;
+    RepeatCount : CARDINAL;
 BEGIN
     Graph.ClearScreen (Graph._GCLEARSCREEN);
 
@@ -534,15 +550,9 @@ BEGIN
     IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000010000001000100101110000100001000000000000000", WritingAddress); END;
     IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000010000001000100100010000100001000000000000000", WritingAddress); END;
     IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000011111001111100011110011111000111100000000000", WritingAddress); END;
-    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000000000000000000000000000000000000000000000000", WritingAddress); END;
-    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000000000000000000000000000000000000000000000000", WritingAddress); END;
-    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000000000000000000000000000000000000000000000000", WritingAddress); END;
-    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000000000000000000000000000000000000000000000000", WritingAddress); END;
-    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000000000000000000000000000000000000000000000000", WritingAddress); END;
-    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000000000000000000000000000000000000000000000000", WritingAddress); END;
-    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000000000000000000000000000000000000000000000000", WritingAddress); END;
-    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000000000000000000000000000000000000000000000000", WritingAddress); END;
-    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000000000000000000000000000000000000000000000000", WritingAddress); END;
+    FOR RepeatCount := 0 TO 30 DO
+        IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000000000000000000000000000000000000000000000000", WritingAddress); END;
+    END;
     Storage.DEALLOCATE (WritingAddress, CARDINAL(Graph.ImageSize(0, 0, 320, 0)));
     RETURN (NOT NotSkipped);
 END WriteThinks;
@@ -552,12 +562,7 @@ VAR
     NotSkipped : BOOLEAN;
 BEGIN
     ClearScreen(_GCLEARSCREEN);
-    Infinite_Software();
-    Delay (12*NoteDelay);
-    NotSkipped := NOT KeyPressed();
-    IF (NotSkipped) THEN
-        NotSkipped := FlashScreen();
-    END;
+    NotSkipped := InfiniteSoftware();
     IF (NotSkipped) THEN
         NotSkipped := SpinRectangle();
     END;
