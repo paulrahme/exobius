@@ -1,0 +1,6 @@
+DEFINITION MODULE Intro1;
+
+PROCEDURE PlayTitleSequence;
+
+END Intro1.
+

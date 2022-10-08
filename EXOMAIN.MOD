@@ -24,8 +24,9 @@ FROM Exobius IMPORT
     DarkestWhite, DarkWhite, White, LightWhite, LightestWhite,
     DarkestGreen, DarkGreen, Green, LightGreen, LightestGreen;
 
-FROM Intro IMPORT PlayTitleSequence, PlaneToPlanet;
-FROM Intros1 IMPORT PlayIntroSequence, PlayEndSequence;
+FROM Slides IMPORT PlayIntroSlideshow, PlayEndSlideshow;
+FROM Intro1 IMPORT PlayTitleSequence;
+FROM Intro2 IMPORT PlaneToPlanet;
 FROM Screens1 IMPORT Screen1;
 FROM Screens2 IMPORT Screen2;
 FROM Screens3 IMPORT Screen3;
@@ -44,50 +45,25 @@ BEGIN
     ScreenComplete := FALSE;
     Lives := 0;
 
-    PlayIntroSequence();
+    PlayIntroSlideshow();
     PlayTitleSequence();
-    ClearTheBuffer;
-    PlaneToPlanet;
-    Screen1;
-    IF NOT GameOver THEN
-        Boss1();
-    END;
-    IF NOT GameOver THEN
-        Screen2();
-    END;
-    IF NOT GameOver THEN
-        Screen3();
-    END;
-    IF NOT GameOver THEN
-        Screen4();
-    END;
-    IF NOT GameOver THEN
-       Screen5();
-    END;
-    IF NOT GameOver THEN
-       Boss2();
-    END;
-    IF NOT GameOver THEN
-       Screen6();
-    END;
-    IF NOT GameOver THEN
-       Screen7();
-    END;
-    IF NOT GameOver THEN
-        Screen8();
-    END;
-    IF NOT GameOver THEN
-        Boss3();
-    END;
-    IF NOT GameOver THEN
-        Screen9();
-    END;
-    IF NOT GameOver THEN
-        Boss4();
-    END;
-    IF NOT GameOver THEN
-        PlayEndSequence();
-    END;
+    ClearTheBuffer();
+    PlaneToPlanet();
+
+    Screen1();
+    IF NOT GameOver THEN Boss1(); END;
+    IF NOT GameOver THEN Screen2(); END;
+    IF NOT GameOver THEN Screen3(); END;
+    IF NOT GameOver THEN Screen4(); END;
+    IF NOT GameOver THEN Screen5(); END;
+    IF NOT GameOver THEN Boss2(); END;
+    IF NOT GameOver THEN Screen6(); END;
+    IF NOT GameOver THEN Screen7(); END;
+    IF NOT GameOver THEN Screen8(); END;
+    IF NOT GameOver THEN Boss3(); END;
+    IF NOT GameOver THEN Screen9(); END;
+    IF NOT GameOver THEN Boss4(); END;
+    IF NOT GameOver THEN PlayEndSlideshow(); END;
 
     SetTextMode();
 END Exomain.

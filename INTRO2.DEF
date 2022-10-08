@@ -1,0 +1,5 @@
+DEFINITION MODULE Intro2;
+
+PROCEDURE PlaneToPlanet;
+
+END Intro2.

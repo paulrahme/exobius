@@ -1,6 +1,0 @@
-DEFINITION MODULE Intro;
-
-PROCEDURE PlayTitleSequence;
-PROCEDURE PlaneToPlanet;
-
-END Intro.

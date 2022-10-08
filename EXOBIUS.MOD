@@ -428,7 +428,6 @@ BEGIN
     Ellipse(x37, y22, 5, 2, Yellow, TRUE);
 END DrawPlane5025;
 
-
 PROCEDURE CheckSpecialKeys;
 VAR
     TextPos : Graph.TextCoords;
@@ -441,7 +440,7 @@ BEGIN
             TextPos := Graph.SetTextPosition(25, 19);
             Graph.OutText('PAUSED');
             Key := IO.RdKey();
-            Rectangle (140, 190, 180, 199, Black, TRUE);
+            Rectangle(140, 190, 180, 199, Black, TRUE);
         END;
     END;
 END CheckSpecialKeys;

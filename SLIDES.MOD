@@ -1,4 +1,4 @@
-IMPLEMENTATION MODULE Intros1;
+IMPLEMENTATION MODULE Slides;
 (*$I+,O+,R+,S+,Z+*)
 (*$S FF00*)
 
@@ -1460,7 +1460,7 @@ BEGIN
     Plot (83,22,1);
 END EndingKeyInHand;
 
-PROCEDURE PlayIntroSequence;
+PROCEDURE PlayIntroSlideshow;
 VAR
     OldCoords : Graph.TextCoords;
 BEGIN
@@ -1487,9 +1487,9 @@ BEGIN
     OldCoords := SetTextPosition (1, 1);
     OutText("But you're in for a joyride!!");
     Key := IO.RdKey();
-END PlayIntroSequence;
+END PlayIntroSlideshow;
 
-PROCEDURE PlayEndSequence;
+PROCEDURE PlayEndSlideshow;
 BEGIN
     ClearScreen(_GCLEARSCREEN);
     Intro1;
@@ -1512,6 +1512,6 @@ BEGIN
     OldCoords := SetTextPosition (2, 1);
     OutText("''...and go on home, okay?''");
     Key := IO.RdKey();
-END PlayEndSequence;
+END PlayEndSlideshow;
 
-END Intros1.
+END Slides.
