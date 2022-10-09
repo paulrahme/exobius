@@ -2,16 +2,10 @@ IMPLEMENTATION MODULE Slides;
 (*$I+,O+,R+,S+,Z+*)
 (*$S FF00*)
 
-IMPORT
-    Str, Graph, Lib, IO, Exobius;
-
-FROM Graph IMPORT
-    Rectangle, Polygon, Line, HLine, Circle, Ellipse, Disc, Plot, Arc, Point,
-    ClearScreen, _GCLEARSCREEN, OutText, SetTextPosition;
-
-FROM Lib IMPORT
-    Delay;
-
+IMPORT Str, Graph, Lib, IO, Exobius, Font;
+FROM Graph IMPORT Rectangle, Polygon, Line, HLine, Circle, Ellipse, Disc, Plot, Arc, Point, ClearScreen, _GCLEARSCREEN, OutText, SetTextPosition;
+FROM Lib IMPORT Delay;
+FROM Font IMPORT A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z;
 FROM Exobius IMPORT
     Black,
     DarkestGrey, DarkGrey, Grey, LightGrey, LightestGrey,
@@ -21,12 +15,7 @@ FROM Exobius IMPORT
     DarkestBrown, DarkBrown, Brown, LightBrown, LightestBrown,
     DarkestGreen, DarkGreen, Green, LightGreen, LightestGreen,
     DarkestYellow, DarkYellow, Yellow, LightYellow, LightestYellow,
-    A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z,
-    Key;
-
-VAR
-    Xs, Ys : ARRAY[0..20] OF CARDINAL;
-    OldCoords : Graph.TextCoords;
+    Key, Xs, Ys, TextPos;
 
 PROCEDURE Intro1;
 BEGIN
@@ -1296,7 +1285,7 @@ BEGIN
     Disc (111,126,52,6);
     Xs[0] := 59; Ys[0] := 130; 
     Polygon (1, Xs, Ys, 6);
-    Xs[0] := 59; Ys[0] := 125; Xs[1] := 2; Ys[1] := 185; Xs[2] := 85; Ys[2] := 189; Xs[3] := 114; Ys[3] := 158; 
+    Xs[0] := 59; Ys[0] := 125; Xs[1] := 2; Ys[1] := 185; Xs[2] := 85; Ys[2] := 189; Xs[3] := 114; Ys[3] := 158;
     Polygon (4, Xs, Ys, 6);
     Rectangle (81,162,114,178,6,TRUE);
     Xs[0] := 89; Ys[0] := 185; Xs[1] := 103; Ys[1] := 177; Xs[2] := 74; Ys[2] := 158; 
@@ -1461,30 +1450,28 @@ BEGIN
 END EndingKeyInHand;
 
 PROCEDURE PlayIntroSlideshow;
-VAR
-    OldCoords : Graph.TextCoords;
 BEGIN
     ClearScreen(_GCLEARSCREEN);
     Intro1;
-    OldCoords := SetTextPosition (1, 1);
+    TextPos := SetTextPosition (1, 1);
     OutText("Working at Le Grande Pizzeria");
-    OldCoords := SetTextPosition (2, 1);
+    TextPos := SetTextPosition (2, 1);
     OutText("has bad days...");
     Key := IO.RdKey();
     ClearScreen(_GCLEARSCREEN);
     Intro2;
-    OldCoords := SetTextPosition (23, 1);
+    TextPos := SetTextPosition (23, 1);
     OutText("But does this look like your dream");
-    OldCoords := SetTextPosition (24, 1);
+    TextPos := SetTextPosition (24, 1);
     OutText("ship?...");
     Key := IO.RdKey();
     ClearScreen(_GCLEARSCREEN);
     Intro3;
-    OldCoords := SetTextPosition (1, 1);
+    TextPos := SetTextPosition (1, 1);
     OutText("''Park it well'', he says...");
     Key := IO.RdKey();
     ClearScreen(_GCLEARSCREEN);
-    OldCoords := SetTextPosition (1, 1);
+    TextPos := SetTextPosition (1, 1);
     OutText("But you're in for a joyride!!");
     Key := IO.RdKey();
 END PlayIntroSlideshow;
@@ -1497,21 +1484,22 @@ BEGIN
     Key := IO.RdKey();
     ClearScreen(_GCLEARSCREEN);
     Intro3;
-    OldCoords := SetTextPosition (1, 1);
+    TextPos := SetTextPosition (1, 1);
     OutText("''You're not a bad driver'', he says...");
     Key := IO.RdKey();
-    OldCoords := SetTextPosition (1, 1);
+    TextPos := SetTextPosition (1, 1);
     OutText("''What you doing in a place like this''");
     Key := IO.RdKey();
     ClearScreen(_GCLEARSCREEN);
     ClearScreen(_GCLEARSCREEN);
     EndingKeyInHand;
-    OldCoords := SetTextPosition (1, 1);
+    TextPos := SetTextPosition (1, 1);
     OutText("''...so just keep the car...''");
     Key := IO.RdKey();
-    OldCoords := SetTextPosition (2, 1);
+    TextPos := SetTextPosition (2, 1);
     OutText("''...and go on home, okay?''");
     Key := IO.RdKey();
 END PlayEndSlideshow;
 
 END Slides.
+

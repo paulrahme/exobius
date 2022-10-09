@@ -2,16 +2,11 @@ IMPLEMENTATION MODULE Screens2;
 (*$I+,O+,R+,S+,Z+*)
 (*$S FF00*)
 
-IMPORT
-    Str, Graph, Lib, IO, Window, Storage, Exobius;
-
-FROM Graph IMPORT
-    SetClipRgn, GetImage, PutImage,
-    Rectangle, Polygon, Line, HLine, Circle, Ellipse, Disc, Plot, Arc, Point;
-
-FROM Lib IMPORT
-    Sound, NoSound, Delay, RANDOM;
-
+IMPORT Str, Graph, Lib, IO, Window, Storage, Exobius;
+FROM Graph IMPORT SetClipRgn, GetImage, PutImage, Rectangle, Polygon, Line, HLine, Circle, Ellipse, Disc, Plot, Arc, Point;
+FROM Lib IMPORT Sound, NoSound, Delay, RANDOM;
+FROM Font IMPORT A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z;
+FROM Sprites IMPORT DrawGlowWorms;
 FROM Exobius IMPORT
     PutPixel, SetPixel,
     PlaneWidth, PlaneHeight,
@@ -32,9 +27,6 @@ FROM Exobius IMPORT
     DrawPlane, CheckMouse, CheckSpecialKeys, CheckMouseAndSpecialKeys, Die, DrawGameOver,
     FinishScreen, Key, CheckDeath1,
     DrawGameOver;
-
-FROM Sprites IMPORT
-    DrawGlowWorms;
 
 PROCEDURE BlowUpEnemy2 (x, y : CARDINAL);
 CONST

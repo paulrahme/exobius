@@ -14,7 +14,7 @@ FROM Lib IMPORT
     Delay;
 
 FROM Exobius IMPORT
-    SetVGAMode, SetTextMode, Cheat, Key,
+    Init, ShutDown, SetVGAMode, SetTextMode, Cheat, Key,
     GameOver, ScreenComplete, Score, ClearTheBuffer, Lives,
     Black, DarkestGrey, DarkGrey, Grey, LightGrey, LightestGrey,
     DarkestBlue, DarkBlue, Blue, LightBlue, LightestBlue,
@@ -39,11 +39,8 @@ FROM Bosses IMPORT Boss1, Boss2, Boss3, Boss4;
 
 (* Main loop *)
 BEGIN
-    SetVGAMode;
-    Score := 0;
-    GameOver := FALSE;
-    ScreenComplete := FALSE;
-    Lives := 0;
+    SetVGAMode();
+    Init();
 
     PlayIntroSlideshow();
     PlayTitleSequence();
@@ -65,6 +62,7 @@ BEGIN
     IF NOT GameOver THEN Boss4(); END;
     IF NOT GameOver THEN PlayEndSlideshow(); END;
 
+    ShutDown();
     SetTextMode();
 END Exomain.
 

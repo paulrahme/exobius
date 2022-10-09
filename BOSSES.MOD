@@ -2,15 +2,13 @@ IMPLEMENTATION MODULE Bosses;
 (*$I+,O+,R+,S+,Z+*)
 (*$S FF00*)
 
-IMPORT
-     Str, Graph, Lib, IO, Window, Storage, MsMouse, Exobius;
-
-FROM Graph IMPORT
-     Point, SetClipRgn, SetVideoMode, Rectangle, GraphMode, TextMode, Polygon, Line, HLine, Circle, Ellipse, Disc, Plot, Arc;
-
-FROM Lib IMPORT
-     Sound, NoSound, Delay, RANDOM;
-
+IMPORT Str, Graph, Lib, IO, Window, Storage, MsMouse, Exobius, Font;
+FROM Graph IMPORT Point, SetClipRgn, SetVideoMode, Rectangle, GraphMode, TextMode, Polygon, Line, HLine, Circle, Ellipse, Disc, Plot, Arc;
+FROM Lib IMPORT Sound, NoSound, Delay, RANDOM;
+FROM Storage IMPORT ALLOCATE, DEALLOCATE;
+FROM Sprites IMPORT DrawSpinners;
+FROM Screens8 IMPORT DrawStars8, DrawPlanet, PlanetRadius;
+FROM Font IMPORT A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z;
 FROM Exobius IMPORT
   SolidFill, PlaneWidth, PlaneHeight,
   EnemyYStart, PlaneXMin, CollisionY,
@@ -25,20 +23,10 @@ FROM Exobius IMPORT
   Count, Lives, EnemyY, BkColour,
   OldBkColor,  Xs, Ys, OneAlive, TwoAlive, ThreeAlive, FourAlive, FiveAlive,
   SixAlive, ScreenComplete, GameOver,  MouseButtons,  MouseMove, GameSpeed,
-  Update3DBullet, DrawPlane, CheckMouse, Die, A, B,
-  C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z,
+  Update3DBullet, DrawPlane, CheckMouse, Die,
   FinishScreen, Key, PlaneXMove, Score,
   BkAddress, BkSize, GroundAddress, GroundSize,
-  DrawGameOver;
-
-FROM Storage IMPORT
-     ALLOCATE, DEALLOCATE;
-
-FROM Sprites IMPORT
-  DrawSpinners;
-
-FROM Screens8 IMPORT
-  DrawStars8, DrawPlanet, PlanetRadius;
+  DrawGameOver, TextPos;
 
 CONST
     Boss1X = 0;
@@ -48,12 +36,9 @@ CONST
 VAR
   Boss1Y, Boss2Y, Boss3Y, Boss3Y3, Boss1Lives, Boss2Lives, Boss3X3 : CARDINAL;
   Boss3Lives : INTEGER;
-  TextPos : Graph.TextCoords;
   BossAddressA, BossAddressB, BossAddressC : ADDRESS;
   OneDead, TwoDead, ThreeDead, BossDiving : BOOLEAN;
 
-TYPE
-  CoordArray = ARRAY [0..10] OF CARDINAL;
 PROCEDURE DrawBoss1 (x, y : CARDINAL);
 BEGIN
         Disc (x + 50, y + 60, 40, DarkestRed);

@@ -1,16 +1,10 @@
 IMPLEMENTATION MODULE Intro2;
 
-IMPORT Graph, IO, Lib, Exobius, Storage;
-
-FROM Graph IMPORT
-    ClearScreen, _GCLEARSCREEN,
-    Rectangle, Polygon, Line, HLine, Circle, Ellipse, Disc, Plot, Arc;
-
+IMPORT Graph, IO, Lib, Exobius, Storage, Font;
+FROM Graph IMPORT ClearScreen, _GCLEARSCREEN, Rectangle, Polygon, Line, HLine, Circle, Ellipse, Disc, Plot, Arc;
 FROM IO IMPORT KeyPressed;
-
-FROM Lib IMPORT
-    Delay;
-
+FROM Lib IMPORT Delay;
+FROM Font IMPORT A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z;
 FROM Exobius IMPORT
     PutPixel, GetPixel,
     Black,
@@ -22,8 +16,7 @@ FROM Exobius IMPORT
     DarkestGreen, DarkGreen, Green, LightGreen, LightestGreen,
     DarkestYellow, DarkYellow, Yellow, LightYellow, LightestYellow,
     DrawPlane, PlaneX, PlaneY,
-    Count, GameSpeed,
-    A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z;
+    Count, GameSpeed;
 
 PROCEDURE DrawVGAPlanet;
 VAR

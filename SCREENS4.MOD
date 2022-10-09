@@ -2,15 +2,10 @@ IMPLEMENTATION MODULE Screens4;
 (*$I+,O+,R+,S+,Z+*)
 (*$S FF00*)
 
-IMPORT
-  Str, Graph, Lib, IO, Window, Storage, Exobius;
-
-FROM Graph IMPORT
-  SetClipRgn, SetVideoMode, Rectangle, GraphMode, TextMode, Polygon, Line, HLine, Circle, Ellipse, Disc, Plot, Arc, Point, GetImage;
-
-FROM Lib IMPORT
-  Sound, NoSound, Delay;
-
+IMPORT Str, Graph, Lib, IO, Window, Storage, Exobius, Font;
+FROM Graph IMPORT SetClipRgn, SetVideoMode, Rectangle, GraphMode, TextMode, Polygon, Line, HLine, Circle, Ellipse, Disc, Plot, Arc, Point, GetImage;
+FROM Lib IMPORT Sound, NoSound, Delay;
+FROM Font IMPORT A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z;
 FROM Exobius IMPORT
   SolidFill, PlaneWidth, PlaneHeight,
   EnemyYStart, CollisionY,
@@ -28,18 +23,12 @@ FROM Exobius IMPORT
   OldBkColor,  Xs, Ys, OneAlive, TwoAlive, ThreeAlive, FourAlive, FiveAlive,
   SixAlive, ScreenComplete, GameOver,  MouseButtons,  MouseMove, GameSpeed,
   DrawPlane, CheckMouse, Die,
-  A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z,
   FinishScreen, PlaneXMove, CheckDeath1, Score,
   BkAddress, BkSize, ClearTheBuffer, Cheat,
-  DrawGameOver;
-
-FROM Sprites IMPORT
-  DrawBoomGuards, DrawSpinners, DrawFlyTraps, DrawMaces, DrawPlants,
-  DrawIceRocks, DrawSnowMen, DrawSnowBalls, DrawSkiiers, DrawGlowWorms;
+  DrawGameOver, TextPos;
 
 VAR
   NumberOfWaterDots, RectY, HitCounts, EnemyX : CARDINAL;
-  TextPos : Graph.TextCoords;
   RectX : INTEGER;
 
 PROCEDURE RandomBrown(VAR BrownColour : CARDINAL);

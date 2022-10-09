@@ -3,16 +3,12 @@ IMPLEMENTATION MODULE Screens9;
 (*$I+,O+,R+,S+,Z+*)
 (*$S FF00*)
 
-IMPORT
-  Str, Graph, Lib, IO, Window, Storage, Exobius, Storage;
-
-FROM Graph IMPORT
-  SetClipRgn, SetVideoMode, Rectangle, GraphMode, TextMode, Polygon, Line,
-  HLine, Circle, Ellipse, Disc, Plot, Arc, Point, GetImage, ClearScreen;
-
-FROM Lib IMPORT
-  Sound, NoSound, Delay, RANDOM;
-
+IMPORT Str, Graph, Lib, IO, Window, Storage, Exobius, Storage;
+FROM Graph IMPORT SetClipRgn, SetVideoMode, Rectangle, GraphMode, TextMode, Polygon, Line, HLine, Circle, Ellipse, Disc, Plot, Arc, Point, GetImage, ClearScreen;
+FROM Lib IMPORT Sound, NoSound, Delay, RANDOM;
+FROM Font IMPORT A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z;
+FROM Screens7 IMPORT DrawPillarBottom;
+FROM Screens8 IMPORT DrawPlanet;
 FROM Exobius IMPORT
   SolidFill, PlaneWidth, PlaneHeight,
   EnemyYStart, CollisionY,
@@ -27,17 +23,10 @@ FROM Exobius IMPORT
   Count, Lives, EnemyY, BkColour,
   OldBkColor,  Xs, Ys, OneAlive, TwoAlive, ThreeAlive, FourAlive, FiveAlive,
   SixAlive, ScreenComplete, GameOver,  MouseButtons,  MouseMove, GameSpeed,
-  DrawPlane, CheckMouse, Die, A, B,
-  C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z,
+  DrawPlane, CheckMouse, Die,
   FinishScreen, PlaneXMove, CheckDeath1, Score,
   BkAddress, BkSize, ClearTheBuffer, Cheat,
   DrawGameOver;
-
-FROM Screens7 IMPORT
-     DrawPillarBottom;
-
-FROM Screens8 IMPORT
-     DrawPlanet;
 
 CONST
     PlanetX = 160;

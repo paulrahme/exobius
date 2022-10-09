@@ -1,18 +1,12 @@
 IMPLEMENTATION MODULE Intro1;
 
-IMPORT Graph, IO, Lib, Exobius, Storage;
-
-FROM Graph IMPORT
-    ClearScreen, _GCLEARSCREEN,
-    Rectangle, Polygon, Line, HLine, Circle, Ellipse, Disc, Plot, Arc;
-
+IMPORT Graph, IO, Lib, Exobius, Storage, Font;
+FROM Graph IMPORT ClearScreen, _GCLEARSCREEN, Rectangle, Polygon, Line, HLine, Circle, Ellipse, Disc, Plot, Arc;
 FROM IO IMPORT KeyPressed;
-
-FROM Lib IMPORT
-    Delay;
-
+FROM Lib IMPORT Delay;
+FROM Font IMPORT A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z;
 FROM Exobius IMPORT
-    PutPixel,
+    PutPixel, BkAddress,
     Black,
     DarkestGrey, DarkGrey, Grey, LightGrey, LightestGrey,
     DarkestWhite, DarkWhite, White, LightWhite, LightestWhite,
@@ -22,8 +16,7 @@ FROM Exobius IMPORT
     DarkestGreen, DarkGreen, Green, LightGreen, LightestGreen,
     DarkestYellow, DarkYellow, Yellow, LightYellow, LightestYellow,
     DrawPlane, PlaneX, PlaneY,
-    Count, GameSpeed,
-    A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z;
+    Count, GameSpeed;
 
 CONST
     NoteDelay = 125;
@@ -200,7 +193,6 @@ CONST
 VAR
     NameY, NameVelocity : REAL;
     NameYCard, Bounces, NameImageSize : CARDINAL;
-    NameAddress : ADDRESS;
 BEGIN
     Bounces := 0;
     NameY := 1.0; NameYCard := CARDINAL(NameY);
@@ -210,9 +202,7 @@ BEGIN
     Rectangle(95, NameYCard - 1, NameRight, NameYCard + NameHeight, Black, TRUE);
     P(105, NameYCard); A(135, NameYCard); U(165, NameYCard); L(195, NameYCard);
     R(95, NameYCard+30); A(125, NameYCard+30); H(155, NameYCard+30); M(185, NameYCard+30); E(215, NameYCard+30);
-    NameImageSize := CARDINAL(Graph.ImageSize(NameLeft, 0, NameRight, NameHeight + 1));
-    Storage.ALLOCATE(NameAddress, NameImageSize);
-    Graph.GetImage(NameLeft, NameYCard - 1, NameRight, NameYCard + NameHeight, NameAddress);
+    Graph.GetImage(NameLeft, NameYCard - 1, NameRight, NameYCard + NameHeight, BkAddress);
 
     WHILE (Bounces < 3) AND NOT (KeyPressed()) DO
         IF (NameVelocity < TerminalVelocity) THEN NameVelocity := NameVelocity + GravityAccel; END;
@@ -231,14 +221,13 @@ BEGIN
         END;
         NameYCard := CARDINAL(NameY);
 
-        Graph.PutImage(NameLeft, NameYCard, NameAddress, Graph._GPSET);
+        Graph.PutImage(NameLeft, NameYCard, BkAddress, Graph._GPSET);
         B(135 ,95); Y(165, 95);
         Lib.Delay(GameSpeed * 2);
 
         IF (KeyPressed()) THEN Bounces := 1000; END;
     END;
 
-    Storage.DEALLOCATE(NameAddress, NameImageSize);
     IF (Bounces < 900) THEN
         DrawStars;
         FOR Count := 1 TO 5 DO
@@ -458,9 +447,9 @@ BEGIN
     RETURN TRUE;
 END WriteAtmosFear;
 
-PROCEDURE ReadyForWriting(LetterString : ARRAY OF CHAR; WritingAddress : ADDRESS) : BOOLEAN;
+PROCEDURE ReadyForWriting(LetterString : ARRAY OF CHAR) : BOOLEAN;
 VAR
-    NoOfPieces, WriteX, WriteY, LetterX, LetterY, WritingSize, PieceX,
+    NoOfPieces, WriteX, WriteY, LetterX, LetterY, PieceX,
     Colour, BitMapCount : CARDINAL;
 BEGIN
     FOR Count := 1 TO 5 DO
@@ -474,23 +463,23 @@ BEGIN
             PieceX := PieceX + 1;
         END;
         FOR WriteY := 161 TO 199 DO
-            Graph.GetImage (0, WriteY, 320, WriteY, WritingAddress);
-            Graph.PutImage (0, WriteY-1, WritingAddress, Graph._GPSET);
+            Graph.GetImage(0, WriteY, 320, WriteY, BkAddress);
+            Graph.PutImage(0, WriteY-1, BkAddress, Graph._GPSET);
         END;
         HLine (0, 199, 320, Black);
         FOR BitMapCount := 1 TO 2 DO
             FOR WriteY := 2 TO 160 DO
                 WriteX := Lib.RANDOM(320);
                 IF (WriteY MOD 2=1) THEN
-                    Graph.GetImage(0, WriteY, WriteX, WriteY, WritingAddress);
-                    Graph.PutImage(1, WriteY-1, WritingAddress, Graph._GPSET);
-                    Graph.GetImage(WriteX+1, WriteY, 320, WriteY, WritingAddress);
-                    Graph.PutImage(WriteX+1, WriteY-1, WritingAddress, Graph._GPSET)
+                    Graph.GetImage(0, WriteY, WriteX, WriteY, BkAddress);
+                    Graph.PutImage(1, WriteY-1, BkAddress, Graph._GPSET);
+                    Graph.GetImage(WriteX+1, WriteY, 320, WriteY, BkAddress);
+                    Graph.PutImage(WriteX+1, WriteY-1, BkAddress, Graph._GPSET)
                 ELSE
-                    Graph.GetImage(WriteX, WriteY, 320, WriteY, WritingAddress);
-                    Graph.PutImage(WriteX-1, WriteY-1, WritingAddress, Graph._GPSET);
-                    Graph.GetImage(0, WriteY, WriteX-1, WriteY, WritingAddress);
-                    Graph.PutImage(0, WriteY-1, WritingAddress, Graph._GPSET);
+                    Graph.GetImage(WriteX, WriteY, 320, WriteY, BkAddress);
+                    Graph.PutImage(WriteX-1, WriteY-1, BkAddress, Graph._GPSET);
+                    Graph.GetImage(0, WriteY, WriteX-1, WriteY, BkAddress);
+                    Graph.PutImage(0, WriteY-1, BkAddress, Graph._GPSET);
                 END;
             END;
         END;
@@ -500,60 +489,57 @@ END ReadyForWriting;
 
 PROCEDURE WriteThinks() : BOOLEAN;
 VAR
-    WritingAddress : ADDRESS;
     NotSkipped : BOOLEAN;
     RepeatCount : CARDINAL;
 BEGIN
     Graph.ClearScreen (Graph._GCLEARSCREEN);
 
-    Storage.ALLOCATE(WritingAddress, CARDINAL(Graph.ImageSize(0, 0, 320, 0)));
     NotSkipped := TRUE;
-    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000011111001000100111110011001001000100000000000", WritingAddress); END;
-    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000000100001000100001000010101001001000000000000", WritingAddress); END;
-    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000000100001111100001000010101001110000000000000", WritingAddress); END;
-    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000000100001000100001000010101001001000000000000", WritingAddress); END;
-    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000000100001000100111110010011001000100000000000", WritingAddress); END;
-    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000000000000000000000000000000000000000000000000", WritingAddress); END;
-    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000000000000000000000000000000000000000000000000", WritingAddress); END;
-    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000011111001000100111110011111001000100000000000", WritingAddress); END;
-    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000010001001000100001000010000001001000000000000", WritingAddress); END;
-    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000010101001000100001000010000001110000000000000", WritingAddress); END;
-    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000010011001000100001000010000001001000000000000", WritingAddress); END;
-    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000011111001111100111110011111001000100000000000", WritingAddress); END;
-    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000000000000000000000000000000000000000000000000", WritingAddress); END;
-    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000000000000000000000000000000000000000000000000", WritingAddress); END;
-    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000000000000000000000000000000000000000000000000", WritingAddress); END;
-    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000011111001000100111110011001001000100000000000", WritingAddress); END;
-    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000000100001000100001000010101001001000000000000", WritingAddress); END;
-    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000000100001111100001000010101001110000000000000", WritingAddress); END;
-    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000000100001000100001000010101001001000000000000", WritingAddress); END;
-    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000000100001000100111110010011001000100000000000", WritingAddress); END;
-    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000000000000000000000000000000000000000000000000", WritingAddress); END;
-    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000000000000000000000000000000000000000000000000", WritingAddress); END;
-    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("011110011111001111000111110011111000111100100010011111", WritingAddress); END;
-    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("100000000100001000100100010000100001000000100010000100", WritingAddress); END;
-    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("011100000100001111000111110000100001011100111110000100", WritingAddress); END;
-    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000010000100001001000100010000100001000100100010000100", WritingAddress); END;
-    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("111100000100001000100100010011111000111100100010000100", WritingAddress); END;
-    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000000000000000000000000000000000000000000000000", WritingAddress); END;
-    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000000000000000000000000000000000000000000000000", WritingAddress); END;
-    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000000000000000000000000000000000000000000000000", WritingAddress); END;
-    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000011111001000100111110011001001000100000000000", WritingAddress); END;
-    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000000100001000100001000010101001001000000000000", WritingAddress); END;
-    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000000100001111100001000010101001110000000000000", WritingAddress); END;
-    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000000100001000100001000010101001001000000000000", WritingAddress); END;
-    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000000100001000100111110010011001000100000000000", WritingAddress); END;
-    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000000000000000000000000000000000000000000000000", WritingAddress); END;
-    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000000000000000000000000000000000000000000000000", WritingAddress); END;
-    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000010000001111100011110011111000111100000000000", WritingAddress); END;
-    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000010000001000100100000000100001000000000000000", WritingAddress); END;
-    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000010000001000100101110000100001000000000000000", WritingAddress); END;
-    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000010000001000100100010000100001000000000000000", WritingAddress); END;
-    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000011111001111100011110011111000111100000000000", WritingAddress); END;
+    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000011111001000100111110011001001000100000000000"); END;
+    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000000100001000100001000010101001001000000000000"); END;
+    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000000100001111100001000010101001110000000000000"); END;
+    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000000100001000100001000010101001001000000000000"); END;
+    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000000100001000100111110010011001000100000000000"); END;
+    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000000000000000000000000000000000000000000000000"); END;
+    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000000000000000000000000000000000000000000000000"); END;
+    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000011111001000100111110011111001000100000000000"); END;
+    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000010001001000100001000010000001001000000000000"); END;
+    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000010101001000100001000010000001110000000000000"); END;
+    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000010011001000100001000010000001001000000000000"); END;
+    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000011111001111100111110011111001000100000000000"); END;
+    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000000000000000000000000000000000000000000000000"); END;
+    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000000000000000000000000000000000000000000000000"); END;
+    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000000000000000000000000000000000000000000000000"); END;
+    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000011111001000100111110011001001000100000000000"); END;
+    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000000100001000100001000010101001001000000000000"); END;
+    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000000100001111100001000010101001110000000000000"); END;
+    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000000100001000100001000010101001001000000000000"); END;
+    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000000100001000100111110010011001000100000000000"); END;
+    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000000000000000000000000000000000000000000000000"); END;
+    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000000000000000000000000000000000000000000000000"); END;
+    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("011110011111001111000111110011111000111100100010011111"); END;
+    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("100000000100001000100100010000100001000000100010000100"); END;
+    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("011100000100001111000111110000100001011100111110000100"); END;
+    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000010000100001001000100010000100001000100100010000100"); END;
+    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("111100000100001000100100010011111000111100100010000100"); END;
+    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000000000000000000000000000000000000000000000000"); END;
+    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000000000000000000000000000000000000000000000000"); END;
+    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000000000000000000000000000000000000000000000000"); END;
+    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000011111001000100111110011001001000100000000000"); END;
+    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000000100001000100001000010101001001000000000000"); END;
+    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000000100001111100001000010101001110000000000000"); END;
+    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000000100001000100001000010101001001000000000000"); END;
+    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000000100001000100111110010011001000100000000000"); END;
+    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000000000000000000000000000000000000000000000000"); END;
+    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000000000000000000000000000000000000000000000000"); END;
+    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000010000001111100011110011111000111100000000000"); END;
+    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000010000001000100100000000100001000000000000000"); END;
+    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000010000001000100101110000100001000000000000000"); END;
+    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000010000001000100100010000100001000000000000000"); END;
+    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000011111001111100011110011111000111100000000000"); END;
     FOR RepeatCount := 0 TO 30 DO
-        IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000000000000000000000000000000000000000000000000", WritingAddress); END;
+        IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000000000000000000000000000000000000000000000000"); END;
     END;
-    Storage.DEALLOCATE (WritingAddress, CARDINAL(Graph.ImageSize(0, 0, 320, 0)));
     RETURN (NOT NotSkipped);
 END WriteThinks;
 
@@ -584,3 +570,4 @@ BEGIN
 END PlayTitleSequence;
 
 END Intro1.
+

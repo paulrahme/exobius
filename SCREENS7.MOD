@@ -2,15 +2,10 @@ IMPLEMENTATION MODULE Screens7;
 (*$I+,O+,R+,S+,Z+*)
 (*$S FF00*)
 
-IMPORT
-  Str, Graph, Lib, IO, Window, Storage, Exobius, Storage;
-
-FROM Graph IMPORT
-  SetClipRgn, SetVideoMode, Rectangle, GraphMode, TextMode, Polygon, Line, HLine, Circle, Ellipse, Disc, Plot, Arc, Point, GetImage;
-
-FROM Lib IMPORT
-  Sound, NoSound, Delay, RANDOM;
-
+IMPORT Str, Graph, Lib, IO, Window, Storage, Exobius, Storage, Font;
+FROM Graph IMPORT SetClipRgn, SetVideoMode, Rectangle, GraphMode, TextMode, Polygon, Line, HLine, Circle, Ellipse, Disc, Plot, Arc, Point, GetImage;
+FROM Lib IMPORT Sound, NoSound, Delay, RANDOM;
+FROM Font IMPORT A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z;
 FROM Exobius IMPORT
   SolidFill, PlaneWidth, PlaneHeight,
   EnemyYStart, CollisionY,
@@ -26,7 +21,6 @@ FROM Exobius IMPORT
   OldBkColor,  Xs, Ys, OneAlive, TwoAlive, ThreeAlive, FourAlive, FiveAlive,
   SixAlive, ScreenComplete, GameOver,  MouseButtons,  MouseMove, GameSpeed,
   DrawPlane, CheckMouse, Die,
-  A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z,
   FinishScreen, PlaneXMove, CheckDeath1, Score,
   BkAddress, BkSize, ClearTheBuffer, Cheat,
   DrawGameOver;

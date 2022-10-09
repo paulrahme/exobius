@@ -6,7 +6,7 @@ FROM Graph IMPORT
     FillMaskType;
 
 TYPE
-    CoordArray = ARRAY[0..10] OF CARDINAL;
+    CoordArray = ARRAY[0..12] OF CARDINAL;
 
 CONST
     SolidFill = Graph.FillMaskType(0FFH,0FFH,0FFH,0FFH,0FFH,0FFH,0FFH,0FFH);
@@ -29,14 +29,17 @@ VAR
     Enemies, Enemy1X, Enemy2X, Enemy3X, Enemy4X, Enemy5X, Enemy6X, EnemyY,
     CoverRectangleX, Count, Lives,
     Score, BkSize, GroundSize : CARDINAL;
-    BkAddress, GroundAddress : ADDRESS;
+    BkAddress : ADDRESS;
     BkColour, OldBkColor : LONGCARD;
     Xs, Ys : CoordArray;
+    TextPos : Graph.TextCoords;
     OneAlive, TwoAlive, ThreeAlive, FourAlive, FiveAlive, SixAlive,
     ScreenComplete, GameOver, Cheat : BOOLEAN;
     MouseButtons : MsMouse.MsData;
     MouseMove : MsMouse.MsMotion;
 
+PROCEDURE Init;
+PROCEDURE ShutDown;
 PROCEDURE SetVGAMode;
 PROCEDURE SetTextMode;
 PROCEDURE PutPixel(x, y : CARDINAL; color : BYTE);
@@ -52,32 +55,6 @@ PROCEDURE Die;
 PROCEDURE DrawGameOver;
 PROCEDURE FinishScreen;
 PROCEDURE CheckDeath1;
-PROCEDURE A (x, y : CARDINAL);
-PROCEDURE B (x, y : CARDINAL);
-PROCEDURE C (x, y : CARDINAL);
-PROCEDURE D (x, y : CARDINAL);
-PROCEDURE E (x, y : CARDINAL);
-PROCEDURE F (x, y : CARDINAL);
-PROCEDURE G (x, y : CARDINAL);
-PROCEDURE H (x, y : CARDINAL);
-PROCEDURE I (x, y : CARDINAL);
-PROCEDURE J (x, y : CARDINAL);
-PROCEDURE K (x, y : CARDINAL);
-PROCEDURE L (x, y : CARDINAL);
-PROCEDURE M (x, y : CARDINAL);
-PROCEDURE N (x, y : CARDINAL);
-PROCEDURE O (x, y : CARDINAL);
-PROCEDURE P (x, y : CARDINAL);
-PROCEDURE Q (x, y : CARDINAL);
-PROCEDURE R (x, y : CARDINAL);
-PROCEDURE S (x, y : CARDINAL);
-PROCEDURE T (x, y : CARDINAL);
-PROCEDURE U (x, y : CARDINAL);
-PROCEDURE V (x, y : CARDINAL);
-PROCEDURE W (x, y : CARDINAL);
-PROCEDURE X (x, y : CARDINAL);
-PROCEDURE Y (x, y : CARDINAL);
-PROCEDURE Z (x, y : CARDINAL);
 PROCEDURE ClearTheBuffer;
 
 END Exobius.

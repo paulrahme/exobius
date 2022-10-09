@@ -2,16 +2,11 @@ IMPLEMENTATION MODULE Screens1;
 (*$I+,O+,R+,S+,Z+*)
 (*$S FF00*)
 
-IMPORT
-    Str, Graph, Lib, IO, Window, Storage, Exobius;
-
-FROM Graph IMPORT
-    ClearScreen, _GCLEARSCREEN, SetClipRgn,
-    Rectangle, Polygon, Line, HLine, Circle, Ellipse, Disc, Plot, Arc, Point;
-
-FROM Lib IMPORT
-    Delay, RANDOM;
-
+IMPORT Str, Graph, Lib, IO, Window, Storage, Exobius;
+FROM Graph IMPORT ClearScreen, _GCLEARSCREEN, SetClipRgn, Rectangle, Polygon, Line, HLine, Circle, Ellipse, Disc, Plot, Arc, Point;
+FROM Lib IMPORT Delay, RANDOM;
+FROM Font IMPORT A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z;
+FROM Sprites IMPORT DrawBoomGuards, DrawSpinners, DrawFlyTraps, DrawMaces, DrawPlants;
 FROM Exobius IMPORT
     PlaneX, PlaneY, BulletX, BulletY,
     PutPixel, GetPixel,
@@ -32,10 +27,6 @@ FROM Exobius IMPORT
     Update3DBullet, DrawPlane, DrawPlane5025, CheckMouse, CheckMouseAndSpecialKeys, Die, DrawGameOver,
     FinishScreen, CheckDeath1,
     CheckSpecialKeys, ClearTheBuffer, DrawGameOver;
-
-FROM Sprites IMPORT
-    DrawBoomGuards, DrawSpinners, DrawFlyTraps, DrawMaces, DrawPlants,
-    DrawIceRocks, DrawSnowMen, DrawSnowBalls, DrawSkiiers, DrawGlowWorms;
 
 CONST
     MountY = 140;

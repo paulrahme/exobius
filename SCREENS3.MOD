@@ -2,16 +2,11 @@ IMPLEMENTATION MODULE Screens3;
 (*$I+,O+,R+,S+,Z+*)
 (*$S FF00*)
 
-IMPORT
-    Str, Graph, Lib, IO, Window, Storage, Exobius;
-
-FROM Graph IMPORT
-    SetClipRgn, GetImage, PutImage,
-    Rectangle, Polygon, Line, HLine, Circle, Ellipse, Disc, Plot, Arc, Point;
-
-FROM Lib IMPORT
-    Sound, NoSound, Delay, RANDOM;
-
+IMPORT Str, Graph, Lib, IO, Window, Storage, Exobius;
+FROM Graph IMPORT SetClipRgn, GetImage, PutImage, Rectangle, Polygon, Line, HLine, Circle, Ellipse, Disc, Plot, Arc, Point;
+FROM Lib IMPORT Sound, NoSound, Delay, RANDOM;
+FROM Font IMPORT A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z;
+FROM Sprites IMPORT DrawMaces,DrawIceRocks, DrawSnowMen, DrawSnowBalls, DrawSkiiers, DrawGlowWorms;
 FROM Exobius IMPORT
     PlaneWidth, PlaneHeight,
     EnemyYStart, CollisionY,
@@ -26,10 +21,6 @@ FROM Exobius IMPORT
     Update3DBullet, DrawPlane, CheckMouse, CheckMouseAndSpecialKeys, Die,
     FinishScreen, CheckDeath1,
     BkAddress, GroundAddress, GroundSize, DrawGameOver;
-
-FROM Sprites IMPORT
-    DrawBoomGuards, DrawSpinners, DrawFlyTraps, DrawMaces, DrawPlants,
-    DrawIceRocks, DrawSnowMen, DrawSnowBalls, DrawSkiiers, DrawGlowWorms;
 
 PROCEDURE DrawEnemies3;
 BEGIN
