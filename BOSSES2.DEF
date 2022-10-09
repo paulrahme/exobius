@@ -1,0 +1,5 @@
+DEFINITION MODULE Bosses2;
+
+PROCEDURE Boss2;
+
+END Bosses2.

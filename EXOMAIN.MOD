@@ -35,7 +35,10 @@ FROM Screens6 IMPORT Screen6;
 FROM Screens7 IMPORT Screen7;
 FROM Screens8 IMPORT Screen8;
 FROM Screens9 IMPORT Screen9;
-FROM Bosses IMPORT Boss1, Boss2, Boss3, Boss4;
+FROM Bosses1 IMPORT Boss1;
+FROM Bosses2 IMPORT Boss2;
+FROM Bosses3 IMPORT Boss3;
+FROM Bosses4 IMPORT Boss4;
 
 (* Main loop *)
 BEGIN
