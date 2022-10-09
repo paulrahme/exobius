@@ -435,7 +435,7 @@ BEGIN
         IF (PlaneX > 155) THEN
             PlaneX := PlaneX - 5;
         END;
-        Graph.PutImage(0, 100, GroundAddress, Graph._GPSET);
+        Graph.PutImage(0, 100, BkAddress, Graph._GPSET);
         DrawPlane(PlaneX, PlaneY, (PlaneY - 100) DIV 2);
         Delay(40);
     END;

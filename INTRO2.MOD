@@ -6,7 +6,7 @@ FROM IO IMPORT KeyPressed;
 FROM Lib IMPORT Delay;
 FROM Font IMPORT A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z;
 FROM Exobius IMPORT
-    PutPixel, GetPixel,
+    PutPixel, GetPixel, BkAddress,
     Black,
     DarkestGrey, DarkGrey, Grey, LightGrey, LightestGrey,
     DarkestWhite, DarkWhite, White, LightWhite, LightestWhite,
@@ -55,15 +55,12 @@ END DrawVGAPlanet;
 
 PROCEDURE PlaneToPlanet;
 VAR
-    NegPlaneAddress : ADDRESS;
-    NegPlaneSize, RandomRed, Width : CARDINAL;
+    RandomRed, Width : CARDINAL;
     Skipped : BOOLEAN;
 BEGIN
     Graph.ClearScreen(Graph._GCLEARSCREEN);
-    NegPlaneSize := CARDINAL(Graph.ImageSize(199, 29, 319, 201));
-    Storage.ALLOCATE(NegPlaneAddress, NegPlaneSize);
     DrawVGAPlanet;
-    Graph.GetImage(199, 29, 319, 201, NegPlaneAddress);
+    Graph.GetImage(199, 29, 319, 201, BkAddress);
     PlaneX := 200; Width := 30;
     FOR PlaneY := 30 TO 200 DO
         Skipped := KeyPressed();
@@ -73,16 +70,15 @@ BEGIN
             ELSE
                 Width := (Width * 99) DIV 100;
             END;
-            Graph.PutImage(199, 29, NegPlaneAddress, Graph._GPSET);
+            Graph.PutImage(199, 29, BkAddress, Graph._GPSET);
             DrawPlane(PlaneX, PlaneY, Width);
             Lib.Delay(GameSpeed * 3);
         END;
     END;
     IF (NOT Skipped) THEN
-        Graph.PutImage(249, 59, NegPlaneAddress, Graph._GPSET);
+        Graph.PutImage(249, 59, BkAddress, Graph._GPSET);
         Lib.Delay(100);
     END;
-    Storage.DEALLOCATE(NegPlaneAddress, NegPlaneSize);
 END PlaneToPlanet;
 
 END Intro2.

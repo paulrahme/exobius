@@ -5,7 +5,6 @@ IMPLEMENTATION MODULE Bosses;
 IMPORT Str, Graph, Lib, IO, Window, Storage, MsMouse, Exobius, Font;
 FROM Graph IMPORT Point, SetClipRgn, SetVideoMode, Rectangle, GraphMode, TextMode, Polygon, Line, HLine, Circle, Ellipse, Disc, Plot, Arc;
 FROM Lib IMPORT Sound, NoSound, Delay, RANDOM;
-FROM Storage IMPORT ALLOCATE, DEALLOCATE;
 FROM Sprites IMPORT DrawSpinners;
 FROM Screens8 IMPORT DrawStars8, DrawPlanet, PlanetRadius;
 FROM Font IMPORT A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z;
@@ -25,8 +24,7 @@ FROM Exobius IMPORT
   SixAlive, ScreenComplete, GameOver,  MouseButtons,  MouseMove, GameSpeed,
   Update3DBullet, DrawPlane, CheckMouse, Die,
   FinishScreen, Key, PlaneXMove, Score,
-  BkAddress, BkSize, GroundAddress, GroundSize,
-  DrawGameOver, TextPos;
+  BkAddress, DrawGameOver, TextPos;
 
 CONST
     Boss1X = 0;
@@ -117,11 +115,10 @@ BEGIN
         EnemyY := 99;
         ScreenComplete := FALSE;
         PlaneX := PlaneXMin;
-        Storage.ALLOCATE (BkAddress, MAX(CARDINAL));
         Xs[0] := 0; Xs[1] := 112; Xs[2] := 208; Xs[3] := 320;
         Ys[0] := 200; Ys[1] := 151; Ys[2] := 151; Ys[3] := 200;
         Polygon (4, Xs, Ys, LightBrown);
-        Graph.GetImage (0, 0, 320, 200, BkAddress);
+        Graph.GetImage (120, 0, 200, 150, BkAddress);
         FOR BossFall := 0 TO 50  BY BossFallSpeed DO
                 Graph.PutImage (0, 0, BkAddress, Graph._GPSET);
                 Disc (160, BossFall + 60, 40, Red);
@@ -161,7 +158,6 @@ BEGIN
         (* The Action Begins !! *)
 
         Graph.PutImage(0, 0, BkAddress, Graph._GPSET);
-        Graph.PutImage(0, 100, GroundAddress, Graph._GPSET);
         FOR GroundLines := 1 TO 30 DO
             GroundLineX := RANDOM(80);
             Line (GroundLineX DIV 16 + 150, 100, GroundLineX, 200, LightestBrown);
@@ -232,8 +228,6 @@ BEGIN
            O(110, 60); V(140, 60); E(170, 60); R(200, 60);
            Key := IO.RdKey();
         END;
-        Storage.DEALLOCATE(GroundAddress, GroundSize);
-        Storage.DEALLOCATE(BkAddress, MAX(CARDINAL));
 END Boss1;
 
 PROCEDURE DrawBoss2A(X1, Y1, X2, Y2, X3, Y3 : CARDINAL);
@@ -734,7 +728,6 @@ CONST
     Boss3YTop = 20;
 BEGIN
     Boss3Lives := 80; GameOver := FALSE; ScreenComplete := FALSE;
-    ALLOCATE (BkAddress, MAX(CARDINAL));
     Graph.ClearScreen (Graph._GCLEARSCREEN);
     DrawPlanet (160, 100, PlanetRadius);
     Rectangle (1, 1, 318, 9, Black, TRUE);
@@ -816,7 +809,6 @@ BEGIN
     IF (GameOver) THEN
        DrawGameOver;
     END;
-    DEALLOCATE (BkAddress, MAX(CARDINAL));
     IF (ScreenComplete) AND (Lives>0) THEN
        Lives := Lives - 1;
     END;
@@ -962,7 +954,6 @@ VAR
   SpitX, SpitY, Boss4X, Boss4Y, Boss4Width, BossLives : CARDINAL;
 BEGIN
     ScreenComplete := FALSE;
-    ALLOCATE (BkAddress, MAX(CARDINAL));
     Rectangle (PlaneX, PlaneY, PlaneX + PlaneWidth, PlaneY + PlaneHeight, DarkRed, TRUE);
     Graph.GetImage (0, 0, 320, 200, BkAddress);
     FOR Boss4Width := 1 TO 150 BY 3 DO
@@ -1041,7 +1032,6 @@ BEGIN
            O(110, 60); V(140, 60); E(170, 60); R(200, 60);
            Key := IO.RdKey();
         END;
-        DEALLOCATE (BkAddress, MAX(CARDINAL));
 END Boss4;
 
 END Bosses.

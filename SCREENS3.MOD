@@ -20,7 +20,7 @@ FROM Exobius IMPORT
     ScreenComplete, GameOver,  MouseButtons,  MouseMove, GameSpeed,
     Update3DBullet, DrawPlane, CheckMouse, CheckMouseAndSpecialKeys, Die,
     FinishScreen, CheckDeath1,
-    BkAddress, GroundAddress, GroundSize, DrawGameOver;
+    BkAddress, DrawGameOver;
 
 PROCEDURE DrawEnemies3;
 BEGIN
