@@ -192,7 +192,7 @@ CONST
     NameLeft = 95; NameRight = 235; NameHeight = 50;
 VAR
     NameY, NameVelocity : REAL;
-    NameYCard, Bounces, NameImageSize : CARDINAL;
+    NameYCard, Bounces : CARDINAL;
 BEGIN
     Bounces := 0;
     NameY := 1.0; NameYCard := CARDINAL(NameY);

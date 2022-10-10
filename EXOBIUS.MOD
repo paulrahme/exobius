@@ -427,7 +427,7 @@ END CheckDeath1;
 
 PROCEDURE FinishScreen;
 BEGIN
-    Rectangle(0, 0, 320, 10, White, FALSE);
+    Graph.GetImage(0, 100, 319, 199, BkAddress);
     FOR PlaneY := 175 TO 100 BY -2 DO
         IF (PlaneX < 155) THEN
             PlaneX := PlaneX + 5;
@@ -437,7 +437,7 @@ BEGIN
         END;
         Graph.PutImage(0, 100, BkAddress, Graph._GPSET);
         DrawPlane(PlaneX, PlaneY, (PlaneY - 100) DIV 2);
-        Delay(40);
+        Delay(GameSpeed * 4);
     END;
     Graph.ClearScreen(Graph._GCLEARSCREEN);
 END FinishScreen;
