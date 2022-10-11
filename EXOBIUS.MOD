@@ -71,6 +71,7 @@ BEGIN
     GameOver := FALSE;
     ScreenComplete := FALSE;
     Lives := 0;
+    PlaneX := 160; PlaneY := 175; BulletX := 0; BulletY := 0; EnemyY := 65000;
     BkSize := CARDINAL(Graph.ImageSize(0, 0, 319, 100));
     Storage.ALLOCATE(BkAddress, BkSize);
 END Init;
@@ -241,7 +242,7 @@ BEGIN
     END;
 END CheckMouse;
 
-PROCEDURE BlowUpEnemy;
+PROCEDURE CheckBulletAgainstEnemies;
 CONST
     SoundDelay = 30;
 VAR
@@ -283,17 +284,20 @@ BEGIN;
     Disc(BlowUpX + BlowUpYOffset, EnemyY + BlowUpYOffset, BlowUpYOffset DIV 4, DarkestYellow);
     Lib.Delay(SoundDelay);
     NoSound;
+    BulletY := 0;
     Score := Score + 10;
-END BlowUpEnemy;
+END CheckBulletAgainstEnemies;
 
 PROCEDURE Update3DBullet;
 VAR
     NewBulletX : CARDINAL;
     Dist : INTEGER;
 BEGIN
-    IF (BulletY > 0) AND (BulletY <= 6 ) THEN
-        BulletY := BulletY - 1;
+    IF (BulletY = 0) THEN
+        RETURN;
     END;
+
+    BulletY := BulletY - 1;
 
     CASE BulletY OF
         |5: IF (BulletX >= 160) THEN
@@ -305,7 +309,7 @@ BEGIN
             END;
             Disc(NewBulletX, 170, 4, LightestYellow);
             IF (EnemyY >= 158) THEN
-                BlowUpEnemy;
+                CheckBulletAgainstEnemies();
             END;
         |4: IF (BulletX >= 160) THEN
                 Dist := (10 + ((3*45) DIV 2)) * (BulletX-160) DIV 160;
@@ -316,7 +320,7 @@ BEGIN
             END;
             Disc(NewBulletX, 145, 3, LightYellow);
             IF (EnemyY >= 132) THEN
-                BlowUpEnemy;
+                CheckBulletAgainstEnemies();
             END;
         |3: IF (BulletX >= 160) THEN
                 Dist := (10 + ((3*20) DIV 2)) * (BulletX-160) DIV 160;
@@ -327,7 +331,7 @@ BEGIN
             END;
             Disc(NewBulletX, 120, 2, Yellow);
             IF (EnemyY >= 113) THEN
-                BlowUpEnemy;
+                CheckBulletAgainstEnemies();
             END;
         |2: IF (BulletX >= 160) THEN
                 Dist := (10 + ((3*5) DIV 2)) * (BulletX-160) DIV 160;
@@ -338,7 +342,7 @@ BEGIN
             END;
             Disc(NewBulletX, 105, 1, DarkYellow);
             IF (EnemyY >= 103) THEN
-                BlowUpEnemy;
+                CheckBulletAgainstEnemies();
             END;
         |1: IF (BulletX >= 160) THEN
                 Dist := (10 + ((3*1) DIV 2)) * (BulletX-160) DIV 160;
@@ -349,9 +353,9 @@ BEGIN
             END;
             Disc(NewBulletX, 101, 1, DarkestYellow);
             IF (EnemyY >= 100) THEN
-                BlowUpEnemy;
+                CheckBulletAgainstEnemies();
             END;
-     END;
+    END;
 END Update3DBullet;
 
 PROCEDURE Die;
@@ -402,28 +406,6 @@ BEGIN
     O(110, 60); V(140, 60); E(170, 60); R(200, 60);
     Key := IO.RdKey();
 END DrawGameOver;
-
-PROCEDURE CheckDeath1;
-BEGIN
-    IF ((OneAlive) AND (PlaneX < 50)) THEN
-        Die;
-    END;
-    IF (TwoAlive) AND (PlaneX > 55) AND (PlaneX < 100) THEN
-        Die;
-    END;
-    IF (ThreeAlive) AND (PlaneX > 110) AND (PlaneX < 155) THEN
-        Die;
-    END;
-    IF (FourAlive) AND (PlaneX > 165) AND (PlaneX < 210)THEN
-        Die;
-    END;
-    IF (FiveAlive) AND (PlaneX > 216) AND (PlaneX < 260) THEN
-        Die;
-    END;
-    IF (SixAlive) AND (PlaneX > 260) THEN
-        Die;
-    END;
-END CheckDeath1;
 
 PROCEDURE FinishScreen;
 BEGIN

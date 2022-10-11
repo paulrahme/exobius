@@ -25,11 +25,11 @@ BEGIN
       (* Guards' waving arms *)
       CASE (y MOD 4) OF
           |0: Line(x, y + Width30, x + Width15, y + Width40, Black);
-              Line(x + Width25, y + Width30, x + Width40, y + Width40, Black);
+            Line(x + Width25, y + Width30, x + Width40, y + Width40, Black);
           |1,3: HLine(x, y + Width35, x + Width15, Black);
-              HLine(x + Width25, y + Width35, x + Width40, Black);
+            HLine(x + Width25, y + Width35, x + Width40, Black);
           |2: Line(x, y + Width40, x + Width15, y + Width30, Black);
-              Line(x + Width25, y + Width40, x + Width40, y + Width30, Black);
+            Line(x + Width25, y + Width40, x + Width40, y + Width30, Black);
       END;
       (* Boom stands *)
       Rectangle(x + (Width*12 DIV 50), y + Width35, x + (Width*14 DIV 50), y + Width, Black, FALSE);
@@ -180,7 +180,7 @@ BEGIN
     END;
 END DrawFlyTraps;
 
-PROCEDURE DrawMaces (x, y, Width : CARDINAL);
+PROCEDURE DrawMaces(x, y, Width : CARDINAL);
 VAR
     Width5, Width10, Width15, Width20, Width25, Width45 : CARDINAL;
 BEGIN
@@ -215,7 +215,7 @@ BEGIN
     END;
 END DrawMaces;
 
-PROCEDURE DrawGlowWorms (x, y : CARDINAL);
+PROCEDURE DrawGlowWorms(x, y : CARDINAL);
 BEGIN
    Xs[0] := x+1; Ys[0] := y+1; Xs[1] := x+10; Ys[1] := y+5; Xs[2] := x+19; Ys[2] := y+1; Xs[3] := x+10; Ys[3] := y+10; Xs[4] := x+19; Ys[4] := y+19; Xs[5] := x+10; Ys[5] := y+15; Xs[6] := x+1; Ys[6] := y+19; Xs[7] := x+10; Ys[7] := y+10;
    Polygon (8, Xs, Ys, 176);
@@ -227,79 +227,119 @@ BEGIN
    Line (x + 13, y + 5, x + 19, y + 1, 187);
 END DrawGlowWorms;
 
-PROCEDURE DrawIceRocks (x, y, Width : CARDINAL);
+PROCEDURE DrawIceRocks(x, y, Width : CARDINAL);
 VAR
-	RockDots : CARDINAL;
+    Width15, Width20, Width25, Width35, RockDots : CARDINAL;
 BEGIN
-	Line (x, y + Width, x + (Width*15 DIV 50), y + (Width*25 DIV 50), DarkGrey);
-	Line (x + (Width*15 DIV 50), y + Width, x + (Width*22 DIV 50), y + (Width*25 DIV 50), Grey);
-	Line (x + (Width*35 DIV 50), y + Width, x + (Width*27 DIV 50), y + (Width*25 DIV 50), LightGrey);
-	Line (x + Width, y + Width, x + (Width*35 DIV 50), y + (Width*25 DIV 50), LightestBlue);
-	Xs[0] := x + (Width*25 DIV 50); Xs[1] := x + (Width*15 DIV 50); Xs[2] := x + (Lib.RANDOM(Width*20 DIV 50) + Width - (Width*5 DIV 50));
-	Xs[3] := x + (Width*35 DIV 50);
-	Ys[0] := y; Ys[1] := y + (Width*25 DIV 50); Ys[2] := y + (Width*20 DIV 50); Ys[3] := y + (Width*25 DIV 50);
-	Polygon (4, Xs, Ys, LightGrey);
-	Line (x + (Width*25 DIV 50), y, x + (Width*15 DIV 50), y + (Width*25 DIV 50), Black);
-	Line (x + (Width*25 DIV 50), y, x + (Width*35 DIV 50), y + (Width*25 DIV 50), DarkWhite);
-	FOR RockDots := 1 TO 5 DO
-		Plot (x + (Lib.RANDOM(Width*20 DIV 50) + (Width*15 DIV 50)), y + (Lib.RANDOM(Width*25 DIV 50) + (Width*25 DIV 50)), Grey);
-	END;
+    Width15 := Width * 15 DIV 50;
+    Width20 := Width * 20 DIV 50;
+    Width25 := Width DIV 2;
+    Width35 := Width * 35 DIV 50;
+
+    Line(x, y + Width, x + Width15, y + Width25, DarkGrey);
+    Line(x + Width15, y + Width, x + (Width*22 DIV 50), y + Width25, Grey);
+    Line(x + Width35, y + Width, x + (Width*27 DIV 50), y + Width25, LightGrey);
+    Line(x + Width, y + Width, x + Width35, y + Width25, LightestBlue);
+    Xs[0] := x + Width25; Xs[1] := x + Width15; Xs[2] := x + Width20 + Lib.RANDOM(Width DIV 5); Xs[3] := x + Width35;
+    Ys[0] := y; Ys[1] := y + Width25; Ys[2] := y + Width20; Ys[3] := y + Width25;
+    Polygon(4, Xs, Ys, LightGrey);
+    Line(x + Width25, y, x + Width15, y + Width25, Black);
+    Line(x + Width25, y, x + Width35, y + Width25, DarkWhite);
+    FOR RockDots := 1 TO 5 DO
+        Plot(x + Lib.RANDOM(Width20 + Width15), y + (Lib.RANDOM(Width25) + Width25), Grey);
+    END;
 END DrawIceRocks;
 
 PROCEDURE DrawSnowMen(x, y, Width : CARDINAL);
+VAR
+    Width5, Width15, Width20, Width25, Width27, Width30, Width35 : CARDINAL;
 BEGIN
-	Disc (x + (Width*25 DIV 50), y + (Width*17 DIV 50), Width*7 DIV 50, DarkestWhite);
-	Disc (x + (Width*27 DIV 50), y + (Width*15 DIV 50), Width*5 DIV 50, White);
-	Disc (x + (Width*25 DIV 50), y + (Width*38 DIV 50), Width*12 DIV 50, DarkestWhite);
-	Disc (x + (Width*27 DIV 50), y + (Width*36 DIV 50), Width*10 DIV 50, White);
-	Disc (x + (Width*35 DIV 50), y + (Width*28 DIV 50), Width   DIV 50, LightestWhite);
-	Line (x + (Width*15 DIV 50), y + (Width*28 DIV 50), x + (Width*5 DIV 50), y + (Width*25 DIV 50), Black);
-	Line (x + (Width*35 DIV 50), y + (Width*30 DIV 50), x + (Width*45 DIV 50), y + (Width*25 DIV 50), Black);
-	Graph.SetLinestyle (0AAAAH);
-	HLine (x + (Width*25 DIV 50), y + (Width*20 DIV 50), x + (Width*27 DIV 50), Black);
-	Graph.SetLinestyle (0FFFFH);
-	Rectangle (x + (Width*20 DIV 50), y + (Width*5 DIV 50), x + (Width*30 DIV 50), y + (Width*10 DIV 50), Black, TRUE);
-	CASE y MOD 8 OF
-		| 0,1 : Plot (x + (Width*20 DIV 50), y + (Width*15 DIV 50), Black);
-		   	  Plot (x + (Width*25 DIV 50), y + (Width*15 DIV 50), Black);
-		| 2,3,6,7 : Plot (x + (Width*23 DIV 50), y + (Width*15 DIV 50), Black);
-				  Plot (x + (Width*28 DIV 50), y + (Width*15 DIV 50), Black);
-		| 4,5 : Plot (x + (Width*25 DIV 50), y + (Width*15 DIV 50), Black);
-				  Plot (x + (Width*30 DIV 50), y + (Width*15 DIV 50), Black);
-	END;
+    Width5 := Width DIV 10;
+    Width15 := Width * 15 DIV 50;
+    Width20 := Width * 20 DIV 50;
+    Width25 := Width DIV 2;
+    Width27 := Width * 27 DIV 50;
+    Width30 := Width * 3 DIV 5;
+    Width35 := Width * 35 DIV 50;
+
+    Disc(x + Width25, y + (Width*17 DIV 50), Width*7 DIV 50, DarkestWhite);
+    Disc(x + Width27, y + Width15, Width*5 DIV 50, White);
+    Disc(x + Width25, y + (Width*38 DIV 50), Width*12 DIV 50, DarkestWhite);
+    Disc(x + Width27, y + (Width*36 DIV 50), Width*10 DIV 50, White);
+    Disc(x + Width35, y + (Width*28 DIV 50), Width DIV 50, LightestWhite);
+    Line(x + Width15, y + (Width*28 DIV 50), x + Width5, y + Width25, Black);
+    Line(x + Width35, y + Width30, x + (Width*45 DIV 50), y + Width25, Black);
+    Graph.SetLinestyle(0AAAAH);
+    Line(x + Width25, y + Width20, x + Width27, y + Width20, Black);
+    Graph.SetLinestyle(0FFFFH);
+    Rectangle(x + Width20, y + Width5, x + Width30, y + (Width*10 DIV 50), Black, TRUE);
+    CASE y MOD 8 OF
+        |0,1: Plot(x + Width20, y + Width15, Black);
+            Plot(x + Width25, y + Width15, Black);
+        |2,3,6,7: Plot(x + (Width*23 DIV 50), y + Width15, Black);
+            Plot(x + (Width*28 DIV 50), y + Width15, Black);
+        |4,5: Plot (x + Width25, y + Width15, Black);
+            Plot(x + Width30, y + Width15, Black);
+    END;
 END DrawSnowMen;
 
 PROCEDURE SnowBall(x, y, Width : CARDINAL);
 BEGIN
-	Disc (x, y, Width*7 DIV 50, DarkestWhite);
-	Disc (x + 1, y - 1, Width*4 DIV 50, White);
-	Disc (x + 1, y - 1, Width*2 DIV 50, LightestWhite);
+    Disc(x, y, Width*7 DIV 50, DarkestWhite);
+    Disc(x + 1, y - 1, Width*4 DIV 50, White);
+    Disc(x + 1, y - 1, Width*2 DIV 50, LightestWhite);
 END SnowBall;
 
 PROCEDURE DrawSnowBalls(x, y, Width : CARDINAL);
+VAR
+    Width8, Width25, Width43 : CARDINAL;
 BEGIN
-	SnowBall (x + (Width*25 DIV 50), y + (Width*8 DIV 50), Width);
-	SnowBall (x + (Width*17 DIV 50), y + (Width*25 DIV 50), Width);
-	SnowBall (x + (Width*33 DIV 50), y + (Width*25 DIV 50), Width);
-	SnowBall (x + (Width*8 DIV 50), y + (Width*43 DIV 50), Width);
-	SnowBall (x + (Width*25 DIV 50), y + (Width*43 DIV 50), Width);
-	SnowBall (x + (Width*43 DIV 50), y + (Width*43 DIV 50), Width);
+    Width8 := Width * 8 DIV 50;
+    Width25 := Width DIV 2;
+    Width43 := Width * 43 DIV 50;
+
+    SnowBall(x + Width25, y + Width8, Width);
+    SnowBall(x + (Width*17 DIV 50), y + Width25, Width);
+    SnowBall(x + (Width*33 DIV 50), y + Width25, Width);
+    SnowBall(x + Width8, y + Width43, Width);
+    SnowBall(x + Width25, y + Width43, Width);
+    SnowBall(x + Width43, y + Width43, Width);
 END DrawSnowBalls;
 
 PROCEDURE DrawSkiiers(x, y, Width : CARDINAL);
+VAR
+    Width4, Width5, Width8, Width13, Width20, Width25, Width38, Width40 : CARDINAL;
 BEGIN
-   Disc (x + (Width*13 DIV 50), y + (Width*5 DIV 50), Width*3 DIV 50, Black);
-   Disc (x + (Width*38 DIV 50), y + (Width*5 DIV 50), Width*3 DIV 50, Black);
-   Line (x + (Width*13 DIV 50), y + (Width*5 DIV 50), x + (Width*13 DIV 50), y + (Width*25 DIV 50), Black);
-   Line (x + (Width*38 DIV 50), y + (Width*5 DIV 50), x + (Width*38 DIV 50), y + (Width*25 DIV 50), Black);
-   Line (x + (Width*38 DIV 50), y + (Width*25 DIV 50), x + (Width*10 DIV 50), y + (Width*38 DIV 50), Black);
-   Line (x + (Width*38 DIV 50), y + (Width*25 DIV 50), x + (Width*35 DIV 50), y + (Width*38 DIV 50), Black);
-   Line (x + (Width*38 DIV 50), y + (Width*25 DIV 50), x + (Width*16 DIV 50), y + (Width*25 DIV 50), Black);
-   Line (x + (Width*38 DIV 50), y + (Width*25 DIV 50), x + (Width*41 DIV 50), y + (Width*25 DIV 50), Black);
-   Rectangle (x + (Width*9 DIV 50), y + (Width*20 DIV 50), x + (Width*11 DIV 50), y + (Width*40 DIV 50), Black, TRUE);
-   Rectangle (x + (Width*15 DIV 50), y + (Width*20 DIV 50), x + (Width*17 DIV 50), y + (Width*40 DIV 50), Black, TRUE);
-   Rectangle (x + (Width*34 DIV 50), y + (Width*20 DIV 50), x + (Width*40 DIV 50), y + (Width*40 DIV 50), Black, TRUE);
-   Rectangle (x + (Width*37 DIV 50), y + (Width*20 DIV 50), x + (Width*40 DIV 50), y + (Width*40 DIV 50), Black, TRUE);
+    Width4 := Width * 4 DIV 50;
+    Width5 := Width DIV 10;
+    Width8 := Width * 8 DIV 50;
+    Width13 := Width * 13 DIV 50;
+    Width20 := Width * 2 DIV 5;
+    Width25 := Width DIV 2;
+    Width38 := Width * 38 DIV 50;
+    Width40 := Width * 4 DIV 5;
+
+    (* Skis *)
+    Rectangle(x + (Width*9 DIV 50), y + Width20, x + (Width*11 DIV 50), y + Width, DarkBlue, FALSE);
+    Rectangle(x + (Width*15 DIV 50), y + Width20, x + (Width*17 DIV 50), y + Width, DarkBlue, FALSE);
+    Rectangle(x + (Width*34 DIV 50), y + Width20, x + (Width*36 DIV 50), y + Width, DarkBlue, FALSE);
+    Rectangle(x + Width40, y + Width20, x + (Width*42 DIV 50), y + Width, DarkBlue, FALSE);
+
+    (* Heads + bodies *)
+    Line(x + Width13, y + Width5, x + Width13, y + Width25, Red);
+    Disc(x + Width13, y + Width5, Width4, DarkestRed);
+    Line(x + Width38, y + Width5, x + Width38, y + Width25, Yellow);
+    Disc(x + Width38, y + Width5, Width4, DarkestYellow);
+
+    (* Arms + legs *)
+    Line(x + Width13, y + Width8, x + (Width*10 DIV 50), y + Width25, DarkRed);
+    Line(x + Width13, y + Width8, x + (Width*16 DIV 50), y + Width25, DarkRed);
+    Line(x + Width13, y + Width25, x + (Width*10 DIV 50), y + Width38, DarkRed);
+    Line(x + Width13, y + Width25, x + (Width*16 DIV 50), y + Width38, DarkRed);
+    Line(x + Width38, y + Width8, x + (Width*35 DIV 50), y + Width25, DarkYellow);
+    Line(x + Width38, y + Width8, x + (Width*41 DIV 50), y + Width25, DarkYellow);
+    Line(x + Width38, y + Width25, x + (Width*35 DIV 50), y + Width38, DarkYellow);
+    Line(x + Width38, y + Width25, x + (Width*41 DIV 50), y + Width38, DarkYellow);
 END DrawSkiiers;
 
 END Sprites.

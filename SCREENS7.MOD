@@ -21,7 +21,7 @@ FROM Exobius IMPORT
   OldBkColor,  Xs, Ys, OneAlive, TwoAlive, ThreeAlive, FourAlive, FiveAlive,
   SixAlive, ScreenComplete, GameOver,  MouseButtons,  MouseMove, GameSpeed,
   DrawPlane, CheckMouse, Die,
-  FinishScreen, PlaneXMove, CheckDeath1, Score,
+  FinishScreen, PlaneXMove, Score,
   BkAddress, BkSize, ClearTheBuffer, Cheat,
   DrawGameOver;
 

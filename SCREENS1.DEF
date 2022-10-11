@@ -1,6 +1,7 @@
 DEFINITION MODULE Screens1;
 
 PROCEDURE DrawEnemies1;
+PROCEDURE CheckDeath1;
 PROCEDURE Screen1;
 
 END Screens1.

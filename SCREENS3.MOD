@@ -15,92 +15,109 @@ FROM Exobius IMPORT
     OneAlive, TwoAlive, ThreeAlive, FourAlive, FiveAlive, SixAlive,
     EnemyY, EnemyYStart, CollisionY,
     ScreenComplete, GameOver, GameSpeed,
-    Update3DBullet, DrawPlane5025, CheckDeath1,
+    Update3DBullet, DrawPlane5025,
     BkAddress, CheckMouse, CheckMouseAndSpecialKeys, DrawGameOver;
+FROM Screens1 IMPORT CheckDeath1;
 
 PROCEDURE DrawEnemies3;
+VAR
+    EnemyXScale, EnemyWidth : CARDINAL;
 BEGIN
-    Enemy1X := 160 - ((10+(3*(EnemyY-100) DIV 2)) DIV 1);
-    Enemy2X := 160 - ((10+(3*(EnemyY-100) DIV 2))*2 DIV 3);
-    Enemy3X := 160 - ((10+(3*(EnemyY-100) DIV 2)) DIV 3);
-    Enemy4X := 160;
-    Enemy5X := 160 + ((10+(3*(EnemyY-100) DIV 2)) DIV 3);
-    Enemy6X := 160 + ((10+(3*(EnemyY-100) DIV 2))*2 DIV 3);
+    EnemyXScale := 10 + (3 * (EnemyY - 100) DIV 2);
+    EnemyWidth := (EnemyY - EnemyYStart) DIV 3;
+
     IF OneAlive THEN
+        Enemy1X := 160 - EnemyXScale;
         CASE Enemies OF
-            |1: DrawIceRocks(Enemy1X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
-            |2: DrawSnowMen(Enemy1X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
-            |3: DrawSnowBalls(Enemy1X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
-            |4: DrawSkiiers(Enemy1X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
-            |5: DrawSnowMen(Enemy1X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
-            |6: DrawMaces(Enemy1X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
-            |7: DrawSnowBalls(Enemy1X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
-            |8: DrawSnowMen(Enemy1X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
+            |1: DrawIceRocks(Enemy1X, EnemyY, EnemyWidth);
+            |2: DrawSnowMen(Enemy1X, EnemyY, EnemyWidth);
+            |3: DrawSnowBalls(Enemy1X, EnemyY, EnemyWidth);
+            |4: DrawSkiiers(Enemy1X, EnemyY, EnemyWidth);
+            |5: DrawSnowMen(Enemy1X, EnemyY, EnemyWidth);
+            |6: DrawMaces(Enemy1X, EnemyY, EnemyWidth);
+            |7: DrawSnowBalls(Enemy1X, EnemyY, EnemyWidth);
+            |8: DrawSnowMen(Enemy1X, EnemyY, EnemyWidth);
+            |9: DrawSkiiers(Enemy1X, EnemyY, EnemyWidth);
                 ScreenComplete := TRUE;
         END;
     END;
+
     IF TwoAlive THEN
+        Enemy2X := 160 - (EnemyXScale*2 DIV 3);
         CASE Enemies OF
-            |1: DrawIceRocks(Enemy2X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
-            |2: DrawSnowMen(Enemy2X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
-            |3: DrawSnowBalls(Enemy2X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
-            |4: DrawSkiiers(Enemy2X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
-            |5: DrawSnowMen(Enemy2X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
-            |6: DrawMaces(Enemy2X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
-            |7: DrawSnowBalls(Enemy2X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
-            |8: DrawSnowMen(Enemy2X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
+            |1: DrawIceRocks(Enemy2X, EnemyY, EnemyWidth);
+            |2: DrawSnowMen(Enemy2X, EnemyY, EnemyWidth);
+            |3: DrawSnowBalls(Enemy2X, EnemyY, EnemyWidth);
+            |4: DrawSkiiers(Enemy2X, EnemyY, EnemyWidth);
+            |5: DrawSnowMen(Enemy2X, EnemyY, EnemyWidth);
+            |6: DrawMaces(Enemy2X, EnemyY, EnemyWidth);
+            |7: DrawSnowBalls(Enemy2X, EnemyY, EnemyWidth);
+            |8: DrawIceRocks(Enemy2X, EnemyY, EnemyWidth);
+            |9: DrawSkiiers(Enemy2X, EnemyY, EnemyWidth);
                 ScreenComplete := TRUE;
         END;
     END;
+
     IF ThreeAlive THEN
+        Enemy3X := 160 - (EnemyXScale DIV 3);
         CASE Enemies OF
-            |1: DrawIceRocks(Enemy3X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
-            |2: DrawSnowMen(Enemy3X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
-            |3: DrawSnowBalls(Enemy3X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
-            |4: DrawSkiiers(Enemy3X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
-            |5: DrawSnowMen(Enemy3X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
-            |6: DrawMaces(Enemy3X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
-            |7: DrawSnowBalls(Enemy3X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
-            |8: DrawSnowMen(Enemy3X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
+            |1: DrawIceRocks(Enemy3X, EnemyY, EnemyWidth);
+            |2: DrawSnowMen(Enemy3X, EnemyY, EnemyWidth);
+            |3: DrawSnowBalls(Enemy3X, EnemyY, EnemyWidth);
+            |4: DrawSkiiers(Enemy3X, EnemyY, EnemyWidth);
+            |5: DrawSnowMen(Enemy3X, EnemyY, EnemyWidth);
+            |6: DrawMaces(Enemy3X, EnemyY, EnemyWidth);
+            |7: DrawSnowBalls(Enemy3X, EnemyY, EnemyWidth);
+            |8: DrawSnowMen(Enemy3X, EnemyY, EnemyWidth);
+            |9: DrawSnowBalls(Enemy3X, EnemyY, EnemyWidth);
                 ScreenComplete := TRUE;
         END;
     END;
+
     IF FourAlive THEN
+        Enemy4X := 160;
         CASE Enemies OF
-            |1: DrawIceRocks(Enemy4X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
-            |2: DrawSnowMen(Enemy4X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
-            |3: DrawSnowBalls(Enemy4X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
-            |4: DrawSkiiers(Enemy4X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
-            |5: DrawSnowMen(Enemy4X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
-            |6: DrawMaces(Enemy4X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
-            |7: DrawSnowBalls(Enemy4X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
-            |8: DrawSnowMen(Enemy4X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
+            |1: DrawIceRocks(Enemy4X, EnemyY, EnemyWidth);
+            |2: DrawSnowMen(Enemy4X, EnemyY, EnemyWidth);
+            |3: DrawSnowBalls(Enemy4X, EnemyY, EnemyWidth);
+            |4: DrawSkiiers(Enemy4X, EnemyY, EnemyWidth);
+            |5: DrawSnowMen(Enemy4X, EnemyY, EnemyWidth);
+            |6: DrawMaces(Enemy4X, EnemyY, EnemyWidth);
+            |7: DrawSnowBalls(Enemy4X, EnemyY, EnemyWidth);
+            |8: DrawIceRocks(Enemy4X, EnemyY, EnemyWidth);
+            |9: DrawSnowBalls(Enemy4X, EnemyY, EnemyWidth);
                 ScreenComplete := TRUE;
         END;
     END;
+
     IF FiveAlive THEN
+        Enemy5X := 160 + (EnemyXScale DIV 3);
         CASE Enemies OF
-            |1: DrawIceRocks(Enemy5X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
-            |2: DrawSnowMen(Enemy5X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
-            |3: DrawSnowBalls(Enemy5X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
-            |4: DrawSkiiers(Enemy5X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
-            |5: DrawSnowMen(Enemy5X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
-            |6: DrawMaces(Enemy5X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
-            |7: DrawSnowBalls(Enemy5X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
-            |8: DrawSnowMen(Enemy5X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
+            |1: DrawIceRocks(Enemy5X, EnemyY, EnemyWidth);
+            |2: DrawSnowMen(Enemy5X, EnemyY, EnemyWidth);
+            |3: DrawSnowBalls(Enemy5X, EnemyY, EnemyWidth);
+            |4: DrawSkiiers(Enemy5X, EnemyY, EnemyWidth);
+            |5: DrawSnowMen(Enemy5X, EnemyY, EnemyWidth);
+            |6: DrawMaces(Enemy5X, EnemyY, EnemyWidth);
+            |7: DrawSnowBalls(Enemy5X, EnemyY, EnemyWidth);
+            |8: DrawSnowMen(Enemy5X, EnemyY, EnemyWidth);
+            |9: DrawSkiiers(Enemy5X, EnemyY, EnemyWidth);
                 ScreenComplete := TRUE;
         END;
     END;
+
     IF SixAlive THEN
+        Enemy6X := 160 + (EnemyXScale*2 DIV 3);
         CASE Enemies OF
-            |1: DrawIceRocks(Enemy6X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
-            |2: DrawSnowMen(Enemy6X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
-            |3: DrawSnowBalls(Enemy6X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
-            |4: DrawSkiiers(Enemy6X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
-            |5: DrawSnowMen(Enemy6X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
-            |6: DrawMaces(Enemy6X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
-            |7: DrawSnowBalls(Enemy6X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
-            |8: DrawSnowMen(Enemy6X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
+            |1: DrawIceRocks(Enemy6X, EnemyY, EnemyWidth);
+            |2: DrawSnowMen(Enemy6X, EnemyY, EnemyWidth);
+            |3: DrawSnowBalls(Enemy6X, EnemyY, EnemyWidth);
+            |4: DrawSkiiers(Enemy6X, EnemyY, EnemyWidth);
+            |5: DrawSnowMen(Enemy6X, EnemyY, EnemyWidth);
+            |6: DrawMaces(Enemy6X, EnemyY, EnemyWidth);
+            |7: DrawSnowBalls(Enemy6X, EnemyY, EnemyWidth);
+            |8: DrawIceRocks(Enemy6X, EnemyY, EnemyWidth);
+            |9: DrawSkiiers(Enemy6X, EnemyY, EnemyWidth);
                 ScreenComplete := TRUE;
         END;
     END;
@@ -114,7 +131,7 @@ BEGIN
     Line(x, y+Width DIV 3, x+Width, y+Width*2 DIV 3, White);
     Line(x, y+Width*2 DIV 3, x+Width, y+Width DIV 3, White);
     FOR FlakeDots := 1 TO (Width*2) DO
-        Plot (x + Lib.RANDOM(Width), y + Lib.RANDOM(Width), White);
+        Plot(x + Lib.RANDOM(Width), y + Lib.RANDOM(Width), White);
     END;
 END DrawSnowFlake;
 
@@ -122,9 +139,10 @@ PROCEDURE BlankGround3;
 VAR
     SnowFlakes : CARDINAL;
 BEGIN
-    Graph.PutImage(0, 0, BkAddress, Graph._GPSET);
-    FOR SnowFlakes := 1 TO 50 DO
-        DrawSnowFlake(Lib.RANDOM(320), Lib.RANDOM(200), Lib.RANDOM(10));
+    PutImage(0, 0, BkAddress, Graph._GPSET);
+    Rectangle(0, 100, 319, 199, LightestWhite, TRUE);
+    FOR SnowFlakes := 1 TO 5 DO
+        DrawSnowFlake(Lib.RANDOM(310), Lib.RANDOM(190), Lib.RANDOM(10));
     END
 END BlankGround3;
 
@@ -149,40 +167,37 @@ VAR
 BEGIN
     DrawPlane5025();
     FOR RectY := 100 TO 0 BY -10 DO
-        Rectangle(RectY, RectY, 320 - RectY, 200 - RectY, Black ,TRUE);
+        Rectangle(RectY, RectY, 319 - RectY, 199 - RectY, Black ,TRUE);
     END;
     DrawPlane5025();
     FOR RectY := 100 TO 0 BY -10 DO
-        Rectangle(RectY, RectY, 320 - RectY, 200 - RectY, Grey ,TRUE);
+        Rectangle(RectY, RectY, 319 - RectY, 199 - RectY, Grey ,TRUE);
     END;
     DrawPlane5025();
     FOR RectY := 100 TO 0 BY -10 DO
-        Rectangle(RectY, RectY, 320 - RectY, 200 - RectY, DarkestWhite ,TRUE);
+        Rectangle(RectY, RectY, 319 - RectY, 199 - RectY, DarkestWhite ,TRUE);
     END;
     DrawPlane5025();
     FOR RectY := 100 TO 0 BY -10 DO
-        Rectangle(RectY, RectY, 320 - RectY, 200 - RectY, White ,TRUE);
+        Rectangle(RectY, RectY, 319 - RectY, 199 - RectY, White ,TRUE);
     END;
     DrawPlane5025();
     FOR RectY := 100 TO 0 BY -10 DO
-        Rectangle(RectY, RectY, 320 - RectY, 100, LightBlue, TRUE);
-        Rectangle(RectY, 100, 320 - RectY, 200 - RectY, LightestWhite ,TRUE);
+        Rectangle(RectY, RectY, 319 - RectY, 99, LightBlue, TRUE);
+        Rectangle(RectY, 100, 319 - RectY, 199 - RectY, LightestWhite ,TRUE);
     END;
-    Rectangle(0, 0, 320, 100, LightBlue, TRUE);
+    Rectangle(0, 0, 319, 99, LightBlue, TRUE);
 
-    GameOver := FALSE;
-    BulletY := 0;
     ScreenComplete := FALSE;
+    BulletY := 0;
     Enemies := 1;
-    EnemyY := 100;
-    Storage.ALLOCATE(BkAddress, 320*200);
 
     (* Main loop *)
     CheckMouseAndSpecialKeys();
     FOR CloudCount := 1 TO 5 DO
         DrawCloud(Lib.RANDOM(290), Lib.RANDOM(70), Lib.RANDOM(30));
     END;
-    Graph.GetImage(0, 0, 320, 200, BkAddress);
+    GetImage(0, 0, 319, 99, BkAddress);
     WHILE NOT GameOver AND NOT ScreenComplete DO
         FOR GroundDots := 1 TO 20 DO
             DotX := Lib.RANDOM(70) + 125;
@@ -197,13 +212,13 @@ BEGIN
             Lib.Delay(GameSpeed);
         END;
         OneAlive := TRUE; TwoAlive := TRUE; ThreeAlive := TRUE; FourAlive := TRUE; FiveAlive := TRUE; SixAlive := TRUE;
-        FOR EnemyY := 101 TO 200 BY 2 DO
+        FOR EnemyY := 101 TO 200 DO
             IF NOT (GameOver) THEN
                 CheckMouse();
                 BlankGround3();
                 DrawPlane5025();
-                Update3DBullet();
                 DrawEnemies3();
+                Update3DBullet();
                 IF (BulletY > 99) THEN
                     BulletY := BulletY - 1;
                 END;
@@ -218,7 +233,6 @@ BEGIN
     IF GameOver THEN
         DrawGameOver;
     END;
-    Storage.DEALLOCATE(BkAddress, 320*200);
 END Screen3;
 
 END Screens3.

@@ -25,7 +25,7 @@ FROM Exobius IMPORT
     Count, Lives, EnemyY,
     ScreenComplete, GameOver,  MouseButtons,  MouseMove, GameSpeed,
     Update3DBullet, DrawPlane, DrawPlane5025, CheckMouse, CheckMouseAndSpecialKeys, Die, DrawGameOver,
-    FinishScreen, CheckDeath1,
+    FinishScreen,
     CheckSpecialKeys, ClearTheBuffer, DrawGameOver;
 
 CONST
@@ -138,6 +138,23 @@ BEGIN
         END;
     END;
 END DrawEnemies1;
+
+PROCEDURE CheckDeath1;
+BEGIN
+    IF (PlaneX < 53) THEN
+        IF (OneAlive) THEN Die; END;
+    ELSIF (PlaneX < 106) THEN
+        IF (TwoAlive) THEN Die; END;
+    ELSIF (PlaneX < 160) THEN
+        IF (ThreeAlive) THEN Die; END;
+    ELSIF (PlaneX < 213) THEN
+        IF (FourAlive) THEN Die; END;
+    ELSIF (PlaneX < 266) THEN
+        IF (FiveAlive) THEN Die; END;
+    ELSE
+        IF (SixAlive) THEN Die; END;
+    END;
+END CheckDeath1;
 
 PROCEDURE DrawMountain(x, y, radius : CARDINAL);
 BEGIN

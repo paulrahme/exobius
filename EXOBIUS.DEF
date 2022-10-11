@@ -54,7 +54,6 @@ PROCEDURE CheckMouse;
 PROCEDURE Die;
 PROCEDURE DrawGameOver;
 PROCEDURE FinishScreen;
-PROCEDURE CheckDeath1;
 PROCEDURE ClearTheBuffer;
 
 END Exobius.
