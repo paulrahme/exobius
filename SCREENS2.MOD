@@ -2,15 +2,12 @@ IMPLEMENTATION MODULE Screens2;
 (*$I+,O+,R+,S+,Z+*)
 (*$S FF00*)
 
-IMPORT Str, Graph, Lib, IO, Window, Storage, Exobius;
-FROM Graph IMPORT SetClipRgn, GetImage, PutImage, Rectangle, Polygon, Line, HLine, Circle, Ellipse, Disc, Plot, Arc, Point;
+IMPORT Graph, Lib, Storage, Exobius;
+FROM Graph IMPORT GetImage, PutImage, Rectangle, Line, HLine, Disc, Plot;
 FROM Lib IMPORT Sound, NoSound, Delay, RANDOM;
 FROM Font IMPORT A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z;
 FROM Sprites IMPORT DrawGlowWorms;
 FROM Exobius IMPORT
-    PutPixel, SetPixel,
-    PlaneWidth, PlaneHeight,
-    EnemyYStart, CollisionY,
     Black, DarkestGrey, DarkGrey, Grey, LightGrey, LightestGrey,
     DarkestBlue, DarkBlue, Blue, LightBlue, LightestBlue,
     DarkestBrown, DarkBrown, Brown, LightBrown, LightestBrown,
@@ -18,46 +15,35 @@ FROM Exobius IMPORT
     DarkestYellow, DarkYellow, Yellow, LightYellow, LightestYellow,
     DarkestWhite, DarkWhite, White, LightWhite, LightestWhite,
     DarkestGreen, DarkGreen, Green, LightGreen, LightestGreen,
-    Enemy1X, Enemy2X, Enemy3X, Enemy4X, Enemy5X, Enemy6X,
     PlaneX, BulletX, BulletY, OldBulletX, OldBulletY, PlaneY,
-    OneAlive, TwoAlive, ThreeAlive, FourAlive, FiveAlive, SixAlive,
-    Enemies, Xs, Ys, Count, Lives, EnemyY,
-    BkAddress, BkSize,
-    ScreenComplete, GameOver,  MouseButtons,  MouseMove, GameSpeed,
-    DrawPlane, CheckMouse, CheckSpecialKeys, CheckMouseAndSpecialKeys, Die, DrawGameOver,
-    FinishScreen, Key, CheckDeath1,
-    DrawGameOver;
+    BkAddress,
+    PutPixel, SetPixel,
+    CheckMouse, CheckSpecialKeys, CheckMouseAndSpecialKeys,
+    PlaneWidth, PlaneHeight, DrawPlane, DrawPlane5025,
+    ScreenComplete, GameOver, GameSpeed, Lives, Die, DrawGameOver;
 
 PROCEDURE BlowUpEnemy2 (x, y : CARDINAL);
 CONST
-    SoundDelay = 20;
+    SoundDelay = 16;
 BEGIN
     Sound(100);
-    Disc(x + 10, y + 10, 10, LightestYellow);
+    Disc(x + 10, y + 10, 5, LightYellow);
     Lib.Delay(SoundDelay);
     NoSound;
     Sound(90);
-    Disc(x + 10, y + 10, 10, LightYellow);
-    Lib.Delay(SoundDelay);
-    NoSound;
-    Sound(80);
-    Disc(x + 10, y + 10, 10, Yellow);
+    Disc(x + 10, y + 10, 6, DarkYellow);
     NoSound;
     Sound(70);
     Lib.Delay(SoundDelay);
-    Disc(x + 10, y + 10, 10, DarkYellow);
+    Disc(x + 10, y + 10, 7, DarkestYellow);
     NoSound;
     Sound(60);
     Lib.Delay(SoundDelay);
-    Disc(x + 10, y + 10, 10, DarkestYellow);
+    Disc(x + 10, y + 10, 8, LightestRed);
     NoSound;
     Sound(50);
     Lib.Delay(SoundDelay);
-    Disc(x + 10, y + 10, 10, LightestRed);
-    NoSound;
-    Sound(40);
-    Lib.Delay(SoundDelay);
-    Disc(x + 10, y + 10, 10, LightRed);
+    Disc(x + 10, y + 10, 9, LightRed);
     NoSound;
     Sound(30);
     Lib.Delay(SoundDelay);
@@ -107,21 +93,11 @@ BEGIN
     END;
 END UpBullet;
 
-PROCEDURE Screen2;
-CONST
-    GlowCount = 18;
-    GlowWidth = 20;
-    GlowHeight = 30;
+PROCEDURE PlayCaveIntro();
 VAR
-    RoofDots, RoofSize, RectY, NewRectY, FadeCount, FadeCountInc, GlowSize, GlowIdx, GlowsAlive, MoveRnd, GX, GY : CARDINAL;
-    GlowAddress, RoofAddress : ADDRESS;
-    GlowXs, GlowYs : ARRAY[0..GlowCount] OF CARDINAL;
-    OldPlaneX : INTEGER;
+    RoofDots, FadeCount, FadeCountInc, RectY, NewRectY : CARDINAL;
     DotColour : BYTE;
 BEGIN
-    ScreenComplete := FALSE;
-    Graph.ClearScreen (Graph._GCLEARSCREEN);
-
     (* Draw cave interior *)
     DotColour := BYTE(White);
     FOR RoofDots := 1 TO 60000 DO
@@ -133,36 +109,33 @@ BEGIN
         FOR RoofDots := 1 TO 20000 DO
             PutPixel(40 + Lib.RANDOM(240), 50 + Lib.RANDOM(100), DotColour);
         END;
+        CheckSpecialKeys();
     END;
-    CheckSpecialKeys();
     IF (NOT GameOver) THEN
         DotColour := BYTE(LightGrey);
         FOR RoofDots := 1 TO 5000 DO
             PutPixel(70 + Lib.RANDOM(180), 50 + Lib.RANDOM(100), DotColour);
         END;
+        CheckSpecialKeys();
     END;
-    CheckSpecialKeys();
     IF (NOT GameOver) THEN
         DotColour := BYTE(DarkGrey);
         FOR RoofDots := 1 TO 500 DO
             PutPixel(130 + Lib.RANDOM(60), 80 + Lib.RANDOM(40), DotColour);
         END;
+        CheckSpecialKeys();
     END;
-    CheckSpecialKeys();
     IF (NOT GameOver) THEN
         DotColour := BYTE(DarkestGrey);
         FOR RoofDots := 1 TO 200 DO
             PutPixel(150 + Lib.RANDOM(20), 80 + Lib.RANDOM(40), DotColour);
         END;
+        CheckSpecialKeys();
     END;
-    CheckSpecialKeys();
 
     (* Fly in plane *)
     IF (NOT GameOver) THEN
-        Rectangle (158, 98, 162, 102, Black, TRUE);
-        SetClipRgn (0, 0, 320, 199);
-        BkSize := CARDINAL(Graph.ImageSize(0, 150, 320, 200));
-        Storage.ALLOCATE(BkAddress, BkSize);
+        Rectangle(158, 98, 162, 102, Black, TRUE);
         GetImage(0, 150, 320, 200, BkAddress);
         FOR PlaneY := 200 TO 175 BY -1 DO
             PlaneX := 145 - (PlaneY - 175);
@@ -170,14 +143,15 @@ BEGIN
             Lib.Delay(50);
             Graph.PutImage(0, 150, BkAddress, Graph._GPSET);
         END;
-        Storage.DEALLOCATE(BkAddress, BkSize);
         CheckSpecialKeys();
     END;
+    PlaneY := 175;
 
     (* Darken cave *)
+    PlaneX := 145;
     IF (NOT GameOver) THEN
-        PlaneX := 145; OldPlaneX := PlaneX; PlaneY := 175; BulletY := 65520; RectY := 100;
         FadeCountInc := 1;
+        RectY := 100;
         FOR FadeCount := 1 TO 4000 DO
             IF (FadeCount > 2500) THEN
                 IF (FadeCountInc < 100) THEN
@@ -196,21 +170,38 @@ BEGIN
             IF (NewRectY < 175) THEN
                 Disc(Lib.RANDOM(320), Lib.RANDOM(200), 5,  Black);
                 IF (FadeCount MOD 20 = 0) THEN
-                    DrawPlane(PlaneX, PlaneY, PlaneWidth);
+                    DrawPlane5025();
                 END;
             ELSE
                 IF (RectY MOD 5 = 0) THEN
-                    DrawPlane(PlaneX, PlaneY, PlaneWidth);
+                    DrawPlane5025();
                 END;
             END;
         END;
         CheckSpecialKeys();
     END;
+END PlayCaveIntro;
 
-    (* Draw enemies *)
-    GlowSize := CARDINAL(Graph.ImageSize(0, 0, GlowWidth, GlowHeight));
-    Storage.ALLOCATE(GlowAddress, GlowSize);
+PROCEDURE Screen2;
+CONST
+    GlowCount = 18;
+    GlowWidth = 20;
+    GlowHeight = 30;
+VAR
+    GlowSize, GlowIdx, GlowsAlive, MoveRnd, GX, GY : CARDINAL;
+    GlowAddress : ADDRESS;
+    GlowXs, GlowYs : ARRAY[0..GlowCount] OF CARDINAL;
+    OldPlaneX : INTEGER;
+BEGIN
+    ScreenComplete := FALSE;
+    Graph.ClearScreen (Graph._GCLEARSCREEN);
+    PlayCaveIntro();
+
+    OldPlaneX := PlaneX; BulletY := 65530;
     IF (NOT GameOver) THEN
+        (* Draw enemies *)
+        GlowSize := CARDINAL(Graph.ImageSize(0, 0, GlowWidth, GlowHeight));
+        Storage.ALLOCATE(GlowAddress, GlowSize);
         GlowsAlive := GlowCount;
         FOR GY := 0 TO 2 DO
             FOR GX := 0 TO 5 DO
@@ -221,74 +212,75 @@ BEGIN
         END;
         DrawGlowWorms(GlowXs[0], GlowYs[0]);
         GetImage(GlowXs[0], GlowYs[0], GlowXs[0] + GlowWidth, GlowYs[0] + GlowHeight, GlowAddress);
-    END;
-    CheckMouseAndSpecialKeys();
+        CheckMouseAndSpecialKeys();
 
-    (* Main game loop *)
-    WHILE NOT ScreenComplete AND NOT GameOver DO
-        (* Update player *)
-        OldPlaneX := PlaneX;
-        CheckMouse();
-        Rectangle(CARDINAL(OldPlaneX), PlaneY, CARDINAL(OldPlaneX) + PlaneWidth, PlaneY + PlaneHeight, Black, TRUE);
-        DrawPlane(PlaneX, PlaneY, PlaneWidth);
-        UpBullet;
+        (* Main game loop *)
+        WHILE NOT ScreenComplete AND NOT GameOver DO
+            (* Update player *)
+            OldPlaneX := PlaneX;
+            CheckMouse();
+            Rectangle(CARDINAL(OldPlaneX), PlaneY, CARDINAL(OldPlaneX) + PlaneWidth, PlaneY + PlaneHeight, Black, TRUE);
+            DrawPlane(PlaneX, PlaneY, PlaneWidth);
+            UpBullet;
 
-        (* Draw enemies *)
-        FOR GlowIdx := 0 TO (GlowCount - 1) DO
-            GX := GlowXs[GlowIdx]; GY := GlowYs[GlowIdx];
-            (* Enemy alive? *)
-            IF (GY < 65000) THEN
-                IF (GY > 170) THEN
-                    (* At the bottom of the screen - move towards the plane *)
-                    IF (GX < CARDINAL(PlaneX)) THEN
-                        GX := GX + 1;
-                    ELSIF (GX > CARDINAL(PlaneX) + PlaneWidth) THEN
-                        GX := GX - 1;
+            (* Draw enemies *)
+            FOR GlowIdx := 0 TO (GlowCount - 1) DO
+                GX := GlowXs[GlowIdx]; GY := GlowYs[GlowIdx];
+                (* Enemy alive? *)
+                IF (GY < 65000) THEN
+                    IF (GY > 170) THEN
+                        (* At the bottom of the screen - move towards the plane *)
+                        IF (GX < CARDINAL(PlaneX)) THEN
+                            GX := GX + 1;
+                        ELSIF (GX > CARDINAL(PlaneX) + PlaneWidth) THEN
+                            GX := GX - 1;
+                        END;
+                    ELSE
+                        MoveRnd := Lib.RANDOM(12);
+                        IF ((MoveRnd = 1) OR (MoveRnd = 2)) AND NOT (GX > 280) THEN
+                            GX := GX + 1;
+                        ELSIF ((MoveRnd = 3) OR (MoveRnd = 4)) AND (GX > 20) THEN
+                            GX := GX - 1;
+                        END;
+                        IF (MoveRnd = 5) THEN
+                            HLine(GX, GY, GX + GlowWidth, Black);
+                            GY := GY + 1;
+                        END;
                     END;
-                ELSE
-                    MoveRnd := Lib.RANDOM(12);
-                    IF ((MoveRnd = 1) OR (MoveRnd = 2)) AND NOT (GX > 280) THEN
-                        GX := GX + 1;
-                    ELSIF ((MoveRnd = 3) OR (MoveRnd = 4)) AND (GX > 20) THEN
-                        GX := GX - 1;
-                    END;
-                    IF (MoveRnd = 5) THEN
-                        HLine(GX, GY, GX + GlowWidth, Black);
-                        GY := GY + 1;
-                    END;
-                END;
 
-                PutImage(GX, GY, GlowAddress, Graph._GPSET);
-                Plot(GX + 5 + Lib.RANDOM(10), GY + 12 + Lib.RANDOM(8), 14);
-                Plot(GX + 5 + Lib.RANDOM(10), GY + 12 + Lib.RANDOM(8), 68);
+                    PutImage(GX, GY, GlowAddress, Graph._GPSET);
+                    Plot(GX + 5 + Lib.RANDOM(10), GY + 12 + Lib.RANDOM(8), 14);
+                    Plot(GX + 5 + Lib.RANDOM(10), GY + 12 + Lib.RANDOM(8), 68);
 
-                (* Hit by bullet? *)
-                IF (BulletY < GY + 10) AND (BulletX > GX) AND (BulletX < GX + GlowWidth) THEN
-                    BlowUpEnemy2(GX, GY);
-                    BulletY := 65000;
-                    GY := 65000;
-                    GlowsAlive := GlowsAlive - 1;
-                (* Hit player? *)
-                ELSIF (GY > PlaneY - 25) AND (GX > PlaneX - 15) AND (GX < PlaneX + PlaneWidth + 15) THEN
-                    Disc(GX + (GlowWidth DIV 2), GY + (GlowHeight DIV 2), 10, DarkestRed);
-                    OldPlaneX := PlaneX;
-                    Die;
-                    IF NOT GameOver THEN
-                        Rectangle(CARDINAL(OldPlaneX), PlaneY, CARDINAL(OldPlaneX) + PlaneWidth, PlaneY + PlaneHeight, Black, TRUE);
-                        Rectangle(GX, GY, GX + GlowWidth, GY + GlowHeight, Black, TRUE);
+                    (* Hit by bullet? *)
+                    IF (BulletY < GY + 10) AND (BulletX > GX) AND (BulletX < GX + GlowWidth) THEN
+                        BlowUpEnemy2(GX, GY);
+                        BulletY := 65000;
                         GY := 65000;
                         GlowsAlive := GlowsAlive - 1;
+                    (* Hit player? *)
+                    ELSIF (GY > PlaneY - 25) AND (GX > PlaneX - 15) AND (GX < PlaneX + PlaneWidth + 15) THEN
+                        Disc(GX + (GlowWidth DIV 2), GY + (GlowHeight DIV 2), 10, DarkestRed);
+                        OldPlaneX := PlaneX;
+                        Die;
+                        IF NOT GameOver THEN
+                            Rectangle(CARDINAL(OldPlaneX), PlaneY, CARDINAL(OldPlaneX) + PlaneWidth, PlaneY + PlaneHeight, Black, TRUE);
+                            Rectangle(GX, GY, GX + GlowWidth, GY + GlowHeight, Black, TRUE);
+                            GY := 65000;
+                            GlowsAlive := GlowsAlive - 1;
+                        END;
                     END;
                 END;
+                GlowXs[GlowIdx] := GX; GlowYs[GlowIdx] := GY;
             END;
-            GlowXs[GlowIdx] := GX; GlowYs[GlowIdx] := GY;
-        END;
-        IF (GlowsAlive = 0) THEN
-            ScreenComplete := TRUE;
-        END;
-    END; (* Main game loop *)
+            IF (GlowsAlive = 0) THEN
+                ScreenComplete := TRUE;
+            END;
+            Lib.Delay(GameSpeed DIV 2);
+        END; (* Main game loop *)
 
-    Storage.DEALLOCATE(GlowAddress, GlowSize);
+        Storage.DEALLOCATE(GlowAddress, GlowSize);
+    END;
 
     IF GameOver THEN
         DrawGameOver;
