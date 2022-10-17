@@ -7,46 +7,54 @@ FROM Graph IMPORT SetClipRgn, SetVideoMode, Rectangle, GraphMode, TextMode, Poly
 FROM Lib IMPORT Sound, NoSound, Delay;
 FROM Font IMPORT A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z;
 FROM Exobius IMPORT
-  Black, DarkestGrey, DarkGrey, Grey, LightGrey, LightestGrey,
-  DarkestWhite, DarkWhite, White, LightWhite, LightestWhite,
-  DarkestBlue, DarkBlue, Blue, LightBlue, LightestBlue, DarkestRed,
-  DarkRed, Red, LightRed, LightestRed, DarkestBrown, DarkBrown,
-  Brown, LightBrown, LightestBrown, DarkestGreen, DarkGreen, Green, LightGreen,
-  LightestGreen, DarkestYellow, DarkYellow, Yellow, LightYellow,
-  LightestYellow,
-  PlaneX, PlaneY,
-  Lives,
-  Xs, Ys,
-  ScreenComplete, GameOver, GameSpeed,
-  DrawPlane, DrawPlane5025, CheckMouse,
-  BkAddress, ClearTheBuffer, Cheat,
-  DrawGameOver, TextPos;
+    Black, DarkestGrey, DarkGrey, Grey, LightGrey, LightestGrey,
+    DarkestWhite, DarkWhite, White, LightWhite, LightestWhite,
+    DarkestBlue, DarkBlue, Blue, LightBlue, LightestBlue, DarkestRed,
+    DarkRed, Red, LightRed, LightestRed, DarkestBrown, DarkBrown,
+    Brown, LightBrown, LightestBrown, DarkestGreen, DarkGreen, Green, LightGreen,
+    LightestGreen, DarkestYellow, DarkYellow, Yellow, LightYellow, LightestYellow,
+    PlaneX, PlaneY, Xs, Ys, Lives, ScreenComplete, GameOver, GameSpeed,
+    PutPixel, DrawPlane, DrawPlane5025, CheckMouse,
+    BkAddress, ClearTheBuffer, Cheat, DrawGameOver, TextPos;
 
 VAR
-  NumberOfWaterDots, RectY : CARDINAL;
-  RectX : INTEGER;
+    NumberOfWaterDots, RectY : CARDINAL;
+    RectX : INTEGER;
 
 PROCEDURE RandomBrown(VAR BrownColour : CARDINAL);
 BEGIN
-   CASE Lib.RANDOM(5) OF
-      | 1 : BrownColour := LightestBrown;
-      | 2 : BrownColour := LightBrown;
-      | 3 : BrownColour := Brown;
-      | 4 : BrownColour := DarkBrown;
-      | 5 : BrownColour := DarkestBrown;
+    CASE Lib.RANDOM(5) OF
+        |1: BrownColour := LightestBrown;
+        |2: BrownColour := LightBrown;
+        |3: BrownColour := Brown;
+        |4: BrownColour := DarkBrown;
+        |5: BrownColour := DarkestBrown;
    END;
 END RandomBrown;
 
+PROCEDURE DrawBridgePiece4(x, y, BrownColour : CARDINAL);
+VAR
+    BridgeDots : CARDINAL;
+BEGIN
+    RandomBrown(BrownColour);
+    Rectangle(x, y, x + 40, y + 9, DarkGrey, FALSE);
+    Rectangle(x + 1, y + 1, x + 39, y + 8, BrownColour, TRUE);
+    HLine(x, y + 10, x + 40, DarkestGrey);
+    FOR BridgeDots := 1 TO 15 DO
+        PutPixel(x - 20 + Lib.RANDOM(40), y + Lib.RANDOM(10), DarkGrey);
+    END;
+END DrawBridgePiece4;
+
 PROCEDURE Die4;
 CONST
-   PlopSoundDelay = 50;
+    PlopSoundDelay = 50;
 BEGIN
-    Graph.GetImage (0, 190, 320, 200, BkAddress);
-    Rectangle (0, 190, 320, 200, Blue, TRUE);
-    Circle (PlaneX + 10, PlaneY + 5, 2, LightestBlue);
-    Circle (PlaneX + 10, PlaneY + 5, 4, LightestBlue);
+    Graph.GetImage(0, 190, 320, 200, BkAddress);
+    Rectangle(0, 190, 320, 200, Blue, TRUE);
+    Circle(PlaneX + 10, PlaneY + 5, 2, LightestBlue);
+    Circle(PlaneX + 10, PlaneY + 5, 4, LightestBlue);
     TextPos := Graph.SetTextPosition (25, 25);
-    Graph.OutText ('PLOP!');
+    Graph.OutText('PLOP!');
     Sound(30); Delay(PlopSoundDelay); NoSound();
     Sound(40); Delay(PlopSoundDelay); NoSound();
     Sound(60); Delay(PlopSoundDelay); NoSound();
@@ -54,111 +62,107 @@ BEGIN
     Sound(150); Delay(PlopSoundDelay); NoSound();
     Sound(240); Delay(PlopSoundDelay); NoSound();
     Graph.PutImage(0, 190, BkAddress, Graph._GPSET);
-    Lives := Lives + 1;
+    (*Lives := Lives + 1;*)
     IF (Lives=3) THEN
-       Lives := 0;
-       IF (Cheat=FALSE) THEN
-          GameOver := TRUE;
-       END;
+        Lives := 0;
+        IF (Cheat=FALSE) THEN
+            GameOver := TRUE;
+        END;
     ELSE
-       PlaneX := 0;
-       WHILE (Point(PlaneX, 195)=Blue) OR (Point(PlaneX, 195)=LightestBlue) DO
-          PlaneX := PlaneX + 1;
-       END;
-       PlaneX := PlaneX + 9;
+        PlaneX := 0;
+        WHILE (Point(PlaneX, 195)=Blue) OR (Point(PlaneX, 195)=LightestBlue) DO
+            PlaneX := PlaneX + 1;
+        END;
+        PlaneX := PlaneX + 9;
     END;
 END Die4;
 
-PROCEDURE DrawBridgePiece4(x, y, BrownColour : CARDINAL);
-VAR
-  BridgeDots : CARDINAL;
-BEGIN
-     RandomBrown (BrownColour);
-     Rectangle (x, y, x + 20, y + 10, BrownColour, TRUE);
-     Rectangle (x, y, x + 20, y + 10, DarkGrey, FALSE);
-     HLine (x, y + 9, x + 20, DarkestGrey);
-     FOR BridgeDots := 1 TO 15 DO
-         Plot (Lib.RANDOM(20) + x, Lib.RANDOM(10) + y, DarkGrey);
-     END;
-END DrawBridgePiece4;
-
 PROCEDURE Screen4;
 CONST
-    NoOfBridges = 100;
+    NoOfBridges = 150;
 VAR
-  LineSpeed, LineXEnd, LineY, WaterDots, BrownColour, BridgesDrawn, DotX,
-     DotY, RectangleX : CARDINAL;
-  LineXStart : INTEGER;
+    LineSpeed, LineXEnd, LineY, WaterDots, BrownColour, BridgesDrawn, DotX, DotY, RectangleX : CARDINAL;
+    LineXStart : INTEGER;
 
 BEGIN
-     PlaneX := 150; PlaneY := 174; LineSpeed := 156; ScreenComplete := FALSE;
-     NumberOfWaterDots := 250;
-     ClearTheBuffer;
-     LineXStart := 150; LineXEnd := 170;
-     Rectangle (0, 0, 320, 100, LightBlue, TRUE);
-     Rectangle (0, 100, 320, 200, LightestWhite, TRUE);
-     FOR LineY := 100 TO 200 DO
-          IF (LineY MOD 2 = 0) THEN
-           LineXStart := LineXStart - 3;
-           LineXEnd := LineXEnd + 3;
-           IF (LineXStart < 0) THEN
-              LineXStart := 0;
-           END;
+    PlaneX := 150; PlaneY := 174; LineSpeed := 156; ScreenComplete := FALSE;
+    NumberOfWaterDots := 250;
+    ClearTheBuffer;
+    LineXStart := 150; LineXEnd := 170;
+    Rectangle(0, 0, 320, 100, LightBlue, TRUE);
+    Rectangle(0, 100, 320, 200, LightestWhite, TRUE);
+
+    (* Draw bridge pieces coming in *)
+    FOR LineY := 100 TO 200 DO
+        IF (LineY MOD 2 = 0) THEN
+            LineXStart := LineXStart - 3;
+            LineXEnd := LineXEnd + 3;
+            IF (LineXStart < 0) THEN
+                LineXStart := 0;
+            END;
         END;
-        HLine (0, LineY, LineXStart, Blue);
-        HLine (LineXEnd, LineY, 320, Blue);
+        HLine(0, LineY, LineXStart, Blue);
+        HLine(LineXEnd, LineY, 320, Blue);
         FOR WaterDots := 1 TO 5 DO
-            Plot (Lib.RANDOM(LineXStart), LineY, LightestBlue);
-            Plot (Lib.RANDOM(LineXStart) + LineXEnd, LineY, LightestBlue);
+            Plot(Lib.RANDOM(LineXStart), LineY, LightestBlue);
+            Plot(Lib.RANDOM(LineXStart) + LineXEnd, LineY, LightestBlue);
         END;
         RandomBrown(BrownColour);
-        HLine (LineXStart, LineY, LineXEnd, BrownColour);
+        HLine(LineXStart, LineY, LineXEnd, BrownColour);
         DrawPlane5025();
-     END;
-     Lib.Delay (50);
-     FOR LineY := 100 TO 0 BY -1 DO
-         Rectangle (0, LineY, 320, 200, Blue, TRUE);
-         Xs[0] := 150; Xs[1] := 150 - (LineY*3 DIV 2); Xs[2] := 170 + (LineY*3 DIV 2); Xs[3] := 170;
-         Ys[0] := LineY; Ys[1] := 200; Ys[2] := 200; Ys[3] := LineY;
-         Polygon (4, Xs, Ys, DarkestBrown);
-         DrawPlane(PlaneX, PlaneY, (LineY*3 DIV 10) + 20);
-     END;
-     RectangleX := 150;
-     FOR RectY := 0 TO 180 BY 10 DO
-         DrawBridgePiece4 (RectangleX, RectY, BrownColour);
-     END;
-     Line (RectangleX, 0, RectangleX, 200, DarkestGrey);
-     PlaneY := 190;
-     DrawPlane(PlaneX, PlaneY, 20);
-     RectY := 0; BridgesDrawn := 0; PlaneX := 150;
-		WHILE NOT (GameOver OR ScreenComplete) DO
-		        FOR WaterDots := 1 TO NumberOfWaterDots DO
-		            DotX := Lib.RANDOM(320);
-		            DotY := Lib.RANDOM(150);
-                            IF (Point(DotX, DotY)=Blue) THEN
-                               Plot (DotX, DotY, LightestBlue);
-                            END;
-                        END;
-			Graph.GetImage(100, 0, 219, 190, BkAddress);
-			CheckMouse;
-			Graph.PutImage(100, 10, BkAddress, Graph._GPSET);
-         Rectangle (0, 0, 320, 9, Blue, TRUE);
-         RectangleX := RectangleX + Lib.RANDOM(10) - 5;
-         DrawBridgePiece4 (RectangleX, RectY, BrownColour);
-			IF (BridgesDrawn = NoOfBridges) THEN
-				ScreenComplete := TRUE;
-			END;
-			DrawPlane(PlaneX, PlaneY, 20);
-			BridgesDrawn := BridgesDrawn + 1;
-			IF (Point(PlaneX+10, PlaneY-1) = Blue) OR (Point(PlaneX+10, PlaneY-1) = LightestBlue) THEN
-            Die4;
-         END;
-         Delay (GameSpeed);
-		END;
-		IF GameOver THEN
-                   DrawGameOver;
+    END;
+    Lib.Delay(GameSpeed * 5);
+
+    (* Perspective shift to top view *)
+    FOR LineY := 100 TO 0 BY -1 DO
+        Xs[0] := 140; Xs[1] := 140 - (LineY*4 DIV 3); Xs[2] := 319 - Xs[1]; Xs[3] := 319 - Xs[0];
+        Ys[0] := LineY; Ys[1] := 200; Ys[2] := 200; Ys[3] := LineY;
+        Polygon(4, Xs, Ys, DarkestBrown);
+        Xs[2] := 0; Xs[3] := 0;
+        Polygon(4, Xs, Ys, Blue);
+        Xs[0] := 319 - Xs[0]; Xs[1] := 319 - Xs[1]; Xs[2] := 319 - Xs[2]; Xs[3] := 319 - Xs[3];
+        Polygon(4, Xs, Ys, Blue);
+        DrawPlane(PlaneX, PlaneY, (LineY*3 DIV 10) + 20);
+        Lib.Delay(GameSpeed DIV 5);
+    END;
+
+    (* Construct bridge pieces *)
+    RectangleX := 150;
+    FOR RectY := 0 TO 180 BY 10 DO
+        DrawBridgePiece4(RectangleX, RectY, BrownColour);
+    END;
+    Line(RectangleX, 0, RectangleX, 200, DarkestGrey);
+    PlaneY := 190;
+    DrawPlane(PlaneX, PlaneY, 20);
+    RectY := 0; BridgesDrawn := 0; PlaneX := 150;
+        WHILE NOT (GameOver OR ScreenComplete) DO
+            FOR WaterDots := 1 TO NumberOfWaterDots DO
+                DotX := Lib.RANDOM(320);
+                DotY := Lib.RANDOM(150);
+                IF (Point(DotX, DotY)=Blue) THEN
+                    Plot(DotX, DotY, LightestBlue);
                 END;
-                RectX := INTEGER(RectangleX);
+            END;
+        Graph.GetImage(100, 0, 219, 190, BkAddress);
+        CheckMouse();
+        Graph.PutImage(100, 10, BkAddress, Graph._GPSET);
+        Rectangle (0, 0, 320, 9, Blue, TRUE);
+        RectangleX := RectangleX + Lib.RANDOM(10) - 5;
+        DrawBridgePiece4 (RectangleX, RectY, BrownColour);
+        IF (BridgesDrawn = NoOfBridges) THEN
+            ScreenComplete := TRUE;
+        END;
+        DrawPlane(PlaneX, PlaneY, 20);
+        BridgesDrawn := BridgesDrawn + 1;
+        IF (Point(PlaneX+10, PlaneY-1) = Blue) OR (Point(PlaneX+10, PlaneY-1) = LightestBlue) THEN
+            Die4;
+        END;
+        Delay(GameSpeed);
+        END;
+        IF GameOver THEN
+            DrawGameOver;
+        END;
+        RectX := INTEGER(RectangleX);
 END Screen4;
 
 PROCEDURE DrawBridgePiece5 (x, y : CARDINAL);
