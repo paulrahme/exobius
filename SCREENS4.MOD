@@ -7,28 +7,23 @@ FROM Graph IMPORT SetClipRgn, SetVideoMode, Rectangle, GraphMode, TextMode, Poly
 FROM Lib IMPORT Sound, NoSound, Delay;
 FROM Font IMPORT A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z;
 FROM Exobius IMPORT
-  SolidFill, PlaneWidth, PlaneHeight,
-  EnemyYStart, CollisionY,
   Black, DarkestGrey, DarkGrey, Grey, LightGrey, LightestGrey,
   DarkestWhite, DarkWhite, White, LightWhite, LightestWhite,
   DarkestBlue, DarkBlue, Blue, LightBlue, LightestBlue, DarkestRed,
   DarkRed, Red, LightRed, LightestRed, DarkestBrown, DarkBrown,
   Brown, LightBrown, LightestBrown, DarkestGreen, DarkGreen, Green, LightGreen,
   LightestGreen, DarkestYellow, DarkYellow, Yellow, LightYellow,
-  LightestYellow, PlaneX,  Enemy1X, Enemy2X, Enemy3X, Enemy4X, Enemy5X,
-  Enemy6X, Enemies,
-  BulletX, BulletY, OldBulletX, OldBulletY,
-  PlaneY, CoverRectangleX,
-  Count, Lives, EnemyY, BkColour,
-  OldBkColor,  Xs, Ys, OneAlive, TwoAlive, ThreeAlive, FourAlive, FiveAlive,
-  SixAlive, ScreenComplete, GameOver,  MouseButtons,  MouseMove, GameSpeed,
-  DrawPlane, CheckMouse, Die,
-  FinishScreen, PlaneXMove, Score,
-  BkAddress, BkSize, ClearTheBuffer, Cheat,
+  LightestYellow,
+  PlaneX, PlaneY,
+  Lives,
+  Xs, Ys,
+  ScreenComplete, GameOver, GameSpeed,
+  DrawPlane, DrawPlane5025, CheckMouse,
+  BkAddress, ClearTheBuffer, Cheat,
   DrawGameOver, TextPos;
 
 VAR
-  NumberOfWaterDots, RectY, HitCounts, EnemyX : CARDINAL;
+  NumberOfWaterDots, RectY : CARDINAL;
   RectX : INTEGER;
 
 PROCEDURE RandomBrown(VAR BrownColour : CARDINAL);
@@ -43,8 +38,8 @@ BEGIN
 END RandomBrown;
 
 PROCEDURE Die4;
-VAR
-   Count : CARDINAL;
+CONST
+   PlopSoundDelay = 50;
 BEGIN
     Graph.GetImage (0, 190, 320, 200, BkAddress);
     Rectangle (0, 190, 320, 200, Blue, TRUE);
@@ -52,19 +47,13 @@ BEGIN
     Circle (PlaneX + 10, PlaneY + 5, 4, LightestBlue);
     TextPos := Graph.SetTextPosition (25, 25);
     Graph.OutText ('PLOP!');
-    FOR Count := 1 TO 6 DO
-         CASE Count OF
-              | 1 : Sound (30);
-              | 2 : Sound (40);
-              | 3 : Sound (60);
-              | 4 : Sound (100);
-              | 5 : Sound (150);
-              | 6 : Sound (240);
-         END;
-         Delay (50);
-         NoSound;
-    END;
-    Graph.PutImage (0, 190, BkAddress, Graph._GPSET);
+    Sound(30); Delay(PlopSoundDelay); NoSound();
+    Sound(40); Delay(PlopSoundDelay); NoSound();
+    Sound(60); Delay(PlopSoundDelay); NoSound();
+    Sound(100); Delay(PlopSoundDelay); NoSound();
+    Sound(150); Delay(PlopSoundDelay); NoSound();
+    Sound(240); Delay(PlopSoundDelay); NoSound();
+    Graph.PutImage(0, 190, BkAddress, Graph._GPSET);
     Lives := Lives + 1;
     IF (Lives=3) THEN
        Lives := 0;
@@ -124,7 +113,7 @@ BEGIN
         END;
         RandomBrown(BrownColour);
         HLine (LineXStart, LineY, LineXEnd, BrownColour);
-        DrawPlane (PlaneX, PlaneY, PlaneWidth);
+        DrawPlane5025();
      END;
      Lib.Delay (50);
      FOR LineY := 100 TO 0 BY -1 DO
@@ -132,7 +121,7 @@ BEGIN
          Xs[0] := 150; Xs[1] := 150 - (LineY*3 DIV 2); Xs[2] := 170 + (LineY*3 DIV 2); Xs[3] := 170;
          Ys[0] := LineY; Ys[1] := 200; Ys[2] := 200; Ys[3] := LineY;
          Polygon (4, Xs, Ys, DarkestBrown);
-         DrawPlane (PlaneX, PlaneY, (LineY*3 DIV 10) + 20);
+         DrawPlane(PlaneX, PlaneY, (LineY*3 DIV 10) + 20);
      END;
      RectangleX := 150;
      FOR RectY := 0 TO 180 BY 10 DO
@@ -140,8 +129,7 @@ BEGIN
      END;
      Line (RectangleX, 0, RectangleX, 200, DarkestGrey);
      PlaneY := 190;
-     DrawPlane (PlaneX, PlaneY, 20);
-     Storage.ALLOCATE (BkAddress, CARDINAL(Graph.ImageSize(0, 0, 320, 190)));
+     DrawPlane(PlaneX, PlaneY, 20);
      RectY := 0; BridgesDrawn := 0; PlaneX := 150;
 		WHILE NOT (GameOver OR ScreenComplete) DO
 		        FOR WaterDots := 1 TO NumberOfWaterDots DO
@@ -151,16 +139,16 @@ BEGIN
                                Plot (DotX, DotY, LightestBlue);
                             END;
                         END;
-			Graph.GetImage (0, 0, 320, 190, BkAddress);
+			Graph.GetImage(100, 0, 219, 190, BkAddress);
 			CheckMouse;
-			Graph.PutImage (0, 10, BkAddress, Graph._GPSET);
-                        Rectangle (0, 0, 320, 9, Blue, TRUE);
-                        RectangleX := RectangleX + Lib.RANDOM(10) - 5;
-                        DrawBridgePiece4 (RectangleX, RectY, BrownColour);
+			Graph.PutImage(100, 10, BkAddress, Graph._GPSET);
+         Rectangle (0, 0, 320, 9, Blue, TRUE);
+         RectangleX := RectangleX + Lib.RANDOM(10) - 5;
+         DrawBridgePiece4 (RectangleX, RectY, BrownColour);
 			IF (BridgesDrawn = NoOfBridges) THEN
 				ScreenComplete := TRUE;
 			END;
-			DrawPlane (PlaneX, PlaneY, 20);
+			DrawPlane(PlaneX, PlaneY, 20);
 			BridgesDrawn := BridgesDrawn + 1;
 			IF (Point(PlaneX+10, PlaneY-1) = Blue) OR (Point(PlaneX+10, PlaneY-1) = LightestBlue) THEN
             Die4;
@@ -199,10 +187,10 @@ BEGIN
           IF (RectX = 149) THEN
              RectX := RectX + 1;
           END;
-          Graph.GetImage (0, 0, 320, 190, BkAddress);
+          Graph.GetImage(100, 0, 219, 190, BkAddress);
           Rectangle (0, 0, 320, 9, Blue, TRUE);
           DrawBridgePiece5 (RectX, RectY);
-          Graph.PutImage (0, 10, BkAddress, Graph._GPSET);
+          Graph.PutImage(100, 10, BkAddress, Graph._GPSET);
           FOR WaterDots := 1 TO NumberOfWaterDots DO
 	      DotX := Lib.RANDOM(320);
 	      DotY := Lib.RANDOM(180);
@@ -211,7 +199,7 @@ BEGIN
               END;
           END;
 	  CheckMouse;
-	  DrawPlane (PlaneX, PlaneY, 20);
+	  DrawPlane(PlaneX, PlaneY, 20);
 	  IF (Point(PlaneX+10, PlaneY-1) = Blue) OR (Point(PlaneX+10, PlaneY-1) = LightestBlue) THEN
         Die4;
      END;
@@ -225,15 +213,15 @@ BEGIN
                  Plot (DotX, DotY, LightestBlue);
               END;
           END;
-	  Graph.GetImage (0, 0, 320, 190, BkAddress);
+	  Graph.GetImage (100, 0, 219, 190, BkAddress);
 	  CheckMouse;
-	  Graph.PutImage (0, 10, BkAddress, Graph._GPSET);
-          Rectangle (0, 0, 320, 9, Blue, TRUE);
-          DrawBridgePiece5 (RectX, RectY);
+	  Graph.PutImage (100, 10, BkAddress, Graph._GPSET);
+     Rectangle (0, 0, 320, 9, Blue, TRUE);
+     DrawBridgePiece5 (RectX, RectY);
 	  IF (BridgesDrawn = 30) THEN
 	     ScreenComplete := TRUE;
 	  END;
-	  DrawPlane (PlaneX, PlaneY, 200);
+	  DrawPlane(PlaneX, PlaneY, 200);
 	  BridgesDrawn := BridgesDrawn + 1;
 	  IF (Point(PlaneX+10, PlaneY-1) = Blue) OR (Point(PlaneX+10, PlaneY-1) = LightestBlue) THEN
         Die4;
@@ -249,7 +237,7 @@ BEGIN
             Xs[0] := 150; Xs[1] := 150 - (LineY*3 DIV 2); Xs[2] := 170 + (LineY*3 DIV 2); Xs[3] := 170;
             Ys[0] := LineY; Ys[1] := 200; Ys[2] := 200; Ys[3] := LineY;
             Polygon (4, Xs, Ys, DarkWhite);
-            DrawPlane (PlaneX, PlaneY, (LineY*3 DIV 10) + 20);
+            DrawPlane(PlaneX, PlaneY, (LineY*3 DIV 10) + 20);
         END;
         Polygon (4, Xs, Ys, LightGrey);
         FOR BridgeDots := 1 TO 50 DO
@@ -261,49 +249,48 @@ BEGIN
         END;
         FOR LineY := 100 TO 200 DO
             HLine (0, LineY, 320, LightWhite);
-            DrawPlane (PlaneX, PlaneY, PlaneWidth);
+            DrawPlane5025();
             Plot (Lib.RANDOM(320), Lib.RANDOM(100)+100, DarkGrey);
         END;
     END;
     Rectangle (0, 0, 320, 100, Blue, TRUE);
     Rectangle (0, 100, 320, 200, White, TRUE);
-    DrawPlane (PlaneX, PlaneY, PlaneWidth);
+    DrawPlane5025();
     Delay (20);
     Rectangle (0, 0, 320, 100, LightBlue, TRUE);
     Rectangle (0, 100, 320, 200, DarkWhite, TRUE);
-    DrawPlane (PlaneX, PlaneY, PlaneWidth);
+    DrawPlane5025();
     Delay(20);
     Rectangle (0, 0, 320, 100, Blue, TRUE);
     Rectangle (0, 100, 320, 200, DarkestWhite, TRUE);
-    DrawPlane (PlaneX, PlaneY, PlaneWidth);
+    DrawPlane5025();
     Delay(20);
     Rectangle (0, 0, 320, 100, DarkBlue, TRUE);
     Rectangle (0, 100, 320, 200, LightestGrey, TRUE);
-    DrawPlane (PlaneX, PlaneY, PlaneWidth);
+    DrawPlane5025();
     Delay(20);
     Rectangle (0, 0, 320, 100, Blue, TRUE);
     Rectangle (0, 100, 320, 200, LightGrey, TRUE);
-    DrawPlane (PlaneX, PlaneY, PlaneWidth);
+    DrawPlane5025();
     Delay(20);
     Rectangle (0, 0, 320, 100, DarkBlue, TRUE);
     Rectangle (0, 100, 320, 200, Grey, TRUE);
-    DrawPlane (PlaneX, PlaneY, PlaneWidth);
+    DrawPlane5025();
     Delay(20);
     Rectangle (0, 0, 320, 100, DarkestBlue, TRUE);
     Rectangle (0, 100, 320, 200, DarkGrey, TRUE);
-    DrawPlane (PlaneX, PlaneY, PlaneWidth);
+    DrawPlane5025();
     Delay(20);
     Rectangle (0, 0, 320, 100, Black, TRUE);
     Rectangle (0, 100, 320, 200, DarkestGrey, TRUE);
-    DrawPlane (PlaneX, PlaneY, PlaneWidth);
+    DrawPlane5025();
     Delay(20);
     Rectangle (0, 100, 320, 200, Black, TRUE);
-    DrawPlane (PlaneX, PlaneY, PlaneWidth);
+    DrawPlane5025();
     Delay(20);
     IF GameOver THEN
        DrawGameOver;
     END;
-    Storage.DEALLOCATE (BkAddress,CARDINAL(Graph.ImageSize (0, 10, 320, 190)));
 END Screen5;
 
 END Screens4.

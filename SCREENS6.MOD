@@ -20,10 +20,9 @@ FROM Exobius IMPORT
   Count, Lives, EnemyY, BkColour,
   OldBkColor,  Xs, Ys, OneAlive, TwoAlive, ThreeAlive, FourAlive, FiveAlive,
   SixAlive, ScreenComplete, GameOver,  MouseButtons,  MouseMove, GameSpeed,
-  DrawPlane, CheckMouse, Die,
-  FinishScreen, PlaneXMove, Score,
-  BkAddress, BkSize, ClearTheBuffer, Cheat,
-  DrawGameOver;
+  DrawPlane, CheckMouse, Die, DrawGameOver,
+  PlaneXMove, Score,
+  BkAddress, BkSize, ClearTheBuffer;
 
 PROCEDURE DrawBorders;
 VAR
