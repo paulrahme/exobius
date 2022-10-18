@@ -20,6 +20,7 @@ FROM Exobius IMPORT
 CONST
     SmallPlaneWidth = 20;
     SmallPlaneHeight = 10;
+    ScrollSpeed = 4;
 
 VAR
     RectY : CARDINAL;
@@ -32,7 +33,7 @@ BEGIN
         |2: BrownColour := LightBrown;
         |3: BrownColour := Brown;
         |4: BrownColour := DarkBrown;
-        |5: BrownColour := DarkestBrown;
+        |0,5: BrownColour := DarkestBrown;
    END;
 END RandomBrown;
 
@@ -41,17 +42,19 @@ VAR
     BridgeDots : CARDINAL;
 BEGIN
     RandomBrown(BrownColour);
-    Rectangle(x, y, x + 40, y + 9, DarkGrey, FALSE);
-    Rectangle(x + 1, y + 1, x + 39, y + 8, BrownColour, TRUE);
-    HLine(x, y + 10, x + 40, DarkestGrey);
-    FOR BridgeDots := 1 TO 15 DO
-        PutPixel(x + Lib.RANDOM(40), y + Lib.RANDOM(10), DarkGrey);
+    Rectangle(x, y, x + 40, y + ScrollSpeed - 1, DarkGrey, FALSE);
+    Rectangle(x + 1, y + 1, x + 39, y + ScrollSpeed - 2, BrownColour, FALSE);
+    HLine(x, y + ScrollSpeed, x + 40, DarkestGrey);
+    FOR BridgeDots := 1 TO 10 DO
+        PutPixel(x + Lib.RANDOM(40), y + Lib.RANDOM(ScrollSpeed), DarkGrey);
     END;
 END DrawBridgePiece4;
 
 PROCEDURE Die4;
 CONST
     PlopSoundDelay = 50;
+VAR
+    PixelColour : SHORTCARD;
 BEGIN
     Graph.GetImage(0, 190, 320, 200, BkAddress);
     Rectangle(0, 190, 320, 200, Blue, TRUE);
@@ -74,18 +77,20 @@ BEGIN
         END;
     ELSE
         PlaneX := 0;
-        WHILE (Point(PlaneX, 195) = Blue) OR (Point(PlaneX, 195) = LightestBlue) DO
+        PixelColour := Blue;
+        WHILE (PixelColour = Blue) OR (PixelColour = LightestBlue) DO
             PlaneX := PlaneX + 1;
+            PixelColour := GetPixel(PlaneX, 185);
         END;
-        PlaneX := PlaneX + SmallPlaneHeight;
+        PlaneX := PlaneX + 10;
+        CheckMouseAndSpecialKeys();
     END;
 END Die4;
 
 PROCEDURE Screen4;
 CONST
-    LevelDistance = 1500;
+    LevelDistance = 2500;
     NoOfWaterDots = 40;
-    ScrollSpeed = 2;
 VAR
     LineSpeed, LineXEnd, LineY, WaterDots, BrownColour, Distance, DotX, DotY, RectangleX, BehindPlaneSize : CARDINAL;
     LineXStart : INTEGER;
@@ -110,7 +115,7 @@ BEGIN
         HLine(LineXEnd, LineY, 320, Blue);
         FOR WaterDots := 1 TO 5 DO
             Plot(Lib.RANDOM(LineXStart), LineY, LightestBlue);
-            Plot(Lib.RANDOM(LineXStart) + LineXEnd, LineY, LightestBlue);
+            Plot(LineXEnd + Lib.RANDOM(50), LineY, LightestBlue);
         END;
         RandomBrown(BrownColour);
         HLine(LineXStart, LineY, LineXEnd, BrownColour);
@@ -133,9 +138,9 @@ BEGIN
         IF GameOver THEN LineY := 0; END;
     END;
 
-    (* Construct bridge pieces *)
+    (* Construct initial bridge pieces *)
     RectangleX := 140;
-    FOR RectY := 0 TO 180 BY 10 DO
+    FOR RectY := 0 TO 180 BY ScrollSpeed DO
         DrawBridgePiece4(RectangleX, RectY, BrownColour);
     END;
     Line(RectangleX, 0, RectangleX, 200, DarkestGrey);
@@ -149,6 +154,7 @@ BEGIN
     (* Main loop *)
     RectY := 0; Distance := 0; PlaneX := 150;
     WHILE NOT (GameOver OR ScreenComplete) DO
+        (* Add water dots *)
         FOR WaterDots := 1 TO NoOfWaterDots DO
             DotX := Lib.RANDOM(319);
             DotY := ScrollSpeed + Lib.RANDOM(100);
@@ -156,6 +162,24 @@ BEGIN
                 PutPixel(DotX, DotY, LightestBlue);
             END;
         END;
+
+        (* Increase distance travelled *)
+        Distance := Distance + ScrollSpeed;
+
+        (* Time to draw next bridge piece? *)
+        IF (Distance MOD ScrollSpeed = 0) THEN
+            IF (RectangleX < 100) THEN
+                RectangleX := RectangleX + 6;
+            ELSIF (RectangleX > 220) THEN
+                RectangleX := RectangleX - 6;
+            ELSE
+                RectangleX := RectangleX - 6 + Lib.RANDOM(12);
+            END;
+            Rectangle(0, 0, 319, ScrollSpeed, Blue, TRUE);
+            DrawBridgePiece4(RectangleX, RectY, BrownColour);
+        END;
+
+        (* Hide plane, scroll up *)
         Graph.PutImage(PlaneX, PlaneY, BehindPlaneAddress, Graph._GPSET);
         Graph.GetImage(0, 0, 104, 198, BkAddress);
         Graph.PutImage(0, ScrollSpeed, BkAddress, Graph._GPSET);
@@ -163,30 +187,17 @@ BEGIN
         Graph.PutImage(215, ScrollSpeed, BkAddress, Graph._GPSET);
         Graph.GetImage(105, 0, 214, 198, BkAddress);
         Graph.PutImage(105, ScrollSpeed, BkAddress, Graph._GPSET);
+
+        (* Update + draw plane *)
         CheckMouse();
         GetImage(PlaneX, PlaneY, PlaneX + SmallPlaneWidth, PlaneY + SmallPlaneHeight, BehindPlaneAddress);
         DrawPlane(PlaneX, PlaneY, SmallPlaneWidth);
 
-        Distance := Distance + ScrollSpeed;
-
-        (* Time to draw next bridge piece? *)
-        IF (Distance MOD 10 = 0) THEN
-            IF (RectangleX < 100) THEN
-                RectangleX := RectangleX + 15;
-            ELSIF (RectangleX > 220) THEN
-                RectangleX := RectangleX - 15;
-            ELSE
-                RectangleX := RectangleX - 12 + Lib.RANDOM(24);
-            END;
-            Rectangle(0, 0, 319, 9, Blue, TRUE);
-            DrawBridgePiece4(RectangleX, RectY, BrownColour);
-        END;
-
+        (* Finished? *)
         IF (Distance >= LevelDistance) THEN
             ScreenComplete := TRUE;
-        END;
-
-        IF (Point(PlaneX+10, PlaneY-1) = Blue) OR (Point(PlaneX+10, PlaneY-1) = LightestBlue) THEN
+        (* Dead? *)
+        ELSIF (Point(PlaneX+10, PlaneY-1) = Blue) OR (Point(PlaneX+10, PlaneY-1) = LightestBlue) THEN
             Die4;
         END;
 
