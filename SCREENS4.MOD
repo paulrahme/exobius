@@ -26,24 +26,23 @@ VAR
     RectY : CARDINAL;
     RectX : INTEGER;
 
-PROCEDURE RandomBrown(VAR BrownColour : CARDINAL);
+PROCEDURE RandomBrown() : CARDINAL;
 BEGIN
     CASE Lib.RANDOM(5) OF
-        |1: BrownColour := LightestBrown;
-        |2: BrownColour := LightBrown;
-        |3: BrownColour := Brown;
-        |4: BrownColour := DarkBrown;
-        |0,5: BrownColour := DarkestBrown;
+        |1: RETURN LightestBrown;
+        |2: RETURN LightBrown;
+        |3: RETURN Brown;
+        |4: RETURN DarkBrown;
+        |0,5: RETURN DarkestBrown;
    END;
 END RandomBrown;
 
-PROCEDURE DrawBridgePiece4(x, y, BrownColour : CARDINAL);
+PROCEDURE DrawBridgePiece4(x, y : CARDINAL);
 VAR
-    BridgeDots : CARDINAL;
+    BrownColor, BridgeDots : CARDINAL;
 BEGIN
-    RandomBrown(BrownColour);
     Rectangle(x, y, x + 40, y + ScrollSpeed - 1, DarkGrey, FALSE);
-    Rectangle(x + 1, y + 1, x + 39, y + ScrollSpeed - 2, BrownColour, FALSE);
+    Rectangle(x + 1, y + 1, x + 39, y + ScrollSpeed - 2, RandomBrown(), FALSE);
     HLine(x, y + ScrollSpeed, x + 40, DarkestGrey);
     FOR BridgeDots := 1 TO 10 DO
         PutPixel(x + Lib.RANDOM(40), y + Lib.RANDOM(ScrollSpeed), DarkGrey);
@@ -92,7 +91,7 @@ CONST
     LevelDistance = 2500;
     NoOfWaterDots = 40;
 VAR
-    LineSpeed, LineXEnd, LineY, WaterDots, BrownColour, Distance, DotX, DotY, RectangleX, BehindPlaneSize : CARDINAL;
+    LineSpeed, LineXEnd, LineY, WaterDots, Distance, DotX, DotY, RectangleX, BehindPlaneSize : CARDINAL;
     LineXStart : INTEGER;
     BehindPlaneAddress : ADDRESS;
 BEGIN
@@ -117,8 +116,7 @@ BEGIN
             Plot(Lib.RANDOM(LineXStart), LineY, LightestBlue);
             Plot(LineXEnd + Lib.RANDOM(50), LineY, LightestBlue);
         END;
-        RandomBrown(BrownColour);
-        HLine(LineXStart, LineY, LineXEnd, BrownColour);
+        HLine(LineXStart, LineY, LineXEnd, RandomBrown());
         DrawPlane5025();
     END;
     Lib.Delay(GameSpeed * 5);
@@ -141,7 +139,7 @@ BEGIN
     (* Construct initial bridge pieces *)
     RectangleX := 140;
     FOR RectY := 0 TO 180 BY ScrollSpeed DO
-        DrawBridgePiece4(RectangleX, RectY, BrownColour);
+        DrawBridgePiece4(RectangleX, RectY);
     END;
     Line(RectangleX, 0, RectangleX, 200, DarkestGrey);
     BehindPlaneSize := CARDINAL(Graph.ImageSize(0, 0, 20, 10));
@@ -176,7 +174,7 @@ BEGIN
                 RectangleX := RectangleX - 6 + Lib.RANDOM(12);
             END;
             Rectangle(0, 0, 319, ScrollSpeed, Blue, TRUE);
-            DrawBridgePiece4(RectangleX, RectY, BrownColour);
+            DrawBridgePiece4(RectangleX, RectY);
         END;
 
         (* Hide plane, scroll up *)
