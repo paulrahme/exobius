@@ -2,6 +2,4 @@ DEFINITION MODULE Screens4;
 
 PROCEDURE Screen4;
 
-PROCEDURE Screen5;
-
 END Screens4.

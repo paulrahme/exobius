@@ -13,7 +13,7 @@ FROM Exobius IMPORT
     DarkRed, Red, LightRed, LightestRed, DarkestBrown, DarkBrown,
     Brown, LightBrown, LightestBrown, DarkestGreen, DarkGreen, Green, LightGreen,
     LightestGreen, DarkestYellow, DarkYellow, Yellow, LightYellow, LightestYellow,
-    PlaneX, PlaneY, Xs, Ys, Lives, ScreenComplete, GameOver, GameSpeed,
+    PlaneX, PlaneY, PlaneWidth, PlaneHeight, PlaneStartX, PlaneStartY, Xs, Ys, Lives, ScreenComplete, GameOver, GameSpeed,
     GetPixel, PutPixel, DrawPlane, DrawPlane5025, CheckMouse, CheckMouseAndSpecialKeys,
     BkAddress, ClearTheBuffer, Cheat, DrawGameOver, TextPos;
 
@@ -21,10 +21,6 @@ CONST
     SmallPlaneWidth = 20;
     SmallPlaneHeight = 10;
     ScrollSpeed = 4;
-
-VAR
-    RectY : CARDINAL;
-    RectX : INTEGER;
 
 PROCEDURE RandomBrown() : CARDINAL;
 BEGIN
@@ -88,14 +84,15 @@ END Die4;
 
 PROCEDURE Screen4;
 CONST
-    LevelDistance = 2500;
-    NoOfWaterDots = 40;
+    WaterDistance = 2500; TotalDistance = 5000;
+    NoOfRandomDots = 40;
+    PuddleHalfWidthMin = 4; PuddleHalfWidthMax = 20; PuddleHalfLengthMin = 8; PuddleHalfLengthMax = 20;
 VAR
-    LineSpeed, LineXEnd, LineY, WaterDots, Distance, DotX, DotY, RectangleX, BehindPlaneSize : CARDINAL;
+    LineSpeed, LineXEnd, LineY, Dots, Distance, DotX, DotY, RectX, RectY, PuddleX, PuddleHalfWidth, PuddleLength, BehindPlaneSize : CARDINAL;
     LineXStart : INTEGER;
     BehindPlaneAddress : ADDRESS;
 BEGIN
-    PlaneX := 150; PlaneY := 174; LineSpeed := 156; ScreenComplete := FALSE;
+    PlaneX := 150; PlaneY := PlaneStartY; LineSpeed := 156; ScreenComplete := FALSE;
     ClearTheBuffer;
     LineXStart := 150; LineXEnd := 170;
     Rectangle(0, 0, 320, 100, LightBlue, TRUE);
@@ -112,7 +109,7 @@ BEGIN
         END;
         HLine(0, LineY, LineXStart, Blue);
         HLine(LineXEnd, LineY, 320, Blue);
-        FOR WaterDots := 1 TO 5 DO
+        FOR Dots := 1 TO 5 DO
             Plot(Lib.RANDOM(LineXStart), LineY, LightestBlue);
             Plot(LineXEnd + Lib.RANDOM(50), LineY, LightestBlue);
         END;
@@ -137,44 +134,89 @@ BEGIN
     END;
 
     (* Construct initial bridge pieces *)
-    RectangleX := 140;
+    RectX := 140;
     FOR RectY := 0 TO 180 BY ScrollSpeed DO
-        DrawBridgePiece4(RectangleX, RectY);
+        DrawBridgePiece4(RectX, RectY);
     END;
-    Line(RectangleX, 0, RectangleX, 200, DarkestGrey);
+    Line(RectX, 0, RectX, 200, DarkestGrey);
     BehindPlaneSize := CARDINAL(Graph.ImageSize(0, 0, 20, 10));
     Storage.ALLOCATE(BehindPlaneAddress, BehindPlaneSize);
     CheckMouse();
-    PlaneX := RectangleX + 10; PlaneY := 190;
+    PlaneX := RectX + 10; PlaneY := 190;
     GetImage(PlaneX, PlaneY, PlaneX + SmallPlaneWidth, PlaneY + SmallPlaneHeight, BehindPlaneAddress);
     DrawPlane(PlaneX, PlaneY, SmallPlaneWidth);
 
     (* Main loop *)
     RectY := 0; Distance := 0; PlaneX := 150;
+    PuddleHalfWidth := PuddleHalfWidthMin; PuddleX := PuddleHalfWidthMax + 2; PuddleLength := 0;
     WHILE NOT (GameOver OR ScreenComplete) DO
-        (* Add water dots *)
-        FOR WaterDots := 1 TO NoOfWaterDots DO
-            DotX := Lib.RANDOM(319);
-            DotY := ScrollSpeed + Lib.RANDOM(100);
-            IF (GetPixel(DotX, DotY) = Blue) THEN
-                PutPixel(DotX, DotY, LightestBlue);
-            END;
-        END;
-
         (* Increase distance travelled *)
         Distance := Distance + ScrollSpeed;
 
-        (* Time to draw next bridge piece? *)
-        IF (Distance MOD ScrollSpeed = 0) THEN
-            IF (RectangleX < 100) THEN
-                RectangleX := RectangleX + 6;
-            ELSIF (RectangleX > 220) THEN
-                RectangleX := RectangleX - 6;
-            ELSE
-                RectangleX := RectangleX - 6 + Lib.RANDOM(12);
+        IF (Distance < WaterDistance) THEN
+            (* Add water dots *)
+            FOR Dots := 1 TO NoOfRandomDots DO
+                DotX := Lib.RANDOM(319);
+                DotY := ScrollSpeed + Lib.RANDOM(100);
+                IF (GetPixel(DotX, DotY) = Blue) THEN
+                    PutPixel(DotX, DotY, LightestBlue);
+                END;
             END;
-            Rectangle(0, 0, 319, ScrollSpeed, Blue, TRUE);
-            DrawBridgePiece4(RectangleX, RectY);
+
+            (* Draw next bridge piece *)
+            IF (RectX < 100) THEN
+                RectX := RectX + 6;
+            ELSIF (RectX > 220) THEN
+                RectX := RectX - 6;
+            ELSE
+                RectX := RectX - 6 + Lib.RANDOM(12);
+            END;
+            IF (Distance < WaterDistance - 100) THEN
+                Rectangle(0, 0, 319, ScrollSpeed, Blue, TRUE);
+            ELSE
+                Rectangle(0, 0, 319, ScrollSpeed, LightBrown, TRUE);
+            END;
+            DrawBridgePiece4(RectX, RectY);
+        ELSE
+            (* Add ground dots *)
+            FOR DotY := 1 TO ScrollSpeed DO
+                DotX := Lib.RANDOM(319);
+                IF (GetPixel(DotX, DotY) = LightBrown) THEN
+                    PutPixel(DotX, DotY, DarkestBrown);
+                END;
+                DotX := Lib.RANDOM(319);
+                IF (GetPixel(DotX, DotY) = LightBrown) THEN
+                    PutPixel(DotX, DotY, DarkBrown);
+                END;
+                DotX := Lib.RANDOM(319);
+                IF (GetPixel(DotX, DotY) = LightBrown) THEN
+                    PutPixel(DotX, DotY, LightestBrown);
+                END;
+            END;
+
+            (* Update ground with water puddles *)
+            PuddleLength := PuddleLength + ScrollSpeed;
+            FOR RectY := (ScrollSpeed - 1) TO 0 BY -1 DO
+                IF (PuddleLength < PuddleHalfLengthMin) THEN
+                    PuddleHalfWidth := PuddleHalfWidth + Lib.RANDOM(2) + 1;
+                ELSIF (PuddleLength < PuddleHalfLengthMax) THEN
+                    PuddleHalfWidth := PuddleHalfWidth + Lib.RANDOM(4) - 1;
+                ELSE
+                    PuddleHalfWidth := PuddleHalfWidth + Lib.RANDOM(4) - 2;
+                END;
+
+                IF (PuddleHalfWidth > PuddleHalfWidthMax) THEN
+                    PuddleHalfWidth := PuddleHalfWidth - 1;
+                ELSIF (PuddleHalfWidth <= PuddleHalfWidthMin) THEN
+                    PuddleHalfWidth := PuddleHalfWidthMin;
+                    PuddleX := Lib.RANDOM(260) + 30;
+                    PuddleLength := 0;
+                END;
+
+                HLine(0, RectY, PuddleX - PuddleHalfWidth, LightBrown);
+                HLine(PuddleX - PuddleHalfWidth, RectY, PuddleX + PuddleHalfWidth, Blue);
+                HLine(PuddleX + PuddleHalfWidth, RectY, 319, LightBrown);
+            END;
         END;
 
         (* Hide plane, scroll up *)
@@ -191,157 +233,42 @@ BEGIN
         GetImage(PlaneX, PlaneY, PlaneX + SmallPlaneWidth, PlaneY + SmallPlaneHeight, BehindPlaneAddress);
         DrawPlane(PlaneX, PlaneY, SmallPlaneWidth);
 
-        (* Finished? *)
-        IF (Distance >= LevelDistance) THEN
+        (* Finished screen / Dead? *)
+        IF (Distance >= TotalDistance) THEN
             ScreenComplete := TRUE;
-        (* Dead? *)
         ELSIF (Point(PlaneX+10, PlaneY-1) = Blue) OR (Point(PlaneX+10, PlaneY-1) = LightestBlue) THEN
             Die4;
         END;
 
         Delay(GameSpeed);
     END;
-    RectX := INTEGER(RectangleX);
     Storage.DEALLOCATE(BehindPlaneAddress, BehindPlaneSize);
-    
+
+    IF ScreenComplete THEN
+        PlaneX := 160 - (PlaneWidth DIV 2); PlaneY := PlaneStartY;
+        (* Perspective shift back to 3D view *)
+        FOR LineY := 0 TO 100 DO
+            IF (LineY > 0) THEN
+                HLine(0, LineY - 1, 319, Black);
+            END;
+            Xs[0] := 140; Xs[1] := 140 - (LineY*4 DIV 3); Xs[2] := 319 - Xs[1]; Xs[3] := 319 - Xs[0];
+            Ys[0] := LineY; Ys[1] := 200; Ys[2] := 200; Ys[3] := LineY;
+            Polygon(4, Xs, Ys, Brown);
+            Xs[2] := 0; Xs[3] := 0;
+            Polygon(4, Xs, Ys, Black);
+            Xs[0] := 319 - Xs[0]; Xs[1] := 319 - Xs[1]; Xs[2] := 319 - Xs[2]; Xs[3] := 319 - Xs[3];
+            Polygon(4, Xs, Ys, Black);
+            DrawPlane(PlaneX, PlaneY, SmallPlaneWidth + (LineY DIV 4));
+            Lib.Delay(GameSpeed DIV 5);
+            CheckMouseAndSpecialKeys();
+            IF GameOver THEN LineY := 100; END;
+        END;
+    END;
+
     IF GameOver THEN
         DrawGameOver;
     END;
 END Screen4;
-
-PROCEDURE DrawBridgePiece5 (x, y : CARDINAL);
-VAR
-  BridgeDots : CARDINAL;
-BEGIN
-    Rectangle (x, y, x+20, y+10, LightGrey, TRUE);
-    Rectangle (x, y, x+20, y+10, DarkGrey, FALSE);
-    HLine (x, y+9, x+20, DarkestGrey);
-    FOR BridgeDots := 1  TO 15 DO
-        Plot (x + Lib.RANDOM(19), y + Lib.RANDOM(9), White);
-    END;
-END DrawBridgePiece5;
-
-PROCEDURE Screen5;
-CONST
-    NoOfWaterDots = 50;
-VAR
-  LineX, LineY, DotX, DotY, WaterDots, BridgesDrawn, BridgeDots : CARDINAL;
-BEGIN
-    ScreenComplete := FALSE; RectY := 0; BridgesDrawn := 0;
-    WHILE (RectX <> 150) AND (GameOver=FALSE) DO
-          IF (RectX < 150) THEN
-             RectX := RectX + 2
-          ELSE
-             RectX := RectX - 2;
-          END;
-          IF (RectX = 149) THEN
-             RectX := RectX + 1;
-          END;
-          Graph.GetImage(100, 0, 219, 190, BkAddress);
-          Rectangle (0, 0, 320, 9, Blue, TRUE);
-          DrawBridgePiece5 (RectX, RectY);
-          Graph.PutImage(100, 10, BkAddress, Graph._GPSET);
-          FOR WaterDots := 1 TO NoOfWaterDots DO
-	      DotX := Lib.RANDOM(320);
-	      DotY := Lib.RANDOM(180);
-              IF (Point(DotX, DotY)=Blue) THEN
-                 Plot (DotX, DotY, LightestBlue);
-              END;
-          END;
-	  CheckMouse;
-	  DrawPlane(PlaneX, PlaneY, SmallPlaneWidth);
-	  IF (Point(PlaneX+10, PlaneY-1) = Blue) OR (Point(PlaneX+10, PlaneY-1) = LightestBlue) THEN
-        Die4;
-     END;
-     Delay (GameSpeed);
-    END;
-    WHILE NOT (GameOver OR ScreenComplete) DO
-	  FOR WaterDots := 1 TO NoOfWaterDots DO
-              DotX := Lib.RANDOM(320);
-	      DotY := Lib.RANDOM(180);
-              IF (Point(DotX, DotY)=Blue) THEN
-                 Plot (DotX, DotY, LightestBlue);
-              END;
-          END;
-	  Graph.GetImage (100, 0, 219, 190, BkAddress);
-	  CheckMouse;
-	  Graph.PutImage (100, 10, BkAddress, Graph._GPSET);
-     Rectangle (0, 0, 320, 9, Blue, TRUE);
-     DrawBridgePiece5 (RectX, RectY);
-	  IF (BridgesDrawn = 30) THEN
-	     ScreenComplete := TRUE;
-	  END;
-	  DrawPlane(PlaneX, PlaneY, 200);
-	  BridgesDrawn := BridgesDrawn + 1;
-	  IF (Point(PlaneX+10, PlaneY-1) = Blue) OR (Point(PlaneX+10, PlaneY-1) = LightestBlue) THEN
-        Die4;
-     END;
-     Delay (GameSpeed);
-    END;
-    IF NOT GameOver THEN
-        PlaneY := 175;
-        FOR LineY := 2 TO 100 BY 2 DO
-            Rectangle (0, LineY, 320, 200, Blue, TRUE);
-            HLine (0, LineY - 1, 320, LightBlue);
-            HLine (0, LineY - 2, 320, LightBlue);
-            Xs[0] := 150; Xs[1] := 150 - (LineY*3 DIV 2); Xs[2] := 170 + (LineY*3 DIV 2); Xs[3] := 170;
-            Ys[0] := LineY; Ys[1] := 200; Ys[2] := 200; Ys[3] := LineY;
-            Polygon (4, Xs, Ys, DarkWhite);
-            DrawPlane(PlaneX, PlaneY, SmallPlaneWidth + (LineY*3 DIV 10));
-        END;
-        Polygon (4, Xs, Ys, LightGrey);
-        FOR BridgeDots := 1 TO 50 DO
-            DotX := Lib.RANDOM(320);
-            DotY := Lib.RANDOM (100) + 100;
-            IF Point(DotX, DotY) = LightGrey THEN
-               Plot (DotX, DotY, DarkGrey);
-            END;
-        END;
-        FOR LineY := 100 TO 200 DO
-            HLine (0, LineY, 320, LightWhite);
-            DrawPlane5025();
-            Plot (Lib.RANDOM(320), Lib.RANDOM(100)+100, DarkGrey);
-        END;
-    END;
-    Rectangle (0, 0, 320, 100, Blue, TRUE);
-    Rectangle (0, 100, 320, 200, White, TRUE);
-    DrawPlane5025();
-    Delay (20);
-    Rectangle (0, 0, 320, 100, LightBlue, TRUE);
-    Rectangle (0, 100, 320, 200, DarkWhite, TRUE);
-    DrawPlane5025();
-    Delay(20);
-    Rectangle (0, 0, 320, 100, Blue, TRUE);
-    Rectangle (0, 100, 320, 200, DarkestWhite, TRUE);
-    DrawPlane5025();
-    Delay(20);
-    Rectangle (0, 0, 320, 100, DarkBlue, TRUE);
-    Rectangle (0, 100, 320, 200, LightestGrey, TRUE);
-    DrawPlane5025();
-    Delay(20);
-    Rectangle (0, 0, 320, 100, Blue, TRUE);
-    Rectangle (0, 100, 320, 200, LightGrey, TRUE);
-    DrawPlane5025();
-    Delay(20);
-    Rectangle (0, 0, 320, 100, DarkBlue, TRUE);
-    Rectangle (0, 100, 320, 200, Grey, TRUE);
-    DrawPlane5025();
-    Delay(20);
-    Rectangle (0, 0, 320, 100, DarkestBlue, TRUE);
-    Rectangle (0, 100, 320, 200, DarkGrey, TRUE);
-    DrawPlane5025();
-    Delay(20);
-    Rectangle (0, 0, 320, 100, Black, TRUE);
-    Rectangle (0, 100, 320, 200, DarkestGrey, TRUE);
-    DrawPlane5025();
-    Delay(20);
-    Rectangle (0, 100, 320, 200, Black, TRUE);
-    DrawPlane5025();
-    Delay(20);
-    IF GameOver THEN
-       DrawGameOver;
-    END;
-END Screen5;
 
 END Screens4.
 

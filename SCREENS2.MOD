@@ -15,7 +15,7 @@ FROM Exobius IMPORT
     DarkestYellow, DarkYellow, Yellow, LightYellow, LightestYellow,
     DarkestWhite, DarkWhite, White, LightWhite, LightestWhite,
     DarkestGreen, DarkGreen, Green, LightGreen, LightestGreen,
-    PlaneX, BulletX, BulletY, OldBulletX, OldBulletY, PlaneY,
+    PlaneX, PlaneStartX, PlaneStartY, BulletX, BulletY, OldBulletX, OldBulletY, PlaneY,
     BkAddress,
     PutPixel, SetPixel,
     CheckMouse, CheckSpecialKeys, CheckMouseAndSpecialKeys,
@@ -137,18 +137,18 @@ BEGIN
     IF (NOT GameOver) THEN
         Rectangle(158, 98, 162, 102, Black, TRUE);
         GetImage(0, 150, 320, 200, BkAddress);
-        FOR PlaneY := 200 TO 175 BY -1 DO
-            PlaneX := 145 - (PlaneY - 175);
+        FOR PlaneY := 200 TO PlaneStartY BY -1 DO
+            PlaneX := PlaneStartX - (PlaneY - PlaneStartY);
             DrawPlane(PlaneX, PlaneY, PlaneY - 125);
             Lib.Delay(50);
             Graph.PutImage(0, 150, BkAddress, Graph._GPSET);
         END;
         CheckSpecialKeys();
     END;
-    PlaneY := 175;
+    PlaneY := PlaneStartY;
 
     (* Darken cave *)
-    PlaneX := 145;
+    PlaneX := PlaneStartX;
     IF (NOT GameOver) THEN
         FadeCountInc := 1;
         RectY := 100;

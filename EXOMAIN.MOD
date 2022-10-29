@@ -30,7 +30,7 @@ FROM Intro2 IMPORT PlaneToPlanet;
 FROM Screens1 IMPORT Screen1;
 FROM Screens2 IMPORT Screen2;
 FROM Screens3 IMPORT Screen3;
-FROM Screens4 IMPORT Screen4, Screen5;
+FROM Screens4 IMPORT Screen4;
 FROM Screens6 IMPORT Screen6;
 FROM Screens7 IMPORT Screen7;
 FROM Screens8 IMPORT Screen8;
@@ -55,7 +55,6 @@ BEGIN
     IF NOT GameOver THEN Screen2(); END;
     IF NOT GameOver THEN Screen3(); END;
     IF NOT GameOver THEN Screen4(); END;
-    IF NOT GameOver THEN Screen5(); END;
     IF NOT GameOver THEN Boss2(); END;
     IF NOT GameOver THEN Screen6(); END;
     IF NOT GameOver THEN Screen7(); END;

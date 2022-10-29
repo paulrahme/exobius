@@ -71,7 +71,7 @@ BEGIN
     GameOver := FALSE;
     ScreenComplete := FALSE;
     Lives := 0;
-    PlaneX := 160; PlaneY := 175; BulletX := 0; BulletY := 0; EnemyY := 65000;
+    PlaneX := PlaneStartX; PlaneY := PlaneStartY; BulletX := 0; BulletY := 0; EnemyY := 65000;
     BkSize := CARDINAL(Graph.ImageSize(0, 0, 319, 100));
     Storage.ALLOCATE(BkAddress, BkSize);
 END Init;
@@ -410,7 +410,7 @@ END DrawGameOver;
 PROCEDURE FinishScreen;
 BEGIN
     Graph.GetImage(0, 100, 319, 199, BkAddress);
-    FOR PlaneY := 175 TO 100 BY -2 DO
+    FOR PlaneY := PlaneStartY TO 100 BY -2 DO
         IF (PlaneX < 155) THEN
             PlaneX := PlaneX + 5;
         END;

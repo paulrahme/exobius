@@ -11,9 +11,9 @@ TYPE
 CONST
     SolidFill = Graph.FillMaskType(0FFH,0FFH,0FFH,0FFH,0FFH,0FFH,0FFH,0FFH);
     GameSpeed = 10;
-    PlaneWidth = 50; PlaneHeight = 25;
+    PlaneWidth = 50; PlaneHeight = 25; PlaneStartX = 134; PlaneStartY = 174; CollisionY = 158;
     EnemyYStart = 87;  (* 200 - EnemyYStart is actually the y-coordinate *)
-    PlaneXMin = 15; PlaneXMax = 255; PlaneMoveDiv = 5; PlaneXMove = 25; CollisionY = 158;
+    PlaneXMin = 15; PlaneXMax = 255; PlaneMoveDiv = 5; PlaneXMove = 25;
     Black = 0;
     DarkestGrey = 17; DarkGrey = 19; Grey = 21; LightGrey = 23; LightestGrey = 25;
     DarkestWhite = 26; DarkWhite = 27; White = 28; LightWhite = 29; LightestWhite = 30;

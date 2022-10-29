@@ -8,7 +8,7 @@ FROM Lib IMPORT Delay, RANDOM;
 FROM Font IMPORT A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z;
 FROM Sprites IMPORT DrawBoomGuards, DrawSpinners, DrawFlyTraps, DrawMaces, DrawPlants;
 FROM Exobius IMPORT
-    PlaneX, PlaneY, BulletX, BulletY,
+    PlaneX, PlaneY, PlaneStartX, PlaneStartY, BulletX, BulletY,
     PutPixel, GetPixel,
     PlaneWidth, PlaneHeight,
     EnemyYStart, CollisionY,
@@ -301,13 +301,13 @@ BEGIN
 
     (* Fly in plane *)
     IF (NOT GameOver) THEN
-        FOR PlaneY := 200 TO 175 BY -1 DO
+        FOR PlaneY := 199 TO PlaneStartY BY -1 DO
             Rectangle(135, 175, 135 + PlaneWidth, 175 + PlaneHeight, DarkestBrown, TRUE);
             PlaneX := 135 - (PlaneY - 175);
             DrawPlane(PlaneX, PlaneY, PlaneY - 125);
             Lib.Delay(50);
             CheckSpecialKeys();
-            IF (GameOver) THEN PlaneY := 175; END;
+            IF (GameOver) THEN PlaneY := PlaneStartY; END;
         END;
     END;
 
