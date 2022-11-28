@@ -88,7 +88,8 @@ CONST
     NoOfRandomDots = 40;
     PuddleHalfWidthMin = 4; PuddleHalfWidthMax = 20; PuddleHalfLengthMin = 8; PuddleHalfLengthMax = 20;
 VAR
-    LineSpeed, LineXEnd, LineY, Dots, Distance, DotX, DotY, RectX, RectY, PuddleX, PuddleHalfWidth, PuddleLength, BehindPlaneSize : CARDINAL;
+    LineSpeed, LineXEnd, LineY, Dots, Distance, DotX, DotY, RectX, RectY,
+        PuddleX, PuddleHalfWidth, PuddleLeftX, PuddleLength, BehindPlaneSize : CARDINAL;
     LineXStart : INTEGER;
     BehindPlaneAddress : ADDRESS;
 BEGIN
@@ -213,9 +214,12 @@ BEGIN
                     PuddleLength := 0;
                 END;
 
-                HLine(0, RectY, PuddleX - PuddleHalfWidth, LightBrown);
-                HLine(PuddleX - PuddleHalfWidth, RectY, PuddleX + PuddleHalfWidth, Blue);
+                PuddleLeftX := PuddleX - PuddleHalfWidth;
+                HLine(0, RectY, PuddleLeftX, LightBrown);
+                HLine(PuddleLeftX, RectY, PuddleX + PuddleHalfWidth, Blue);
                 HLine(PuddleX + PuddleHalfWidth, RectY, 319, LightBrown);
+                PutPixel(PuddleLeftX + Lib.RANDOM(PuddleHalfWidth * 2), RectY, DarkBlue);
+                PutPixel(PuddleLeftX + Lib.RANDOM(PuddleHalfWidth * 2), RectY, LightBlue);
             END;
         END;
 
