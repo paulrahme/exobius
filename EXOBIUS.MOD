@@ -390,7 +390,6 @@ BEGIN
             GameOver := TRUE;
         END;
     END;
-    OneAlive := FALSE;
     PlaneX := PlaneXMin;
 END Die;
 

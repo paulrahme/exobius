@@ -140,19 +140,20 @@ BEGIN
 END DrawEnemies1;
 
 PROCEDURE CheckDeath1;
+VAR
+    Dead : BOOLEAN;
 BEGIN
-    IF (PlaneX < 53) THEN
-        IF (OneAlive) THEN Die; END;
-    ELSIF (PlaneX < 106) THEN
-        IF (TwoAlive) THEN Die; END;
-    ELSIF (PlaneX < 160) THEN
-        IF (ThreeAlive) THEN Die; END;
-    ELSIF (PlaneX < 213) THEN
-        IF (FourAlive) THEN Die; END;
-    ELSIF (PlaneX < 266) THEN
-        IF (FiveAlive) THEN Die; END;
-    ELSE
-        IF (SixAlive) THEN Die; END;
+    IF (PlaneX < 53) THEN Dead := OneAlive;
+    ELSIF (PlaneX < 106) THEN Dead := TwoAlive;
+    ELSIF (PlaneX < 160) THEN Dead := ThreeAlive;
+    ELSIF (PlaneX < 213) THEN Dead := FourAlive;
+    ELSIF (PlaneX < 266) THEN Dead := FiveAlive;
+    ELSE Dead := SixAlive;
+    END;
+
+    IF (Dead) THEN
+        Die();
+        OneAlive := FALSE;
     END;
 END CheckDeath1;
 
