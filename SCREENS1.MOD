@@ -304,7 +304,7 @@ BEGIN
     IF (NOT GameOver) THEN
         FOR PlaneY := 199 TO PlaneStartY BY -1 DO
             Rectangle(135, 175, 135 + PlaneWidth, 175 + PlaneHeight, DarkestBrown, TRUE);
-            PlaneX := 135 - (PlaneY - 175);
+            PlaneX := 135 - (PlaneY - PlaneStartY);
             DrawPlane(PlaneX, PlaneY, PlaneY - 125);
             Lib.Delay(50);
             CheckSpecialKeys();
