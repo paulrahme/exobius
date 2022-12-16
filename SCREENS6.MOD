@@ -20,7 +20,7 @@ FROM Exobius IMPORT
   Count, Lives, EnemyY, BkColour,
   OldBkColor,  Xs, Ys, OneAlive, TwoAlive, ThreeAlive, FourAlive, FiveAlive,
   SixAlive, ScreenComplete, GameOver,  MouseButtons,  MouseMove, GameSpeed,
-  DrawPlane, CheckMouse, Die, DrawGameOver,
+  DrawPlane, CheckMouse, CheckMouseAndSpecialKeys, Die, DrawGameOver,
   PlaneXMove, Score,
   BkAddress, BkSize, ClearTheBuffer;
 
@@ -314,6 +314,8 @@ BEGIN
       Rectangle (0, 170, 320, 200, DarkBrown, TRUE);
       DrawPlane (PlaneX, PlaneY, (160 - PlaneX)*3);
       Lib.Delay (40);
+      CheckMouseAndSpecialKeys();
+      IF (GameOver) THEN DrawGameOver(); RETURN; END;
   END;
   PlaneX := 145; PlaneY := 175;
   FOR RectY := 100 TO 0 BY (-10) DO
@@ -322,6 +324,8 @@ BEGIN
          Rectangle (RectY+10, RectY+10, 310-RectY, 190-RectY, Black, TRUE);
       END;
       DrawPlane (PlaneX, PlaneY, PlaneWidth);
+      CheckMouseAndSpecialKeys();
+      IF (GameOver) THEN DrawGameOver(); RETURN; END;
   END;
   Graph.ClearScreen (Graph._GCLEARSCREEN);
   DrawPlane (PlaneX, PlaneY, PlaneWidth);
@@ -335,6 +339,8 @@ BEGIN
       Plot (RANDOM(23), RANDOM(200), DarkestBrown);
       Plot (320-RANDOM(23), RANDOM(200), DarkestBrown);
       Plot (RANDOM(320), 200-RANDOM(23), DarkestBrown);
+      CheckMouseAndSpecialKeys();
+      IF (GameOver) THEN DrawGameOver(); RETURN; END;
   END;
   DrawPlane (PlaneX, PlaneY, PlaneWidth);
   ClearTheBuffer;

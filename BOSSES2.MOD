@@ -27,6 +27,7 @@ CONST
     Boss3X = 220;
     BossMove = 2;
     BossIdleY = 30;
+    BossDipY = 100;
     BossLives = 20;
 VAR
     BossAddressA, BossAddressB, BossAddressC : ADDRESS;
@@ -68,6 +69,33 @@ BEGIN
     END;
 END DrawBarGraphs2;
 
+PROCEDURE MakeBossRunAway(x, y : CARDINAL);
+CONST
+    UpdateFrames = 50;
+VAR
+    BossRadiusMult : CARDINAL;
+    Progress, StartOffsetX, StartOffsetY : INTEGER;
+BEGIN
+    (* Centre of boss *)
+    x := x + 50; StartOffsetX := INTEGER(x) - 159;
+    y := y + 50; StartOffsetY := INTEGER(y) - 99;
+
+    FOR Progress := UpdateFrames TO 0 BY -1 DO
+        Rectangle(x - 30, y - 30, x + 30, y + 30, Black, TRUE);
+        x := (CARDINAL(159 + (StartOffsetX * Progress DIV UpdateFrames)));
+        y := (CARDINAL(99 + (StartOffsetY * Progress DIV UpdateFrames)));
+        BossRadiusMult := Progress;
+        IF (BossRadiusMult < 10) THEN BossRadiusMult := 10; END;
+        Disc(x, y, 20 * BossRadiusMult DIV UpdateFrames, DarkGreen);
+        Disc(x + 5 * BossRadiusMult DIV UpdateFrames, y - 5 * BossRadiusMult DIV UpdateFrames, 7 * BossRadiusMult DIV UpdateFrames, LightGreen);
+
+        Rectangle(0, PlaneY, 319, 199, Black, TRUE);
+        CheckMouse();
+        DrawPlane5025();
+        Delay(GameSpeed);
+    END;
+END MakeBossRunAway;
+
 PROCEDURE BlowUpBoss2(x, y : CARDINAL);
 VAR
     Explosions, Colour : CARDINAL;
@@ -97,6 +125,7 @@ BEGIN
     Graph.ClearScreen(Graph._GCLEARSCREEN);
     IF NOT (OneAlive OR TwoAlive OR ThreeAlive) THEN
         ScreenComplete := TRUE;
+        MakeBossRunAway(x, y);
     END;
     IF (Lives > 0) THEN
         Lives := Lives - 1;
@@ -180,7 +209,7 @@ END DrawBulletBoss2;
 
 PROCEDURE FinishScreenBoss2;
 BEGIN
-    FOR PlaneY := 175 TO 100 BY -2 DO
+    FOR PlaneY := 175 TO BossDipY BY -2 DO
         IF (PlaneX<155) THEN
             PlaneX := PlaneX + 5;
         END;
@@ -250,7 +279,7 @@ BEGIN
 
     WHILE NOT (GameOver OR ScreenComplete) DO
         (* Move downward *)
-        WHILE ((BossFall < 100) AND NOT (ScreenComplete) AND NOT (GameOver)) DO
+        WHILE ((BossFall < BossDipY) AND NOT (ScreenComplete) AND NOT (GameOver)) DO
             IF (NOT GameOver) AND (NOT ScreenComplete) THEN
                 IF (LeftBehind > 0) THEN
                     Rectangle(Boss1X, Boss1Y - 1, Boss1X + 100, Boss1Y + BossMove, Black, TRUE);
