@@ -2,12 +2,10 @@ IMPLEMENTATION MODULE Bosses1;
 (*$I+,O+,R+,S+,Z+*)
 (*$S FF00*)
 
-IMPORT Str, Graph, Lib, IO, Window, Storage, MsMouse, Exobius, Font;
-FROM Graph IMPORT Point, SetClipRgn, SetVideoMode, Rectangle, GraphMode, TextMode, Polygon, Line, HLine, Circle, Ellipse, Disc, Plot, Arc;
+IMPORT Graph, Str, Lib;
+FROM Graph IMPORT Point, Rectangle, Polygon, Line, HLine, Circle, Ellipse, Disc, Plot, Arc;
 FROM Lib IMPORT Sound, NoSound, Delay, RANDOM;
 FROM Sprites IMPORT DrawSpinners;
-FROM Screens8 IMPORT DrawStars8, DrawPlanet, PlanetRadius;
-FROM Font IMPORT A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z;
 FROM Exobius IMPORT
     PlaneXMin,
     Black,
@@ -38,7 +36,7 @@ BEGIN
     Disc(176, y - 56, 8, LightYellow);
     Disc(178, y - 58, 4, LightestYellow);
     Plot(179, y - 59, LightestWhite);
-    
+
     IF (y > 100) THEN
         Disc(160, y - 90, 10, DarkestGreen);
         Disc(161, y - 91, 8, DarkGreen);
@@ -183,7 +181,6 @@ BEGIN
         FinishScreen();
     ELSE
         DrawGameOver();
-        Key := IO.RdKey();
     END;
 END Boss1;
 

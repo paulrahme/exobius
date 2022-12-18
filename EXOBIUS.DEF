@@ -27,6 +27,7 @@ VAR
     Key : CHAR;
     PlaneX, PlaneY, BulletX, BulletY, OldBulletX, OldBulletY,
     Enemies, Enemy1X, Enemy2X, Enemy3X, Enemy4X, Enemy5X, Enemy6X, EnemyY,
+    Boss1Lives, Boss2Lives, Boss3Lives,
     CoverRectangleX, Count, Lives,
     Score, BkSize : CARDINAL;
     BkAddress : ADDRESS;

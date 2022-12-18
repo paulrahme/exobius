@@ -3,7 +3,7 @@ IMPLEMENTATION MODULE Bosses2;
 (*$S FF00*)
 
 IMPORT Graph, Lib, Storage, Exobius;
-FROM Graph IMPORT Point, SetClipRgn, SetVideoMode, Rectangle, GraphMode, TextMode, Polygon, Line, HLine, Circle, Ellipse, Disc, Plot, Arc;
+FROM Graph IMPORT Point, SetVideoMode, Rectangle, GraphMode, TextMode, Polygon, Line, HLine, Circle, Ellipse, Disc, Plot, Arc;
 FROM Lib IMPORT Sound, NoSound, Delay, RANDOM;
 FROM Sprites IMPORT DrawSpinners;
 FROM Screens8 IMPORT DrawStars8, DrawPlanet, PlanetRadius;
@@ -17,7 +17,7 @@ FROM Exobius IMPORT
     DarkestYellow, DarkYellow, Yellow, LightYellow, LightestYellow,
     GameSpeed, BkAddress,
     PlaneX, PlaneY, PlaneWidth, BulletX, BulletY, OldBulletX, Lives,
-    OneAlive, TwoAlive, ThreeAlive,
+    Boss1Lives, Boss2Lives, Boss3Lives, OneAlive, TwoAlive, ThreeAlive,
     ScreenComplete, GameOver,
     DrawPlane, DrawPlane5025, CheckMouse, Die, DrawGameOver, TextPos;
 
@@ -31,7 +31,7 @@ CONST
     BossLives = 20;
 VAR
     BossAddressA, BossAddressB, BossAddressC : ADDRESS;
-    Boss1Y, Boss2Y, Boss3Y, Boss1Lives, Boss2Lives, Boss3Lives : CARDINAL;
+    Boss1Y, Boss2Y, Boss3Y : CARDINAL;
 
 PROCEDURE DrawBoss2(X1, Y1, X2, Y2, X3, Y3, Frame : CARDINAL);
 VAR

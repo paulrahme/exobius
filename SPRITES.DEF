@@ -1,23 +1,5 @@
 DEFINITION MODULE Sprites;
 
-IMPORT
-  Str, Graph, Lib, IO, Window, Storage, MsMouse, Exobius;
-
-FROM Graph IMPORT
-  SetClipRgn, SetVideoMode, Rectangle, GraphMode, TextMode, Polygon, Line, HLine, Circle, Ellipse, Disc, Plot, Arc, Point, GetImage;
-
-FROM Lib IMPORT
-  Sound, NoSound, Delay;
-
-FROM Exobius IMPORT
-  Black, DarkestGrey, DarkGrey, Grey, LightGrey, LightestGrey,
-  DarkestWhite, DarkWhite, White, LightWhite, LightestWhite,
-  DarkestBlue, DarkBlue, Blue, LightBlue, LightestBlue, DarkestRed,
-  DarkRed, Red, LightRed, LightestRed, DarkestBrown, DarkBrown,
-  Brown, LightBrown, LightestBrown, DarkestGreen, DarkGreen, Green, LightGreen,
-  LightestGreen, DarkestYellow, DarkYellow, Yellow, LightYellow,
-  LightestYellow, Xs, Ys;
-
 PROCEDURE DrawBoomGuards(x, y, Width : CARDINAL);
 PROCEDURE DrawSpinners(x, y, Width : CARDINAL);
 PROCEDURE DrawMaces(x, y, Width : CARDINAL);

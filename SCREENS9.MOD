@@ -3,8 +3,8 @@ IMPLEMENTATION MODULE Screens9;
 (*$I+,O+,R+,S+,Z+*)
 (*$S FF00*)
 
-IMPORT Str, Graph, Lib, IO, Window, Storage, Exobius, Storage;
-FROM Graph IMPORT SetClipRgn, SetVideoMode, Rectangle, GraphMode, TextMode, Polygon, Line, HLine, Circle, Ellipse, Disc, Plot, Arc, Point, GetImage, ClearScreen;
+IMPORT Graph, Lib, IO, Exobius;
+FROM Graph IMPORT Rectangle, Polygon, Line, HLine, Circle, Ellipse, Disc, Plot, Arc, Point, GetImage;
 FROM Lib IMPORT Sound, NoSound, Delay, RANDOM;
 FROM Font IMPORT A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z;
 FROM Screens7 IMPORT DrawPillarBottom;

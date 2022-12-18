@@ -1,5 +1,21 @@
 IMPLEMENTATION MODULE Sprites;
 
+IMPORT Graph, Lib;
+
+FROM Graph IMPORT
+  Rectangle, Polygon, Line, HLine, Ellipse, Disc, Plot;
+
+FROM Exobius IMPORT
+  Black,
+  DarkestGrey, DarkGrey, Grey, LightGrey, LightestGrey,
+  DarkestWhite, DarkWhite, White, LightWhite, LightestWhite,
+  DarkestBlue, DarkBlue, Blue, LightBlue, LightestBlue,
+  DarkestRed, DarkRed, Red, LightRed, LightestRed,
+  DarkestBrown, DarkBrown, Brown, LightBrown, LightestBrown,
+  DarkestGreen, DarkGreen, Green, LightGreen, LightestGreen,
+  DarkestYellow, DarkYellow, Yellow, LightYellow, LightestYellow,
+  Xs, Ys;
+
 PROCEDURE DrawBoomGuards(x, y, Width : CARDINAL);
 VAR
       Width3, Width5, Width10, Width15, Width25, Width30,  Width35, Width40 : CARDINAL;
