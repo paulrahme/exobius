@@ -13,7 +13,7 @@ FROM Exobius IMPORT
     DarkestBrown, DarkBrown, Brown, LightBrown, LightestBrown,
     DarkestGreen, DarkGreen, Green, LightGreen, LightestGreen,
     DarkestYellow, DarkYellow, Yellow, LightYellow, LightestYellow,
-    PlaneX, PlaneY, BulletX, BulletY, Update3DBullet,
+    PlaneX, PlaneY, PlaneWidth, BulletX, BulletY, Update3DBullet,
     Count, Lives, Enemy1X, EnemyY, Boss1Lives,
     ScreenComplete, GameOver, GameSpeed, Die, DrawGameOver,
     DrawPlane, DrawPlane5025, CheckMouse, CheckMouseAndSpecialKeys;
@@ -52,6 +52,14 @@ BEGIN
     newArch.FinalRight := newArch.FinalLeft + ArchWidth;
     newArch.Distance := ArchMaxDist;
 END SetupNextArch;
+
+PROCEDURE CheckPlayerCollision(arch : Arch);
+BEGIN
+    IF (PlaneX < arch.FinalLeft) OR (PlaneX + PlaneWidth > arch.FinalRight) THEN
+        Die();
+        PlaneX := ((arch.FinalLeft + arch.FinalRight) DIV 2) - (PlaneWidth DIV 2);
+    END;
+END CheckPlayerCollision;
 
 PROCEDURE UpdateAndDrawArch(VAR arch : Arch);
 VAR
@@ -93,6 +101,12 @@ BEGIN
     Disc(Enemy1X + 2, BossY - 2, 3, LightGreen);
 END DrawBoss;
 
+PROCEDURE DrawBossHealthBar();
+BEGIN
+    Rectangle(0, 0, 319, 10, White, FALSE);
+    Rectangle(1, 1, 318 * Boss1Lives DIV BossLives, 9, Red, TRUE);
+END DrawBossHealthBar;
+
 PROCEDURE CheckBulletAgainstBoss();
 CONST
     BossFlashDelay = 4;
@@ -129,6 +143,7 @@ BEGIN
         CheckMouse();
         Graph.ClearScreen(Graph._GCLEARSCREEN);
         DrawPlane5025();
+        DrawBossHealthBar();
 
         (* Closest arch passed? *)
         IF (Arches[0].Distance < 15) THEN
@@ -148,9 +163,10 @@ BEGIN
         Enemy1X := (Arches[5].FinalLeft + Arches[5].FinalRight) DIV 2;
         DrawBoss();
 
-        (* Update bullet *)
+        (* Bullet + collision checks *)
         Update3DBullet();
         CheckBulletAgainstBoss();
+        CheckPlayerCollision(Arches[0]);
 
         Delay(GameSpeed * 3);
     END;
