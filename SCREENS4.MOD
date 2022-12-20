@@ -16,22 +16,12 @@ FROM Exobius IMPORT
     PlaneX, PlaneY, PlaneWidth, PlaneHeight, PlaneStartX, PlaneStartY, Xs, Ys, Lives, ScreenComplete, GameOver, GameSpeed,
     GetPixel, PutPixel, DrawPlane, DrawPlane5025, CheckMouse, CheckMouseAndSpecialKeys,
     BkAddress, ClearTheBuffer, Cheat, DrawGameOver, TextPos;
+FROM Sprites IMPORT RandomBrown;
 
 CONST
     SmallPlaneWidth = 20;
     SmallPlaneHeight = 10;
     ScrollSpeed = 4;
-
-PROCEDURE RandomBrown() : CARDINAL;
-BEGIN
-    CASE Lib.RANDOM(5) OF
-        |1: RETURN LightestBrown;
-        |2: RETURN LightBrown;
-        |3: RETURN Brown;
-        |4: RETURN DarkBrown;
-        |0,5: RETURN DarkestBrown;
-   END;
-END RandomBrown;
 
 PROCEDURE DrawBridgePiece4(x, y : CARDINAL);
 VAR

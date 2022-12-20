@@ -358,5 +358,16 @@ BEGIN
     Line(x + Width38, y + Width25, x + (Width*41 DIV 50), y + Width38, DarkYellow);
 END DrawSkiiers;
 
+PROCEDURE RandomBrown() : CARDINAL;
+BEGIN
+    CASE Lib.RANDOM(5) OF
+        |1: RETURN LightestBrown;
+        |2: RETURN LightBrown;
+        |3: RETURN Brown;
+        |4: RETURN DarkBrown;
+        |0,5: RETURN DarkestBrown;
+   END;
+END RandomBrown;
+
 END Sprites.
 

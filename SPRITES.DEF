@@ -10,6 +10,7 @@ PROCEDURE DrawIceRocks (x, y, Width : CARDINAL);
 PROCEDURE DrawSnowMen (x, y, Width : CARDINAL);
 PROCEDURE DrawSnowBalls (x, y, Width : CARDINAL);
 PROCEDURE DrawSkiiers (x, y, Width : CARDINAL);
+PROCEDURE RandomBrown() : CARDINAL;
 
 END Sprites.
 

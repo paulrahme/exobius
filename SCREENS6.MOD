@@ -3,7 +3,7 @@ IMPLEMENTATION MODULE Screens6;
 (*$S FF00*)
 
 IMPORT Graph, Lib, Exobius;
-FROM Graph IMPORT SetClipRgn, Rectangle, Line, HLine, Circle, Disc, Plot, Point;
+FROM Graph IMPORT SetClipRgn, Rectangle, Line, HLine, Circle, Disc, Plot, Point, Ellipse;
 FROM Lib IMPORT Sound, NoSound, Delay, RANDOM;
 FROM Exobius IMPORT
     Black, DarkestGrey, DarkGrey, Grey, LightGrey, LightestGrey,
@@ -13,18 +13,19 @@ FROM Exobius IMPORT
     DarkestBrown, DarkBrown, Brown, LightBrown, LightestBrown,
     DarkestGreen, DarkGreen, Green, LightGreen, LightestGreen,
     DarkestYellow, DarkYellow, Yellow, LightYellow, LightestYellow,
-    PlaneX, PlaneY, PlaneWidth, BulletX, BulletY, Update3DBullet,
+    PlaneX, PlaneY, PlaneStartX, PlaneStartY, PlaneWidth, BulletX, BulletY, Update3DBullet,
     Count, Lives, Enemy1X, EnemyY, Boss1Lives,
-    ScreenComplete, GameOver, GameSpeed, Die, DrawGameOver,
+    ScreenComplete, GameOver, FinishScreen, GameSpeed, Die, DrawGameOver, TextPos,
     DrawPlane, DrawPlane5025, CheckMouse, CheckMouseAndSpecialKeys;
+FROM Sprites IMPORT RandomBrown;
 
 CONST
     NumArches = 32;
-    ArchWidth = 140;
+    ArchWidth = 160;
     ArchWoodThickness = 20;
     ArchMaxDist = 300;
     ArchMinMoveSpeed = 1;
-    BossLives = 20;
+    BossLives = 50;
     BossY = 130;
     BossRadius = 5;
 
@@ -42,12 +43,12 @@ END TransferArchData;
 
 PROCEDURE SetupNextArch(VAR prevArch, newArch : Arch);
 BEGIN
-    IF (prevArch.FinalLeft < ArchWoodThickness + 2) OR (prevArch.FinalRight < 159 + ArchWoodThickness + 2) THEN
+    IF (prevArch.FinalLeft < 40) OR (prevArch.FinalRight < 200) THEN
         newArch.FinalLeft := prevArch.FinalLeft + 20;
-    ELSIF (prevArch.FinalRight > 319 - ArchWoodThickness - 2) OR (prevArch.FinalLeft > 159 - ArchWoodThickness - 2) THEN
+    ELSIF (prevArch.FinalRight > 280) OR (prevArch.FinalLeft > 120) THEN
         newArch.FinalLeft := prevArch.FinalLeft - 20;
     ELSE
-        newArch.FinalLeft := prevArch.FinalLeft + Lib.RANDOM(40) - 20;
+        newArch.FinalLeft := prevArch.FinalLeft + Lib.RANDOM(20) - 10;
     END;
     newArch.FinalRight := newArch.FinalLeft + ArchWidth;
     newArch.Distance := ArchMaxDist;
@@ -55,20 +56,20 @@ END SetupNextArch;
 
 PROCEDURE CheckPlayerCollision(arch : Arch);
 BEGIN
-    IF (PlaneX < arch.FinalLeft) OR (PlaneX + PlaneWidth > arch.FinalRight) THEN
+    IF (PlaneX < arch.FinalLeft + 10) OR (PlaneX + PlaneWidth > arch.FinalRight - 10) THEN
         Die();
         PlaneX := ((arch.FinalLeft + arch.FinalRight) DIV 2) - (PlaneWidth DIV 2);
     END;
 END CheckPlayerCollision;
 
-PROCEDURE UpdateAndDrawArch(VAR arch : Arch);
+PROCEDURE UpdateAndDrawArch(VAR arch : Arch; IsClosestArch : BOOLEAN);
 VAR
     Left, Right, DistMult, Top, Bottom, Thickness, MoveDistance : CARDINAL;
 BEGIN
     (* Base movement *)
     MoveDistance := ArchMinMoveSpeed;
     IF (arch.Distance < ArchMaxDist) THEN
-        MoveDistance := MoveDistance + (ArchMaxDist - arch.Distance) * 1 DIV 7;
+        MoveDistance := MoveDistance + (ArchMaxDist - arch.Distance) DIV 7;
     END;
     IF (MoveDistance < arch.Distance) THEN
         arch.Distance := arch.Distance - MoveDistance;
@@ -88,24 +89,69 @@ BEGIN
     Bottom := 100 + (100 - Top) * 2;
     Thickness := ArchWoodThickness * DistMult DIV ArchMaxDist;
 
+    (* Ensure frontmost arch draws right to the bottom of the screen *)
+        IF (IsClosestArch) THEN
+        IF (Bottom > 180) THEN
+            Bottom := 199;
+        ELSE
+            Rectangle(0, PlaneY, 319, 199, Black, TRUE);
+        END;
+    END;
+
     (* Draw arch *)
     Rectangle(Left - Thickness, Top - Thickness, Right + Thickness, Top, arch.Color, TRUE);
     Rectangle(Left - Thickness, Top, Left, Bottom, arch.Color, TRUE);
     Rectangle(Right, Top, Right + Thickness, Bottom, arch.Color, TRUE);
+    Rectangle(Left, Bottom - Thickness, Right, Bottom, RandomBrown(), TRUE);
     SetClipRgn(Left, Top, Right, Bottom);
 END UpdateAndDrawArch;
 
 PROCEDURE DrawBoss();
 BEGIN
     Disc(Enemy1X, BossY, BossRadius, DarkGreen);
-    Disc(Enemy1X + 2, BossY - 2, 3, LightGreen);
+    Disc(Enemy1X + 1, BossY - 1, 3, LightGreen);
 END DrawBoss;
 
 PROCEDURE DrawBossHealthBar();
+VAR
+    BarEndX : CARDINAL;
 BEGIN
     Rectangle(0, 0, 319, 10, White, FALSE);
-    Rectangle(1, 1, 318 * Boss1Lives DIV BossLives, 9, Red, TRUE);
+    BarEndX := 318 * Boss1Lives DIV BossLives;
+    Rectangle(1, 1, BarEndX, 9, Red, TRUE);
+    Rectangle(BarEndX, 1, 318, 9, Black, TRUE);
 END DrawBossHealthBar;
+
+PROCEDURE BlowUpBoss();
+VAR
+    Explosions, Colour : CARDINAL;
+BEGIN
+    TextPos := Graph.SetTextPosition(3, 15);
+    Graph.OutText("Extra Life!");
+    FOR Explosions := 100 TO 0 BY -1 DO
+        Sound(Explosions);
+        CASE (Lib.RANDOM(10)) OF
+            |1: Colour := DarkestRed;
+            |2: Colour := DarkRed;
+            |3: Colour := Red;
+            |4: Colour := LightRed;
+            |5: Colour := LightestRed;
+            |6: Colour := DarkestYellow;
+            |7: Colour := DarkYellow;
+            |8: Colour := Yellow;
+            |9: Colour := LightYellow;
+            |10: Colour := LightestYellow;
+        END;
+        Ellipse(Enemy1X + Lib.RANDOM(BossRadius * 2) - BossRadius, BossY + Lib.RANDOM(BossRadius * 2) - BossRadius, Lib.RANDOM(4), Lib.RANDOM(4), Colour, TRUE);
+        Delay(GameSpeed);
+        NoSound;
+    END;
+    Rectangle(0, 0, 319, 10, Black, TRUE);
+    IF (Lives > 0) THEN
+        Lives := Lives - 1;
+    END;
+    Rectangle(0, 0, 319, 10, Black, TRUE);
+END BlowUpBoss;
 
 PROCEDURE CheckBulletAgainstBoss();
 CONST
@@ -113,10 +159,16 @@ CONST
 BEGIN
     IF (BulletY > 0) AND (BulletY < 3) AND (BulletX > Enemy1X - 10) AND (BulletX < Enemy1X + 10) THEN
         Boss1Lives := Boss1Lives - 1;
-        Disc(Enemy1X, BossY, BossRadius, LightestWhite);
-        Sound(440); Delay(BossFlashDelay); NoSound;
-        Sound(220); Delay(BossFlashDelay); NoSound;
-        Sound(50); Delay(BossFlashDelay); NoSound;
+        DrawBossHealthBar();
+        IF (Boss1Lives = 0) THEN
+            ScreenComplete := TRUE;
+            BlowUpBoss();
+        ELSE
+            Disc(Enemy1X, BossY, BossRadius, LightestWhite);
+            Sound(440); Delay(BossFlashDelay); NoSound;
+            Sound(220); Delay(BossFlashDelay); NoSound;
+            Sound(50); Delay(BossFlashDelay); NoSound;
+        END;
         BulletY := 0;
     END;    
 END CheckBulletAgainstBoss;
@@ -135,16 +187,13 @@ BEGIN
         END;
     END;
 
+    ScreenComplete := FALSE;
+    PlaneX := PlaneStartX; PlaneY := PlaneStartY;
     Boss1Lives := BossLives;
     Enemy1X := 160;
     EnemyY := 0; (* Don't try automatically checking bullet against enemies *)
-    WHILE (Boss1Lives > 0) AND NOT GameOver DO
-        SetClipRgn(0, 0, 319, 199);
-        CheckMouse();
-        Graph.ClearScreen(Graph._GCLEARSCREEN);
-        DrawPlane5025();
-        DrawBossHealthBar();
-
+    DrawBossHealthBar();
+    WHILE NOT ScreenComplete AND NOT GameOver DO
         (* Closest arch passed? *)
         IF (Arches[0].Distance < 15) THEN
             FOR ArchIdx := 1 TO NumArches - 1 DO
@@ -153,13 +202,18 @@ BEGIN
             SetupNextArch(Arches[NumArches - 2], Arches[NumArches - 1]);
         END;
 
-        (* Update & draw all arches - note this leaves the clip region inside the last one *)
-        FOR ArchIdx := 0 TO NumArches - 1 DO
-            UpdateAndDrawArch(Arches[ArchIdx]);
-        END;
-        
-        (* Update boss *)
+        (* Update & draw all arches, resetting clip region before + after *)
         SetClipRgn(0, 0, 319, 199);
+        FOR ArchIdx := 0 TO NumArches - 1 DO
+            UpdateAndDrawArch(Arches[ArchIdx], ArchIdx = 0);
+        END;
+        SetClipRgn(0, 0, 319, 199);
+
+        (* Update plane *)
+        CheckMouse();
+        DrawPlane5025();
+
+        (* Update boss *)
         Enemy1X := (Arches[5].FinalLeft + Arches[5].FinalRight) DIV 2;
         DrawBoss();
 
@@ -174,6 +228,12 @@ BEGIN
 
     IF GameOver THEN
         DrawGameOver;
+    ELSE
+        FOR ArchIdx := 0 TO NumArches - 1 DO
+            UpdateAndDrawArch(Arches[ArchIdx], ArchIdx = 0);
+        END;
+        SetClipRgn(0, 0, 319, 199);
+        FinishScreen();
     END;
 
 END Screen6;
