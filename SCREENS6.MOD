@@ -31,7 +31,7 @@ CONST
 
 TYPE
     Arch = RECORD
-        FinalLeft, FinalRight, Distance, Color : CARDINAL;
+        FinalLeft, FinalRight, Distance, ArchColor, FloorColor : CARDINAL;
     END;
 
 PROCEDURE TransferArchData(VAR archSrc, archDest : Arch);
@@ -39,6 +39,7 @@ BEGIN
     archDest.FinalLeft := archSrc.FinalLeft;
     archDest.FinalRight := archSrc.FinalRight;
     archDest.Distance := archSrc.Distance;
+    archDest.FloorColor := archSrc.FloorColor;
 END TransferArchData;
 
 PROCEDURE SetupNextArch(VAR prevArch, newArch : Arch);
@@ -52,6 +53,7 @@ BEGIN
     END;
     newArch.FinalRight := newArch.FinalLeft + ArchWidth;
     newArch.Distance := ArchMaxDist;
+    newArch.FloorColor := RandomBrown();
 END SetupNextArch;
 
 PROCEDURE CheckPlayerCollision(arch : Arch);
@@ -99,10 +101,10 @@ BEGIN
     END;
 
     (* Draw arch *)
-    Rectangle(Left - Thickness, Top - Thickness, Right + Thickness, Top, arch.Color, TRUE);
-    Rectangle(Left - Thickness, Top, Left, Bottom, arch.Color, TRUE);
-    Rectangle(Right, Top, Right + Thickness, Bottom, arch.Color, TRUE);
-    Rectangle(Left, Bottom - Thickness, Right, Bottom, RandomBrown(), TRUE);
+    Rectangle(Left - Thickness, Top - Thickness, Right + Thickness, Top, arch.ArchColor, TRUE);
+    Rectangle(Left - Thickness, Top, Left, Bottom, arch.ArchColor, TRUE);
+    Rectangle(Right, Top, Right + Thickness, Bottom, arch.ArchColor, TRUE);
+    Rectangle(Left, Bottom - Thickness, Right, Bottom, arch.FloorColor, TRUE);
     SetClipRgn(Left, Top, Right, Bottom);
 END UpdateAndDrawArch;
 
@@ -183,12 +185,14 @@ BEGIN
             FinalLeft := 20 + (80 * ArchIdx DIV NumArches);
             FinalRight := 319 - FinalLeft;
             Distance := ArchMaxDist + (ArchIdx * ArchMinMoveSpeed);
-            Color := 31 - (ArchIdx DIV 2);
+            ArchColor := 31 - (ArchIdx DIV 2);
+            FloorColor := RandomBrown();
         END;
     END;
 
     ScreenComplete := FALSE;
     PlaneX := PlaneStartX; PlaneY := PlaneStartY;
+    CheckMouseAndSpecialKeys();
     Boss1Lives := BossLives;
     Enemy1X := 160;
     EnemyY := 0; (* Don't try automatically checking bullet against enemies *)
