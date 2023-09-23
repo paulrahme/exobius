@@ -45,7 +45,7 @@ BEGIN
     SetVGAMode();
     Init();
 
-    PlayIntroSlideshow();
+(*    PlayIntroSlideshow();
     PlayTitleSequence();
     ClearTheBuffer();
     PlaneToPlanet();
@@ -57,7 +57,7 @@ BEGIN
     IF NOT GameOver THEN Screen4(); END;
     IF NOT GameOver THEN Boss2(); END;
     IF NOT GameOver THEN Screen6(); END;
-    IF NOT GameOver THEN Screen7(); END;
+*)    IF NOT GameOver THEN Screen7(); END;
     IF NOT GameOver THEN Screen8(); END;
     IF NOT GameOver THEN Boss3(); END;
     IF NOT GameOver THEN Screen9(); END;
