@@ -14,23 +14,34 @@ FROM Exobius IMPORT
     DarkestGreen, DarkGreen, Green, LightGreen, LightestGreen,
     DarkestYellow, DarkYellow, Yellow, LightYellow, LightestYellow,
     PlaneX, PlaneY, PlaneStartX, PlaneStartY, PlaneWidth, PlaneHeight, DrawPlane5025,
-    ClearTheBuffer, CheckSpecialKeys, CheckMouse,
+    PutPixel, Count, ClearTheBuffer, CheckSpecialKeys, CheckMouse,
     GameSpeed, Die, GameOver, DrawGameOver;
 
+CONST
+    PillarZDiff = 25;
+    PillarsVisible = 6;
+
 VAR
-    PillarColours : ARRAY[0..13] OF CARDINAL;
+    PillarColours : ARRAY[0..27] OF CARDINAL;
 
 PROCEDURE CreateLookupTable();
 BEGIN
-    PillarColours[0] := DarkestGrey;    PillarColours[1] := DarkGrey;
-    PillarColours[2] := Grey;           PillarColours[3] := LightGrey;
-    PillarColours[4] := LightestGrey;   PillarColours[5] := DarkestWhite;
-    PillarColours[6] := DarkWhite;      PillarColours[7] := White;
-    PillarColours[8] := LightWhite;     PillarColours[9] := LightestWhite;
-    PillarColours[10] := LightWhite;    PillarColours[11] := White;
-    PillarColours[12] := DarkWhite;     PillarColours[13] := DarkestWhite;
+    PillarColours[0] := DarkestGrey;    PillarColours[1] := DarkestGrey;
+    PillarColours[2] := DarkGrey;       PillarColours[3] := DarkGrey;
+    PillarColours[4] := Grey;           PillarColours[5] := Grey;
+    PillarColours[6] := LightGrey;      PillarColours[7] := LightGrey;
+    PillarColours[8] := LightestGrey;   PillarColours[9] := LightestGrey;
+    PillarColours[10] := DarkestWhite;  PillarColours[11] := DarkestWhite;
+    PillarColours[12] := DarkWhite;     PillarColours[13] := DarkWhite;
+    PillarColours[14] := LightWhite;    PillarColours[15] := LightWhite;
+    PillarColours[16] := LightestWhite; PillarColours[17] := LightestWhite;
+    PillarColours[18] := White;         PillarColours[19] := White;
+    PillarColours[20] := DarkestWhite;  PillarColours[21] := DarkestWhite;
+    PillarColours[22] := LightGrey;     PillarColours[23] := LightGrey;
+    PillarColours[24] := DarkGrey;      PillarColours[25] := DarkGrey;
+    PillarColours[25] := DarkestGrey;   PillarColours[27] := DarkestGrey;
 END CreateLookupTable;
-
+(*
 PROCEDURE DrawPillarBottom(x, y : CARDINAL);
 VAR
     PillarX, PillarY, PillarColour : CARDINAL;
@@ -62,246 +73,167 @@ BEGIN
     END;
     Ellipse(x + (y*14 DIV 200), y, y*14 DIV 200, y*5 DIV 200, White, TRUE);
 END DrawPillarTop;
+*)
+PROCEDURE DrawStars(NumStars : BYTE);
+VAR
+    Stars : BYTE;
+BEGIN
+    FOR Stars := 1 TO NumStars DO
+        PutPixel(RANDOM(319), RANDOM(199), Stars);
+    END;
+END DrawStars;
+
+PROCEDURE FlyThroughSpace;
+CONST
+    NoOfCircles = 200;
+VAR
+    CircleRadius, BlueCircles, CircleColour, OldPlaneX : CARDINAL;
+BEGIN
+    (* Bounce up into space *)
+    FOR Count := 120 TO 200 BY 5 DO
+        NoSound();
+        Sound((Count-100)*20);
+        Graph.ClearScreen(Graph._GCLEARSCREEN);
+        DrawStars(15);
+        DrawPlane5025();
+    END;
+    NoSound();
+
+    (* Circle fly-through *)
+    FOR BlueCircles := 1 TO NoOfCircles DO
+        IF NOT (GameOver) THEN
+            Graph.ClearScreen(Graph._GCLEARSCREEN);
+            DrawStars(15);
+            CircleRadius := (BlueCircles + 20) MOD 10;
+            IF (CircleRadius = 0) THEN
+                CircleRadius := 10;
+            END;
+            WHILE (CircleRadius < 200) DO
+                IF (CircleRadius < 40) THEN
+                    CircleColour := DarkGrey
+                ELSIF (CircleRadius < 80) THEN
+                    CircleColour := DarkestBlue
+                ELSIF (CircleRadius < 120) THEN
+                    CircleColour := DarkBlue
+                ELSIF (CircleRadius < 160) THEN
+                    CircleColour := Blue
+                ELSE (* CircleRadius >= 160 *)
+                    CircleColour := LightBlue;
+                END;
+                Circle(160, 100, CircleRadius, CircleColour);
+                CircleRadius := CircleRadius*2;
+            END;
+            OldPlaneX := PlaneX;
+            CheckMouse();
+            PlaneX := OldPlaneX;
+            DrawPlane5025();
+            IF (PlaneX<145) THEN
+                PlaneX := PlaneX + RANDOM(5);
+            ELSE
+                PlaneX := PlaneX - RANDOM(5);
+            END;
+        END;
+    END; (* Circle fly-through *)
+END FlyThroughSpace;
+
+PROCEDURE DrawPillar3D(MidOffsetX : INTEGER; ZOffset, Height : CARDINAL);
+VAR
+    DrawX : INTEGER;
+    BottomY, TopY, PillarWidth, DrawStartX, LineX : CARDINAL;
+BEGIN
+    DrawX := MidOffsetX; (* MidOffsetX * INTEGER(ZOffset) DIV INTEGER(PillarZDiff * PillarsVisible); *)
+    DrawX := 160 + DrawX;
+    IF (DrawX < -145) THEN
+        DrawX := -145;
+    ELSIF (DrawX > 145) THEN
+        DrawX := 145;
+    END;
+    PillarWidth := 27;(* * ZOffset DIV (PillarZDiff * PillarsVisible);*)
+
+    BottomY := 199 - ZOffset;
+    IF (BottomY < Height) THEN TopY := 0; ELSE TopY := BottomY - Height; END;
+    IF (BottomY > 199) THEN BottomY := 199; END;
+
+    DrawStartX := CARDINAL(DrawX) - (PillarWidth DIV 2);
+    FOR LineX := 0 TO PillarWidth DO
+        Line(DrawStartX + LineX, TopY, DrawStartX + LineX, BottomY, PillarColours[LineX]);
+    END;
+    IF (TopY > 0) THEN
+        Ellipse(CARDINAL(DrawX), TopY, TopY * 14 DIV 200, TopY * 5 DIV 200, White, TRUE);
+    END;
+END DrawPillar3D;
 
 PROCEDURE Screen7;
 CONST
-    NoOfPillars = 16;
-    NoOfCircles = 200;
-    NewNoOfPillars = 35;
+    NoOfPillars = 30;
     PlaneCenterX = 135;
+    PillarHeightDiff = 15;
+    BounceInitialVelocity = 40;
+    PlaneGravAccel = 1;
 VAR
-    PillarCount, Pillar1X, Pillar2X, Pillar3X, Pillar4X, Pillar5X, Pillar1Y,
-    Pillar2Y, Pillar3Y, Pillar4Y, Pillar5Y, StarColour, CircleRadius,
-    Stars, BlueCircles, CircleColour, OldPlaneX : CARDINAL;
-    PlaneOnPillars : BOOLEAN;
+    NextPillarIdx, NextPillarZ, PillarCount, HorizonHeight, OldPlaneX, ZMoveCount : CARDINAL;
+    BounceHeight, BounceVelocity : INTEGER;
+    PillarXs : ARRAY[0..NoOfPillars] OF INTEGER;
 BEGIN
     ClearTheBuffer();
     CreateLookupTable();
+
+    (* Initialise variables *)
     PlaneX := PlaneCenterX; PlaneY := 175;
-    Rectangle(0, 0, 320, 100, DarkestGrey, TRUE);
-    Rectangle(0, 100, 320, 200, DarkBrown, TRUE);
+    FOR Count := 0 TO (NoOfPillars - 1) DO
+        IF (Count < 5) THEN
+            PillarXs[Count] := 0;
+        ELSE
+            PillarXs[Count] := INTEGER(RANDOM(290)) - 145;
+        END;
+    END;
+    HorizonHeight := 100;
+    NextPillarIdx := 0; NextPillarZ := PillarZDiff; ZMoveCount := 0;
+    BounceHeight := 0; BounceVelocity := BounceInitialVelocity;
+
+    (* Set up starting screen *)
+    Graph.ClearScreen(Graph._GCLEARSCREEN);
+    Rectangle(0, HorizonHeight, 319, 199, DarkBrown, TRUE);
     DrawPlane5025();
 
-    (* Bring intro pillar towards plane *)
-    FOR Pillar1Y := 105 TO 200 DO
-        Rectangle(130, 100, 190, Pillar1Y, DarkBrown, TRUE);
-        DrawPillarTop(PlaneX + 10, Pillar1Y);
-        DrawPlane5025();
-        Delay(GameSpeed);
-        
-        CheckSpecialKeys();
-        IF GameOver THEN
-            Pillar1Y := 200;
-        END;
-    END;
-
-    (* Bounce plane up into the sky *)
-    IF NOT (GameOver) THEN
-        FOR PillarCount := 90 TO 200 BY 4 DO
-            Rectangle(0, 98, 320, PillarCount, Black, TRUE);
-            DrawPlane5025();
-            NoSound();
-            Sound(PillarCount*5);
-        END;
-        NoSound();
-    END;
-
-    PillarCount := 0; PlaneOnPillars := TRUE;
-    Pillar1X := PlaneX + 10; Pillar2X := Pillar1X; Pillar3X := Pillar1X; Pillar4X := Pillar1X; Pillar5X := Pillar1X;
-
     (* Bouncing on tops of pillars *)
-    WHILE (PlaneOnPillars) AND (PillarCount < NoOfPillars) AND NOT (GameOver) DO
-        PillarCount := PillarCount + 1;
-        Pillar5X := Pillar4X; Pillar4X := Pillar3X; Pillar3X := Pillar2X;
-        Pillar2X := Pillar1X; Pillar1X := (RANDOM(11)+1)*25;
-        FOR Pillar1Y := 80 TO 100 DO
-            CheckMouse();
-            IF (PillarCount < 2) THEN
-                PlaneX := PlaneCenterX;
-            END;
-            Pillar2Y := Pillar1Y + 20; Pillar3Y := Pillar2Y + 20; Pillar4Y := Pillar3Y + 20; Pillar5Y := Pillar4Y + 20;
-            Graph.ClearScreen(Graph._GCLEARSCREEN);
-            FOR Stars := 1 TO 15 DO
-                CASE (RANDOM(5)) OF
-                    |1: StarColour := Blue;
-                    |2: StarColour := White;
-                    |3: StarColour := Grey;
-                    |4: StarColour := Yellow;
-                    |5: StarColour := LightestWhite;
-                END;
-                Plot(RANDOM(320), RANDOM(200), StarColour);
-            END;
-            IF (Pillar1Y < 85) THEN
-                Rectangle(Pillar1X, Pillar1Y, Pillar1X + 1, 200, DarkestGrey, TRUE);
-            ELSIF (Pillar1Y < 92) THEN
-                Rectangle(Pillar1X, Pillar1Y, Pillar1X + 3, 200, Grey, TRUE);
-            ELSE (* Pillar1Y >= 92) *)
-                DrawPillarTop(Pillar1X, Pillar1Y);
-            END;
-            DrawPillarTop(Pillar2X, Pillar2Y);
-            DrawPillarTop(Pillar3X, Pillar3Y);
-            DrawPillarTop(Pillar4X, Pillar4Y);
-            DrawPillarTop(Pillar5X, Pillar5Y);
-            IF (Pillar1Y < 85) THEN PlaneY := PlaneY - 10;
-            ELSIF (Pillar1Y < 88) THEN PlaneY := PlaneY - 6;
-            ELSIF (Pillar1Y < 94) THEN PlaneY := PlaneY + 4;
-            ELSIF (Pillar1Y < 95) THEN PlaneY := PlaneY + 6;
-            ELSIF (Pillar1Y < 100) THEN PlaneY := PlaneY + 10;
-            END;
-            IF (Pillar1Y=100) THEN
-                PlaneY := 175;
-                IF (Point (PlaneX + 25, PlaneY + 8) <> White) THEN
-                    PlaneOnPillars := FALSE;
-                END;
-            END;
-            DrawPlane5025();
-            Delay(GameSpeed * 2);
+    WHILE (NextPillarIdx < NoOfPillars) AND NOT (GameOver) DO
+        Rectangle(0, 0, 319, HorizonHeight - 1, Black, TRUE);
+        Rectangle(0, HorizonHeight, 319, 199, DarkBrown, TRUE);
+        FOR PillarCount := 0 TO PillarsVisible DO
+            DrawPillar3D(PillarXs[NextPillarIdx + PillarCount], (PillarCount * PillarZDiff) + NextPillarZ, 0);(*(NextPillarIdx + PillarCount) * PillarHeightDiff);*)
         END;
+
+        (* Update plane movement *)
+        IF (BounceVelocity > -BounceInitialVelocity) THEN
+            BounceVelocity := BounceVelocity - PlaneGravAccel;
+        END;
+        BounceHeight := BounceHeight + BounceVelocity;
+        PlaneY := PlaneStartY - (BounceHeight DIV 10);
+        CheckMouse();
+        DrawPlane5025();
+
+        (* Update next pillar to come onscreen from the horizon *)
+        IF (ZMoveCount > 0) THEN
+            ZMoveCount := ZMoveCount - 1;
+        ELSE
+            ZMoveCount := 2;
+            NextPillarZ := NextPillarZ - 1;
+            IF (NextPillarZ < 2) THEN
+                NextPillarIdx := NextPillarIdx + 1;
+                NextPillarZ := PillarZDiff;
+                BounceHeight := 0; BounceVelocity := BounceInitialVelocity;
+            END;
+        END;
+        Delay(GameSpeed DIV 5);
     END; (* Bouncing on tops of pillars *)
 
     IF NOT (GameOver) THEN
         (* Successfully bounced on all pillars? *)
-        IF (PlaneOnPillars) THEN
-            (* Bounce up into space *)
-            FOR Pillar2Y := 120 TO 200 BY 5 DO
-                NoSound;
-                Sound((Pillar2Y-100)*20);
-                Graph.ClearScreen(Graph._GCLEARSCREEN);
-                FOR Stars := 1 TO 15 DO
-                    CASE (RANDOM(5)) OF
-                        |1: StarColour := Blue;
-                        |2: StarColour := White;
-                        |3: StarColour := Grey;
-                        |4: StarColour := Yellow;
-                        |5: StarColour := LightestWhite;
-                    END;
-                    Plot (RANDOM(320), RANDOM(200), StarColour);
-                END;
-                DrawPillarTop(Pillar2X, Pillar2Y);
-                DrawPillarTop(Pillar3X, Pillar2Y+20);
-                DrawPillarTop(Pillar4X, Pillar2Y+40);
-                DrawPillarTop(Pillar5X, Pillar2Y+60);
-                DrawPlane5025();
-            END;
-            NoSound();
-
-            (* Circle fly-through *)
-            FOR BlueCircles := 1 TO NoOfCircles DO
-                IF NOT (GameOver) THEN
-                    Graph.ClearScreen (Graph._GCLEARSCREEN);
-                    FOR Stars := 1 TO 15 DO
-                        CASE (RANDOM(5)) OF
-                            |1: StarColour := Blue;
-                            |2: StarColour := White;
-                            |3: StarColour := Grey;
-                            |4: StarColour := Yellow;
-                            |5: StarColour := LightestWhite;
-                        END;
-                        Plot(RANDOM(320), RANDOM(200), StarColour);
-                    END;
-                    CircleRadius := (BlueCircles + 20) MOD 10;
-                    IF (CircleRadius = 0) THEN
-                        CircleRadius := 10;
-                    END;
-                    WHILE (CircleRadius < 200) DO
-                        IF (CircleRadius < 40) THEN
-                            CircleColour := DarkGrey
-                        ELSIF (CircleRadius < 80) THEN
-                            CircleColour := DarkestBlue
-                        ELSIF (CircleRadius < 120) THEN
-                            CircleColour := DarkBlue
-                        ELSIF (CircleRadius < 160) THEN
-                            CircleColour := Blue
-                        ELSE (* CircleRadius >= 160 *)
-                            CircleColour := LightBlue;
-                        END;
-                        Circle(160, 100, CircleRadius, CircleColour);
-                        CircleRadius := CircleRadius*2;
-                    END;
-                    OldPlaneX := PlaneX;
-                    CheckMouse();
-                    PlaneX := OldPlaneX;
-                    DrawPlane5025();
-                    IF (PlaneX<145) THEN
-                        PlaneX := PlaneX + RANDOM(5);
-                    ELSE
-                        PlaneX := PlaneX - RANDOM(5);
-                    END;
-                END;
-            END; (* Circle fly-through *)
-        ELSE (* Fell off pillars, navigate along ground *)
-            Graph.ClearScreen(Graph._GCLEARSCREEN);
-            FOR PillarCount := 200 TO 100 BY -8 DO
-                Rectangle(0, PillarCount, 320, 201, DarkBrown, TRUE);
-                DrawPlane5025();
-                NoSound();
-                Sound(PillarCount*5);
-            END;
-            NoSound();
-            Rectangle (0, 100, 320, 200, DarkBrown, TRUE);
-            PillarCount := 0;
-            Pillar1X := (RANDOM(11)+1)*25; Pillar2X := (RANDOM(11)+1)*25;
-            Pillar3X := (RANDOM(11)+1)*25; Pillar4X := (RANDOM(11)+1)*25;
-            Pillar5X := (RANDOM(11)+1)*25;
-            WHILE (PillarCount < NewNoOfPillars) AND NOT (GameOver) DO
-                PillarCount := PillarCount + 1;
-                Pillar5X := Pillar4X; Pillar4X := Pillar3X; Pillar3X := Pillar2X;
-                Pillar2X := Pillar1X; Pillar1X := (RANDOM(11)+1)*25;
-                FOR Stars := 1 TO 15 DO
-                    CASE (RANDOM(5)) OF
-                        |1: StarColour := LightBlue;
-                        |2: StarColour := White;
-                        |3: StarColour := Grey;
-                        |4: StarColour := LightestYellow;
-                        |5: StarColour := LightestWhite;
-                    END;
-                    Plot(RANDOM(320), RANDOM(100), StarColour);
-                END;
-                FOR Pillar1Y := 100 TO 118 BY 2 DO
-                    IF NOT (GameOver) THEN
-                        Delay(GameSpeed*2);
-                        Pillar2Y := Pillar1Y + 20; Pillar3Y := Pillar2Y + 20;
-                        Pillar4Y := Pillar3Y + 20; Pillar5Y := Pillar4Y + 20;
-                        IF (Pillar1Y<105) THEN
-                            Rectangle(Pillar1X, 200 - Pillar1Y, Pillar1X + 1, Pillar1Y, DarkestGrey, TRUE);
-                        ELSIF (Pillar1Y>104) AND (Pillar1Y<112) THEN
-                            Rectangle(Pillar1X, 200 - Pillar1Y, Pillar1X + 3, Pillar1Y, Grey, TRUE);
-                        ELSIF (Pillar1Y>111) THEN
-                            DrawPillarBottom(Pillar1X, Pillar1Y);
-                        END;
-                        DrawPillarBottom(Pillar2X, Pillar2Y);
-                        DrawPillarBottom(Pillar3X, Pillar3Y);
-                        DrawPillarBottom(Pillar4X, Pillar4Y);
-                        DrawPillarBottom(Pillar5X, Pillar5Y);
-                        IF (Point(PlaneX + 25, PlaneY - 2) <> DarkBrown) THEN
-                            OldPlaneX := PlaneX;
-                            Die();
-                            Rectangle(OldPlaneX, PlaneY, OldPlaneX + PlaneWidth, PlaneY + PlaneHeight, DarkBrown, TRUE);
-                        END;
-                        OldPlaneX := PlaneX;
-                        CheckMouse();
-                        Rectangle(OldPlaneX, PlaneY, OldPlaneX + PlaneWidth, PlaneY + PlaneHeight, DarkBrown, TRUE);
-                        IF (Graph.Point(315, 195) = Black) THEN
-                            Rectangle(250, 190, 320, 200, DarkBrown, TRUE);
-                        END;
-                        DrawPlane5025();
-                    END;
-                END;
-                Rectangle(Pillar5X, 0, Pillar5X + 27, 100, Black, TRUE);
-                Rectangle(Pillar5X, 100, Pillar5X + 27, 200, DarkBrown, TRUE);
-            END; (* WHILE PillarCount *)
-
-            IF NOT GameOver THEN
-                FOR PillarCount := 100 TO 300 BY 8 DO
-                    Rectangle(0, 0, 320, PillarCount, Black, TRUE);
-                    DrawPlane5025();
-                    NoSound();
-                    Sound(PillarCount*5);
-                END;
-            END;
-            NoSound();
-        END; (* Fell off pillars, navigate along ground *)
-    END; (* NOT GameOver *)
+        IF (PillarCount >= NoOfPillars) THEN 
+            FlyThroughSpace();
+        END;
+    END;
 
     IF GameOver THEN
         DrawGameOver();

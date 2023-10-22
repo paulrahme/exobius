@@ -382,7 +382,7 @@ BEGIN
     Sound(80);
     Ellipse(PlaneX + (PlaneWidth DIV 2), PlaneY*(PlaneHeight DIV 2), PlaneWidth DIV 2, PlaneHeight DIV 2, White, TRUE);
     Lib.Delay(SoundDelay);
-    NoSound;
+    NoSound();
     Lives := Lives + 1;
     IF (Lives = 5) THEN
         Lives := 0;

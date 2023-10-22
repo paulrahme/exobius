@@ -7,7 +7,6 @@ IMPORT Graph, Lib, IO, Exobius;
 FROM Graph IMPORT Rectangle, Polygon, Line, HLine, Circle, Ellipse, Disc, Plot, Arc, Point, GetImage;
 FROM Lib IMPORT Sound, NoSound, Delay, RANDOM;
 FROM Font IMPORT A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z;
-FROM Screens7 IMPORT DrawPillarBottom;
 FROM Screens8 IMPORT DrawPlanet;
 FROM Exobius IMPORT
   SolidFill, PlaneWidth, PlaneHeight,
@@ -52,6 +51,27 @@ BEGIN
     Rectangle (x,98,x+27,104,181,TRUE);
     Rectangle (x,105,x+27,200,DarkRed,TRUE);
 END DrawPartialSky;
+
+PROCEDURE DrawPillarBottom(x, y : CARDINAL);
+VAR
+    PillarX, PillarY, PillarColour : CARDINAL;
+BEGIN
+    FOR PillarX := 0 TO 27 DO
+        PillarColour := Grey;(*PillarColours[PillarX DIV 2];*)
+        CASE PillarX OF
+            | 0, 27 : PillarY := y;
+            | 1, 26 : PillarY := y + 1;
+            | 2, 3, 25, 24 : PillarY := y + 2;
+            | 4, 5, 6, 7, 8, 23, 22, 21, 20, 19 : PillarY := y + 3;
+            | 9, 10, 11, 12, 13, 14, 15, 16, 17, 18 : PillarY := y + 4;
+        END;
+        IF (PillarY<200) THEN
+            Line(x + ((y-100)*PillarX DIV 100), 200-PillarY, x + ((y-100)*PillarX DIV 100), PillarY, PillarColour)
+        ELSE
+            Line(x + ((y-100)*PillarX DIV 100), 0, x + ((y-100)*PillarX DIV 100), 200, PillarColour);
+        END;
+    END;
+END DrawPillarBottom;
 
 PROCEDURE Screen9;
 CONST
