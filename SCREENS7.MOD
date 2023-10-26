@@ -136,10 +136,12 @@ BEGIN
     END; (* Circle fly-through *)
 END FlyThroughSpace;
 
-PROCEDURE DrawPillar3D(MidOffsetX : INTEGER; ZOffset, Height : CARDINAL);
+PROCEDURE DrawPillar3D(PillarIdx : CARDINAL; MidOffsetX : INTEGER; ZOffset : CARDINAL; DrawFromGroundPerspective : BOOLEAN);
+CONST
+    PillarHeightDiff = 15;
 VAR
     DrawX : INTEGER;
-    BottomY, TopY, PillarWidth, DrawStartX, LineX : CARDINAL;
+    BottomY, TopY, PillarWidth, DrawStartX, LineX, Height : CARDINAL;
 BEGIN
     DrawX := MidOffsetX; (* MidOffsetX * INTEGER(ZOffset) DIV INTEGER(PillarZDiff * PillarsVisible); *)
     DrawX := 160 + DrawX;
@@ -148,18 +150,33 @@ BEGIN
     ELSIF (DrawX > 145) THEN
         DrawX := 145;
     END;
-    PillarWidth := 27;(* * ZOffset DIV (PillarZDiff * PillarsVisible);*)
 
-    BottomY := 199 - ZOffset;
-    IF (BottomY < Height) THEN TopY := 0; ELSE TopY := BottomY - Height; END;
-    IF (BottomY > 199) THEN BottomY := 199; END;
+    (* Height *)
+    IF (PillarIdx < PillarsVisible) THEN
+        Height := PillarIdx * PillarHeightDiff;
+    ELSE
+        Height := PillarsVisible * PillarHeightDiff;
+    END;
+    
+    (* Bottom + Top *)
+    IF (DrawFromGroundPerspective) THEN
+        BottomY := 199 - ZOffset;
+        IF (BottomY < Height) THEN TopY := 0; ELSE TopY := BottomY - Height; END;
+        IF (BottomY > 199) THEN BottomY := 199; END;
+        PillarWidth := BottomY * 14 DIV 100;
+    ELSE
+        IF (ZOffset > 199) THEN TopY := 0; ELSE TopY := 199 - ZOffset; END;
+        IF (TopY > 199 - Height) THEN BottomY := 199; ELSE BottomY := TopY + Height; END;
+        PillarWidth := TopY * 14 DIV 100;
+    END;
 
+    (* Draw *)
     DrawStartX := CARDINAL(DrawX) - (PillarWidth DIV 2);
     FOR LineX := 0 TO PillarWidth DO
         Line(DrawStartX + LineX, TopY, DrawStartX + LineX, BottomY, PillarColours[LineX]);
     END;
     IF (TopY > 0) THEN
-        Ellipse(CARDINAL(DrawX), TopY, TopY * 14 DIV 200, TopY * 5 DIV 200, White, TRUE);
+        Ellipse(CARDINAL(DrawX), TopY, PillarWidth DIV 2, TopY * 5 DIV 200, White, TRUE);
     END;
 END DrawPillar3D;
 
@@ -167,7 +184,6 @@ PROCEDURE Screen7;
 CONST
     NoOfPillars = 30;
     PlaneCenterX = 135;
-    PillarHeightDiff = 15;
     BounceInitialVelocity = 40;
     PlaneGravAccel = 1;
 VAR
@@ -200,8 +216,8 @@ BEGIN
     WHILE (NextPillarIdx < NoOfPillars) AND NOT (GameOver) DO
         Rectangle(0, 0, 319, HorizonHeight - 1, Black, TRUE);
         Rectangle(0, HorizonHeight, 319, 199, DarkBrown, TRUE);
-        FOR PillarCount := 0 TO PillarsVisible DO
-            DrawPillar3D(PillarXs[NextPillarIdx + PillarCount], (PillarCount * PillarZDiff) + NextPillarZ, 0);(*(NextPillarIdx + PillarCount) * PillarHeightDiff);*)
+        FOR PillarCount := PillarsVisible TO 0 BY -1 DO
+            DrawPillar3D(NextPillarIdx + PillarCount, PillarXs[NextPillarIdx + PillarCount], (PillarCount * PillarZDiff) + NextPillarZ, FALSE);
         END;
 
         (* Update plane movement *)
