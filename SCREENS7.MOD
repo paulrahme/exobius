@@ -143,13 +143,13 @@ VAR
     DrawX : INTEGER;
     BottomY, TopY, PillarWidth, DrawStartX, LineX, Height : CARDINAL;
 BEGIN
-    DrawX := MidOffsetX; (* MidOffsetX * INTEGER(ZOffset) DIV INTEGER(PillarZDiff * PillarsVisible); *)
-    DrawX := 160 + DrawX;
+    DrawX := MidOffsetX;
     IF (DrawX < -145) THEN
         DrawX := -145;
     ELSIF (DrawX > 145) THEN
         DrawX := 145;
     END;
+    DrawX := 160 + DrawX;
 
     (* Height *)
     IF (PillarIdx < PillarsVisible) THEN
@@ -197,8 +197,10 @@ BEGIN
     (* Initialise variables *)
     PlaneX := PlaneCenterX; PlaneY := 175;
     FOR Count := 0 TO (NoOfPillars - 1) DO
-        IF (Count < 5) THEN
+        IF (Count < PillarsVisible) THEN
             PillarXs[Count] := 0;
+        ELSIF (Count < PillarsVisible * 2) THEN
+            PillarXs[Count] := INTEGER(RANDOM(120)) - 60;
         ELSE
             PillarXs[Count] := INTEGER(RANDOM(290)) - 145;
         END;
@@ -214,8 +216,7 @@ BEGIN
 
     (* Bouncing on tops of pillars *)
     WHILE (NextPillarIdx < NoOfPillars) AND NOT (GameOver) DO
-        Rectangle(0, 0, 319, HorizonHeight - 1, Black, TRUE);
-        Rectangle(0, HorizonHeight, 319, 199, DarkBrown, TRUE);
+        Graph.ClearScreen(Graph._GCLEARSCREEN);
         FOR PillarCount := PillarsVisible TO 0 BY -1 DO
             DrawPillar3D(NextPillarIdx + PillarCount, PillarXs[NextPillarIdx + PillarCount], (PillarCount * PillarZDiff) + NextPillarZ, FALSE);
         END;
@@ -227,6 +228,7 @@ BEGIN
         BounceHeight := BounceHeight + BounceVelocity;
         PlaneY := PlaneStartY - (BounceHeight DIV 10);
         CheckMouse();
+        IF (NextPillarIdx < PillarsVisible) THEN PlaneX := PlaneCenterX; END;
         DrawPlane5025();
 
         (* Update next pillar to come onscreen from the horizon *)
@@ -241,7 +243,7 @@ BEGIN
                 BounceHeight := 0; BounceVelocity := BounceInitialVelocity;
             END;
         END;
-        Delay(GameSpeed DIV 5);
+        Delay(GameSpeed);
     END; (* Bouncing on tops of pillars *)
 
     IF NOT (GameOver) THEN
