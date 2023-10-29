@@ -183,11 +183,12 @@ END DrawPillar3D;
 PROCEDURE Screen7;
 CONST
     NoOfPillars = 30;
+    LockedMovementBounces = 4;
     PlaneCenterX = 135;
     BounceInitialVelocity = 40;
     PlaneGravAccel = 1;
 VAR
-    NextPillarIdx, NextPillarZ, PillarCount, HorizonHeight, OldPlaneX, ZMoveCount : CARDINAL;
+    NextPillarIdx, NextPillarZ, PillarCount, HorizonHeight, OldPlaneX, ZMoveCount, DrawPillarIdx : CARDINAL;
     BounceHeight, BounceVelocity : INTEGER;
     PillarXs : ARRAY[0..NoOfPillars] OF INTEGER;
 BEGIN
@@ -218,7 +219,10 @@ BEGIN
     WHILE (NextPillarIdx < NoOfPillars) AND NOT (GameOver) DO
         Graph.ClearScreen(Graph._GCLEARSCREEN);
         FOR PillarCount := PillarsVisible TO 0 BY -1 DO
-            DrawPillar3D(NextPillarIdx + PillarCount, PillarXs[NextPillarIdx + PillarCount], (PillarCount * PillarZDiff) + NextPillarZ, FALSE);
+            DrawPillarIdx := NextPillarIdx + PillarCount;
+            IF (DrawPillarIdx < NoOfPillars) THEN
+                DrawPillar3D(NextPillarIdx + PillarCount, PillarXs[NextPillarIdx + PillarCount], (PillarCount * PillarZDiff) + NextPillarZ, FALSE);
+            END;
         END;
 
         (* Update plane movement *)
@@ -228,7 +232,7 @@ BEGIN
         BounceHeight := BounceHeight + BounceVelocity;
         PlaneY := PlaneStartY - (BounceHeight DIV 10);
         CheckMouse();
-        IF (NextPillarIdx < PillarsVisible) THEN PlaneX := PlaneCenterX; END;
+        IF (NextPillarIdx < LockedMovementBounces) THEN PlaneX := PlaneCenterX; END;
         DrawPlane5025();
 
         (* Update next pillar to come onscreen from the horizon *)
@@ -248,7 +252,7 @@ BEGIN
 
     IF NOT (GameOver) THEN
         (* Successfully bounced on all pillars? *)
-        IF (PillarCount >= NoOfPillars) THEN 
+        IF (PillarCount >= NoOfPillars) THEN
             FlyThroughSpace();
         END;
     END;
