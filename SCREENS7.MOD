@@ -136,7 +136,7 @@ BEGIN
     END; (* Circle fly-through *)
 END FlyThroughSpace;
 
-PROCEDURE DrawPillar3D(PillarIdx : CARDINAL; MidOffsetX : INTEGER; ZOffset : CARDINAL; DrawFromGroundPerspective : BOOLEAN);
+PROCEDURE DrawPillar3D(PillarIdx : CARDINAL; MidOffsetX : INTEGER; ZOffset : CARDINAL; DrawFromAirPerspective : BOOLEAN);
 CONST
     PillarHeightDiff = 15;
 VAR
@@ -151,23 +151,17 @@ BEGIN
     END;
     DrawX := 160 + DrawX;
 
-    (* Height *)
-    IF (PillarIdx < PillarsVisible) THEN
-        Height := PillarIdx * PillarHeightDiff;
-    ELSE
-        Height := PillarsVisible * PillarHeightDiff;
-    END;
-    
     (* Bottom + Top *)
-    IF (DrawFromGroundPerspective) THEN
-        BottomY := 199 - ZOffset;
-        IF (BottomY < Height) THEN TopY := 0; ELSE TopY := BottomY - Height; END;
-        IF (BottomY > 199) THEN BottomY := 199; END;
-        PillarWidth := BottomY * 14 DIV 100;
-    ELSE
+    IF (DrawFromAirPerspective) THEN
+        IF (PillarIdx < PillarsVisible) THEN Height := PillarIdx * PillarHeightDiff; ELSE Height := PillarsVisible * PillarHeightDiff; END;
         IF (ZOffset > 199) THEN TopY := 0; ELSE TopY := 199 - ZOffset; END;
         IF (TopY > 199 - Height) THEN BottomY := 199; ELSE BottomY := TopY + Height; END;
         PillarWidth := TopY * 14 DIV 100;
+    ELSE
+        ZOffset := ZOffset DIV 2;
+        BottomY := 199 - ZOffset;
+        TopY := ZOffset;
+        PillarWidth := (BottomY - 100) * 27 DIV 100;
     END;
 
     (* Draw *)
@@ -175,7 +169,7 @@ BEGIN
     FOR LineX := 0 TO PillarWidth DO
         Line(DrawStartX + LineX, TopY, DrawStartX + LineX, BottomY, PillarColours[LineX]);
     END;
-    IF (TopY > 0) THEN
+    IF (DrawFromAirPerspective) THEN
         Ellipse(CARDINAL(DrawX), TopY, PillarWidth DIV 2, TopY * 5 DIV 200, White, TRUE);
     END;
 END DrawPillar3D;
@@ -188,9 +182,10 @@ CONST
     BounceInitialVelocity = 40;
     PlaneGravAccel = 1;
 VAR
-    NextPillarIdx, NextPillarZ, PillarCount, HorizonHeight, OldPlaneX, ZMoveCount, DrawPillarIdx : CARDINAL;
-    BounceHeight, BounceVelocity : INTEGER;
+    NextPillarIdx, NextPillarZ, PillarCount, ZMoveCount, DrawPillarIdx, DrawX : CARDINAL;
+    BounceHeight, BounceVelocity, PlanePillarDiffX : INTEGER;
     PillarXs : ARRAY[0..NoOfPillars] OF INTEGER;
+    PlaneInAir : BOOLEAN;
 BEGIN
     ClearTheBuffer();
     CreateLookupTable();
@@ -203,62 +198,95 @@ BEGIN
         ELSIF (Count < PillarsVisible * 2) THEN
             PillarXs[Count] := INTEGER(RANDOM(120)) - 60;
         ELSE
-            PillarXs[Count] := INTEGER(RANDOM(290)) - 145;
+            PillarXs[Count] := INTEGER(RANDOM(280)) - 140;
         END;
     END;
-    HorizonHeight := 100;
     NextPillarIdx := 0; NextPillarZ := PillarZDiff; ZMoveCount := 0;
-    BounceHeight := 0; BounceVelocity := BounceInitialVelocity;
+    BounceHeight := 0; BounceVelocity := BounceInitialVelocity; PlaneInAir := TRUE;
 
     (* Set up starting screen *)
     Graph.ClearScreen(Graph._GCLEARSCREEN);
-    Rectangle(0, HorizonHeight, 319, 199, DarkBrown, TRUE);
     DrawPlane5025();
 
-    (* Bouncing on tops of pillars *)
+    (* Bouncing on / driving between pillars *)
     WHILE (NextPillarIdx < NoOfPillars) AND NOT (GameOver) DO
-        Graph.ClearScreen(Graph._GCLEARSCREEN);
+        IF (PlaneInAir) THEN
+            Graph.ClearScreen(Graph._GCLEARSCREEN);
+        ELSE
+            Rectangle(PlaneX, PlaneY, PlaneX + PlaneWidth, PlaneY + PlaneHeight, DarkBrown, TRUE);
+        END;
+
         FOR PillarCount := PillarsVisible TO 0 BY -1 DO
             DrawPillarIdx := NextPillarIdx + PillarCount;
             IF (DrawPillarIdx < NoOfPillars) THEN
-                DrawPillar3D(NextPillarIdx + PillarCount, PillarXs[NextPillarIdx + PillarCount], (PillarCount * PillarZDiff) + NextPillarZ, FALSE);
+                DrawPillar3D(NextPillarIdx + PillarCount, PillarXs[NextPillarIdx + PillarCount], (PillarCount * PillarZDiff) + NextPillarZ, PlaneInAir);
             END;
         END;
 
-        (* Update plane movement *)
-        IF (BounceVelocity > -BounceInitialVelocity) THEN
-            BounceVelocity := BounceVelocity - PlaneGravAccel;
+        (* Update bouncing movement *)
+        IF (PlaneInAir) THEN
+            IF (BounceVelocity > -BounceInitialVelocity) THEN
+                BounceVelocity := BounceVelocity - PlaneGravAccel;
+            END;
+            BounceHeight := BounceHeight + BounceVelocity;
+            PlaneY := PlaneStartY - (BounceHeight DIV 10);
+        ELSIF NOT (BounceVelocity = 0) THEN (* Just fell off *)
+            PlaneY := PlaneStartY; (* TODO: Falling sequence *)
+            BounceVelocity := 0; BounceHeight := 0;
         END;
-        BounceHeight := BounceHeight + BounceVelocity;
-        PlaneY := PlaneStartY - (BounceHeight DIV 10);
+
+        (* Update horizontal movement *)
         CheckMouse();
-        IF (NextPillarIdx < LockedMovementBounces) THEN PlaneX := PlaneCenterX; END;
+        (*IF (NextPillarIdx < LockedMovementBounces) THEN PlaneX := PlaneCenterX; END;*)
         DrawPlane5025();
 
-        (* Update next pillar to come onscreen from the horizon *)
+        (* Frame delay between pillar movement *)
         IF (ZMoveCount > 0) THEN
             ZMoveCount := ZMoveCount - 1;
         ELSE
-            ZMoveCount := 2;
+            IF (PlaneInAir) THEN
+                ZMoveCount := 2;
+            END;
             NextPillarZ := NextPillarZ - 1;
+            
+            (* Passing nearest pillar? *)
             IF (NextPillarZ < 2) THEN
+                PlanePillarDiffX := INTEGER(PlaneX) - 135 - PillarXs[NextPillarIdx];
+                IF (PlaneInAir) THEN (* In air, missed pillar? *)
+                    IF (PlanePillarDiffX < -20) OR (PlanePillarDiffX > 20) THEN
+                        PlaneInAir := FALSE;
+                        Rectangle(0, 0, 319, 99, Black, TRUE);
+                        Rectangle(0, 100, 319, 199, DarkBrown, TRUE);
+                    END;
+                ELSE (* On ground, hit pillar? *)
+                    IF (PlanePillarDiffX > -20) AND (PlanePillarDiffX < 20) THEN
+                        Die();
+                    END;
+                END;
+
+                (* Move onto next pillar *)
+                IF (PlaneInAir) THEN
+                    BounceHeight := 0; BounceVelocity := BounceInitialVelocity;
+                ELSE
+                    DrawX := CARDINAL(160 + PillarXs[NextPillarIdx]);
+                    Rectangle(DrawX - 14, 0, DrawX + 14, 99, Black, TRUE);
+                    Rectangle(DrawX - 14, 100, DrawX + 14, 199, DarkBrown, TRUE);
+                END;
                 NextPillarIdx := NextPillarIdx + 1;
                 NextPillarZ := PillarZDiff;
-                BounceHeight := 0; BounceVelocity := BounceInitialVelocity;
             END;
         END;
-        Delay(GameSpeed);
-    END; (* Bouncing on tops of pillars *)
 
-    IF NOT (GameOver) THEN
-        (* Successfully bounced on all pillars? *)
-        IF (PillarCount >= NoOfPillars) THEN
-            FlyThroughSpace();
-        END;
+        Delay(GameSpeed);
     END;
 
-    IF GameOver THEN
+    IF (GameOver) THEN
         DrawGameOver();
+    ELSE
+        (* Successfully bounced on all pillars? *)
+        IF (PlaneInAir) THEN
+            FlyThroughSpace();
+        END;
     END;
 END Screen7;
 
