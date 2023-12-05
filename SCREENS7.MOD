@@ -2,8 +2,8 @@ IMPLEMENTATION MODULE Screens7;
 (*$I+,O+,R+,S+,Z+*)
 (*$S FF00*)
 
-IMPORT Graph, Lib, Exobius;
-FROM Graph IMPORT Rectangle, Line, Circle, Ellipse, Plot, Point;
+IMPORT Graph, Lib, Exobius, Storage;
+FROM Graph IMPORT Rectangle, Line, HLine, Circle, Ellipse, Plot, Point, GetImage, PutImage;
 FROM Lib IMPORT Sound, NoSound, Delay, RANDOM;
 FROM Exobius IMPORT
     Black, DarkestGrey, DarkGrey, Grey, LightGrey, LightestGrey,
@@ -14,15 +14,23 @@ FROM Exobius IMPORT
     DarkestGreen, DarkGreen, Green, LightGreen, LightestGreen,
     DarkestYellow, DarkYellow, Yellow, LightYellow, LightestYellow,
     PlaneX, PlaneY, PlaneStartX, PlaneStartY, PlaneWidth, PlaneHeight, DrawPlane5025,
-    PutPixel, Count, ClearTheBuffer, CheckSpecialKeys, CheckMouse,
+    PutPixel, Count, ClearTheBuffer, CheckSpecialKeys, CheckMouseAndSpecialKeys, CheckMouse,
     GameSpeed, Die, GameOver, DrawGameOver;
 
 CONST
+    NoOfPillars = 30;
     PillarZDiff = 25;
     PillarsVisible = 6;
 
+TYPE
+    StarPos = RECORD
+        X, Y : CARDINAL;
+        Color : BYTE;
+    END;
+
 VAR
     PillarColours : ARRAY[0..27] OF CARDINAL;
+    PillarYOffsets : ARRAY[0..14] OF CARDINAL;
 
 PROCEDURE CreateLookupTable();
 BEGIN
@@ -40,62 +48,44 @@ BEGIN
     PillarColours[22] := LightGrey;     PillarColours[23] := LightGrey;
     PillarColours[24] := DarkGrey;      PillarColours[25] := DarkGrey;
     PillarColours[25] := DarkestGrey;   PillarColours[27] := DarkestGrey;
-END CreateLookupTable;
-(*
-PROCEDURE DrawPillarBottom(x, y : CARDINAL);
-VAR
-    PillarX, PillarY, PillarColour : CARDINAL;
-BEGIN
-    FOR PillarX := 0 TO 27 DO
-        PillarColour := PillarColours[PillarX DIV 2];
-        CASE PillarX OF
-            | 0, 27 : PillarY := y;
-            | 1, 26 : PillarY := y + 1;
-            | 2, 3, 25, 24 : PillarY := y + 2;
-            | 4, 5, 6, 7, 8, 23, 22, 21, 20, 19 : PillarY := y + 3;
-            | 9, 10, 11, 12, 13, 14, 15, 16, 17, 18 : PillarY := y + 4;
-        END;
-        IF (PillarY<200) THEN
-            Line(x + ((y-100)*PillarX DIV 100), 200-PillarY, x + ((y-100)*PillarX DIV 100), PillarY, PillarColour)
-        ELSE
-            Line(x + ((y-100)*PillarX DIV 100), 0, x + ((y-100)*PillarX DIV 100), 200, PillarColour);
-        END;
-    END;
-END DrawPillarBottom;
 
-PROCEDURE DrawPillarTop(x, y : CARDINAL);
-VAR
-    PillarX, PillarColour, LineX : CARDINAL;
-BEGIN
-    FOR PillarX := 0 TO 27 DO
-        LineX := x + (y * PillarX DIV 200);
-        Line(LineX, y, LineX, 200, PillarColours[PillarX DIV 2]);
-    END;
-    Ellipse(x + (y*14 DIV 200), y, y*14 DIV 200, y*5 DIV 200, White, TRUE);
-END DrawPillarTop;
-*)
-PROCEDURE DrawStars(NumStars : BYTE);
-VAR
-    Stars : BYTE;
-BEGIN
-    FOR Stars := 1 TO NumStars DO
-        PutPixel(RANDOM(319), RANDOM(199), Stars);
-    END;
-END DrawStars;
+    PillarYOffsets[0] := 0;
+    PillarYOffsets[1] := 1;
+    PillarYOffsets[2] := 2; PillarYOffsets[3] := 2;
+    PillarYOffsets[4] := 3; PillarYOffsets[5] := 3; PillarYOffsets[6] := 3; PillarYOffsets[7] := 3; PillarYOffsets[8] := 3;
+    PillarYOffsets[9] := 4; PillarYOffsets[10] := 4; PillarYOffsets[11] := 4; PillarYOffsets[12] := 4; PillarYOffsets[13] := 4; PillarYOffsets[14] := 4;
+END CreateLookupTable;
 
 PROCEDURE FlyThroughSpace;
 CONST
-    NoOfCircles = 200;
+    NoOfCircles = 400;
 VAR
-    CircleRadius, BlueCircles, CircleColour, OldPlaneX : CARDINAL;
+    CircleRadius, BlueCircles, CircleColour, StarCount : CARDINAL;
+    Stars : ARRAY[0..15] OF StarPos;
 BEGIN
+    (* Prepare star positions *)
+    FOR StarCount := 0 TO 15 DO
+        WITH Stars[StarCount] DO
+            X := RANDOM(319);
+            Y := RANDOM(199);
+            Color := BYTE(StarCount);
+        END;
+    END;
+
     (* Bounce up into space *)
-    FOR Count := 120 TO 200 BY 5 DO
+    FOR Count := 1 TO 50 DO
         NoSound();
-        Sound((Count-100)*20);
+        Sound((Count)*30);
         Graph.ClearScreen(Graph._GCLEARSCREEN);
-        DrawStars(15);
+        FOR StarCount := 0 TO 15 DO
+            WITH Stars[StarCount] DO
+                Y := Y + Count;
+                IF (Y > 199) THEN Y := RANDOM(Count); END;
+                PutPixel(X, Y, Color);
+            END;
+        END;
         DrawPlane5025();
+        Delay(GameSpeed);
     END;
     NoSound();
 
@@ -103,7 +93,9 @@ BEGIN
     FOR BlueCircles := 1 TO NoOfCircles DO
         IF NOT (GameOver) THEN
             Graph.ClearScreen(Graph._GCLEARSCREEN);
-            DrawStars(15);
+            FOR StarCount := 0 TO 15 DO
+                PutPixel(RANDOM(319), RANDOM(199), BYTE(StarCount));
+            END;
             CircleRadius := (BlueCircles + 20) MOD 10;
             IF (CircleRadius = 0) THEN
                 CircleRadius := 10;
@@ -123,25 +115,27 @@ BEGIN
                 Circle(160, 100, CircleRadius, CircleColour);
                 CircleRadius := CircleRadius*2;
             END;
-            OldPlaneX := PlaneX;
-            CheckMouse();
-            PlaneX := OldPlaneX;
-            DrawPlane5025();
-            IF (PlaneX<145) THEN
+            CheckMouseAndSpecialKeys();
+            IF (PlaneX < PlaneStartX) THEN
                 PlaneX := PlaneX + RANDOM(5);
             ELSE
                 PlaneX := PlaneX - RANDOM(5);
             END;
+            IF (PlaneY < PlaneStartY) THEN
+                PlaneY := PlaneY + 1;
+            END;
+            DrawPlane5025();
         END;
     END; (* Circle fly-through *)
 END FlyThroughSpace;
 
 PROCEDURE DrawPillar3D(PillarIdx : CARDINAL; MidOffsetX : INTEGER; ZOffset : CARDINAL; DrawFromAirPerspective : BOOLEAN);
 CONST
-    PillarHeightDiff = 15;
+    PillarHeightDiff = 5;
+    PillarMaxHeight = 90;
 VAR
     DrawX : INTEGER;
-    BottomY, TopY, PillarWidth, DrawStartX, LineX, Height : CARDINAL;
+    BottomY, TopY, PillarWidth, DrawStartX, DrawOffsetY, LineX, Height : CARDINAL;
 BEGIN
     DrawX := MidOffsetX;
     IF (DrawX < -145) THEN
@@ -153,7 +147,7 @@ BEGIN
 
     (* Bottom + Top *)
     IF (DrawFromAirPerspective) THEN
-        IF (PillarIdx < PillarsVisible) THEN Height := PillarIdx * PillarHeightDiff; ELSE Height := PillarsVisible * PillarHeightDiff; END;
+        Height := PillarIdx * PillarHeightDiff; IF (Height > PillarMaxHeight) THEN Height := PillarMaxHeight; END;
         IF (ZOffset > 199) THEN TopY := 0; ELSE TopY := 199 - ZOffset; END;
         IF (TopY > 199 - Height) THEN BottomY := 199; ELSE BottomY := TopY + Height; END;
         PillarWidth := TopY * 14 DIV 100;
@@ -167,25 +161,37 @@ BEGIN
     (* Draw *)
     DrawStartX := CARDINAL(DrawX) - (PillarWidth DIV 2);
     FOR LineX := 0 TO PillarWidth DO
-        Line(DrawStartX + LineX, TopY, DrawStartX + LineX, BottomY, PillarColours[LineX]);
+        IF (LineX < PillarWidth DIV 2) THEN
+            DrawOffsetY := PillarYOffsets[LineX];
+        ELSE
+            DrawOffsetY := PillarYOffsets[PillarWidth - LineX];
+        END;
+        IF (TopY < DrawOffsetY) THEN DrawOffsetY := 0; END;
+        Line(DrawStartX + LineX, TopY - DrawOffsetY, DrawStartX + LineX, BottomY + DrawOffsetY, PillarColours[LineX]);
     END;
     IF (DrawFromAirPerspective) THEN
         Ellipse(CARDINAL(DrawX), TopY, PillarWidth DIV 2, TopY * 5 DIV 200, White, TRUE);
+        (* Last Pillar? *)
+        IF (PillarIdx = NoOfPillars - 1) THEN
+            FOR BottomY := 0 TO PillarWidth DO
+                HLine(DrawStartX, TopY - BottomY * 2, DrawStartX + PillarWidth, PillarColours[BottomY]);
+            END;
+        END;
     END;
 END DrawPillar3D;
 
 PROCEDURE Screen7;
 CONST
-    NoOfPillars = 30;
     LockedMovementBounces = 4;
     PlaneCenterX = 135;
     BounceInitialVelocity = 40;
     PlaneGravAccel = 1;
 VAR
-    NextPillarIdx, NextPillarZ, PillarCount, ZMoveCount, DrawPillarIdx, DrawX : CARDINAL;
+    NextPillarIdx, NextPillarZ, PillarCount, ZMoveCount, DrawPillarIdx, DrawX, BehindPlaneSize : CARDINAL;
     BounceHeight, BounceVelocity, PlanePillarDiffX : INTEGER;
     PillarXs : ARRAY[0..NoOfPillars] OF INTEGER;
     PlaneInAir : BOOLEAN;
+    BehindPlaneAddress : ADDRESS;
 BEGIN
     ClearTheBuffer();
     CreateLookupTable();
@@ -198,7 +204,7 @@ BEGIN
         ELSIF (Count < PillarsVisible * 2) THEN
             PillarXs[Count] := INTEGER(RANDOM(120)) - 60;
         ELSE
-            PillarXs[Count] := INTEGER(RANDOM(280)) - 140;
+            PillarXs[Count] := INTEGER(RANDOM(270)) - 140;
         END;
     END;
     NextPillarIdx := 0; NextPillarZ := PillarZDiff; ZMoveCount := 0;
@@ -231,13 +237,24 @@ BEGIN
             BounceHeight := BounceHeight + BounceVelocity;
             PlaneY := PlaneStartY - (BounceHeight DIV 10);
         ELSIF NOT (BounceVelocity = 0) THEN (* Just fell off *)
-            PlaneY := PlaneStartY; (* TODO: Falling sequence *)
             BounceVelocity := 0; BounceHeight := 0;
+            BehindPlaneSize := CARDINAL(Graph.ImageSize(0, 0, PlaneWidth, PlaneHeight));
+            Storage.ALLOCATE(BehindPlaneAddress, BehindPlaneSize);
+            NoSound();
+            FOR PlaneY := 0 TO PlaneStartY DO
+                Sound((200 - PlaneY) * 2);
+                GetImage(PlaneX, PlaneY, PlaneX + PlaneWidth, PlaneY + PlaneHeight, BehindPlaneAddress);
+                DrawPlane5025();
+                Delay(2);
+                Graph.PutImage(PlaneX, PlaneY, BehindPlaneAddress, Graph._GPSET);
+            END;
+            NoSound();
+            Storage.DEALLOCATE(BehindPlaneAddress, BehindPlaneSize);
         END;
 
         (* Update horizontal movement *)
         CheckMouse();
-        (*IF (NextPillarIdx < LockedMovementBounces) THEN PlaneX := PlaneCenterX; END;*)
+        IF (NextPillarIdx < LockedMovementBounces) THEN PlaneX := PlaneCenterX; END;
         DrawPlane5025();
 
         (* Frame delay between pillar movement *)
@@ -259,8 +276,9 @@ BEGIN
                         Rectangle(0, 100, 319, 199, DarkBrown, TRUE);
                     END;
                 ELSE (* On ground, hit pillar? *)
-                    IF (PlanePillarDiffX > -20) AND (PlanePillarDiffX < 20) THEN
+                    IF (PlanePillarDiffX > -30) AND (PlanePillarDiffX < 30) THEN
                         Die();
+                        Rectangle(0, PlaneY, 319, 199, DarkBrown, TRUE);
                     END;
                 END;
 
