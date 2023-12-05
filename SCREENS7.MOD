@@ -190,7 +190,6 @@ VAR
     NextPillarIdx, NextPillarZ, PillarCount, ZMoveCount, DrawPillarIdx, DrawX, BehindPlaneSize : CARDINAL;
     BounceHeight, BounceVelocity, PlanePillarDiffX : INTEGER;
     PillarXs : ARRAY[0..NoOfPillars] OF INTEGER;
-    PlaneInAir : BOOLEAN;
     BehindPlaneAddress : ADDRESS;
 BEGIN
     ClearTheBuffer();
@@ -208,7 +207,7 @@ BEGIN
         END;
     END;
     NextPillarIdx := 0; NextPillarZ := PillarZDiff; ZMoveCount := 0;
-    BounceHeight := 0; BounceVelocity := BounceInitialVelocity; PlaneInAir := TRUE;
+    PlaneInAir := TRUE; BounceHeight := 0; BounceVelocity := BounceInitialVelocity;
 
     (* Set up starting screen *)
     Graph.ClearScreen(Graph._GCLEARSCREEN);
@@ -300,11 +299,6 @@ BEGIN
 
     IF (GameOver) THEN
         DrawGameOver();
-    ELSE
-        (* Successfully bounced on all pillars? *)
-        IF (PlaneInAir) THEN
-            FlyThroughSpace();
-        END;
     END;
 END Screen7;
 

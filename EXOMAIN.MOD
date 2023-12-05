@@ -32,13 +32,37 @@ FROM Screens2 IMPORT Screen2;
 FROM Screens3 IMPORT Screen3;
 FROM Screens4 IMPORT Screen4;
 FROM Screens6 IMPORT Screen6;
-FROM Screens7 IMPORT Screen7;
+FROM Screens7 IMPORT Screen7, PlaneInAir, FlyThroughSpace;
 FROM Screens8 IMPORT Screen8;
 FROM Screens9 IMPORT Screen9;
 FROM Bosses1 IMPORT Boss1;
 FROM Bosses2 IMPORT Boss2;
 FROM Bosses3 IMPORT Boss3;
 FROM Bosses4 IMPORT Boss4;
+
+PROCEDURE PlayLevels();
+BEGIN
+(*    Screen1();  IF GameOver THEN RETURN; END;
+    Boss1();    IF GameOver THEN RETURN; END;
+    Screen2();  IF GameOver THEN RETURN; END;
+    Screen3();  IF GameOver THEN RETURN; END;
+    Screen4();  IF GameOver THEN RETURN; END;
+    Boss2();    IF GameOver THEN RETURN; END;
+    Screen6();  IF GameOver THEN RETURN; END;
+*)    Screen7();  IF GameOver THEN RETURN; END;
+
+    (* Stage/boss split *)
+    IF NOT PlaneInAir THEN
+        (*Boss7();*)
+    ELSE
+        FlyThroughSpace();
+        Screen8();  IF GameOver THEN RETURN; END;
+        Boss3();    IF GameOver THEN RETURN; END;
+    END;
+
+    Screen9();  IF GameOver THEN RETURN; END;
+    Boss4();    IF GameOver THEN RETURN; END;
+END PlayLevels;
 
 (* Main loop *)
 BEGIN
@@ -49,20 +73,11 @@ BEGIN
     PlayTitleSequence();
     ClearTheBuffer();
     PlaneToPlanet();
-
-    Screen1();
-    IF NOT GameOver THEN Boss1(); END;
-    IF NOT GameOver THEN Screen2(); END;
-    IF NOT GameOver THEN Screen3(); END;
-    IF NOT GameOver THEN Screen4(); END;
-    IF NOT GameOver THEN Boss2(); END;
-    IF NOT GameOver THEN Screen6(); END;
-*)    IF NOT GameOver THEN Screen7(); END;
-    IF NOT GameOver THEN Screen8(); END;
-    IF NOT GameOver THEN Boss3(); END;
-    IF NOT GameOver THEN Screen9(); END;
-    IF NOT GameOver THEN Boss4(); END;
-    IF NOT GameOver THEN PlayEndSlideshow(); END;
+*)
+    PlayLevels();
+    IF NOT GameOver THEN
+        PlayEndSlideshow();
+    END;
 
     ShutDown();
     SetTextMode();

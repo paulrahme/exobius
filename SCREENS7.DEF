@@ -1,5 +1,9 @@
 DEFINITION MODULE Screens7;
 
+VAR
+    PlaneInAir : BOOLEAN;
+
+PROCEDURE FlyThroughSpace;
 PROCEDURE Screen7;
 
 END Screens7.
