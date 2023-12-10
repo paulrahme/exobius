@@ -37,9 +37,9 @@ FROM Screens8 IMPORT Screen8;
 FROM Screens9 IMPORT Screen9;
 FROM Bosses1 IMPORT Boss1;
 FROM Bosses2 IMPORT Boss2;
-FROM Bosses3 IMPORT Boss3;
-FROM Bosses9 IMPORT Boss9;
 FROM Bosses7 IMPORT Boss7;
+FROM Bosses8 IMPORT Boss8;
+FROM Bosses9 IMPORT Boss9;
 
 PROCEDURE PlayLevels();
 BEGIN
@@ -58,7 +58,7 @@ BEGIN
     ELSE
         FlyThroughSpace();
         Screen8();  IF GameOver THEN RETURN; END;
-        Boss3();    IF GameOver THEN RETURN; END;
+        Boss8();    IF GameOver THEN RETURN; END;
     END;
 
     Screen9();      IF GameOver THEN RETURN; END;

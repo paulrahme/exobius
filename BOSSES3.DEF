@@ -1,6 +1,0 @@
-DEFINITION MODULE Bosses3;
-
-PROCEDURE Boss3;
-
-END Bosses3.
-
