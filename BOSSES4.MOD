@@ -1,4 +1,4 @@
-IMPLEMENTATION MODULE Bosses2;
+IMPLEMENTATION MODULE Bosses4;
 (*$I+,O+,R+,S+,Z+*)
 (*$S FF00*)
 
@@ -33,7 +33,7 @@ VAR
     BossAddressA, BossAddressB, BossAddressC : ADDRESS;
     Boss1Y, Boss2Y, Boss3Y : CARDINAL;
 
-PROCEDURE DrawBoss2(X1, Y1, X2, Y2, X3, Y3, Frame : CARDINAL);
+PROCEDURE DrawBoss4(X1, Y1, X2, Y2, X3, Y3, Frame : CARDINAL);
 VAR
     BossAddress : ADDRESS;
 BEGIN
@@ -46,9 +46,9 @@ BEGIN
     IF OneAlive THEN Graph.PutImage(X1, Y1, BossAddress, Graph._GPSET); END;
     IF TwoAlive THEN Graph.PutImage(X2, Y2, BossAddress, Graph._GPSET); END;
     IF ThreeAlive THEN Graph.PutImage(X3, Y3, BossAddress, Graph._GPSET); END;
-END DrawBoss2;
+END DrawBoss4;
 
-PROCEDURE DrawBarGraphs2;
+PROCEDURE DrawBarGraphs;
 BEGIN
     Rectangle(0, 0, 102, 10, White, FALSE);
     Rectangle(1, 1, 101, 9, Black, TRUE);
@@ -67,7 +67,7 @@ BEGIN
     IF ThreeAlive THEN
         Rectangle(218, 1, 218 + (Boss3Lives * 5), 9, Red, TRUE);
     END;
-END DrawBarGraphs2;
+END DrawBarGraphs;
 
 PROCEDURE MakeBossRunAway(x, y : CARDINAL);
 CONST
@@ -96,11 +96,11 @@ BEGIN
     END;
 END MakeBossRunAway;
 
-PROCEDURE BlowUpBoss2(x, y : CARDINAL);
+PROCEDURE BlowUpBoss(x, y : CARDINAL);
 VAR
     Explosions, Colour : CARDINAL;
 BEGIN
-    DrawBarGraphs2();
+    DrawBarGraphs();
     TextPos := Graph.SetTextPosition (3, 2 + (x DIV 8));
     Graph.OutText("Extra Life!");
     FOR Explosions := 100 TO 0 BY -1 DO
@@ -130,24 +130,24 @@ BEGIN
     IF (Lives > 0) THEN
         Lives := Lives - 1;
     END;
-END BlowUpBoss2;
+END BlowUpBoss;
 
-PROCEDURE HurtBoss2;
+PROCEDURE HurtBoss;
 CONST
-    Boss2FlashDelay = 8;
+    BossFlashDelay = 8;
 BEGIN
     IF (BulletX < 105) THEN
         IF OneAlive THEN
             Boss1Lives := Boss1Lives - 1;
             IF (Boss1Lives=0) THEN
                 OneAlive := FALSE;
-                BlowUpBoss2(Boss1X, Boss1Y);
+                BlowUpBoss(Boss1X, Boss1Y);
                 RETURN;
             ELSE
                 Disc(Boss1X + 50, Boss1Y + 50, 18, LightestWhite);
-                Sound(440); Delay(Boss2FlashDelay); NoSound;
-                Sound(220); Delay(Boss2FlashDelay); NoSound;
-                Sound(50); Delay (Boss2FlashDelay); NoSound;
+                Sound(440); Delay(BossFlashDelay); NoSound;
+                Sound(220); Delay(BossFlashDelay); NoSound;
+                Sound(50); Delay (BossFlashDelay); NoSound;
             END;
         END;
     ELSIF (BulletX < 220) THEN
@@ -155,12 +155,12 @@ BEGIN
             Boss2Lives := Boss2Lives - 1;
             IF (Boss2Lives = 0) THEN
                 TwoAlive := FALSE;
-                BlowUpBoss2(Boss2X, Boss2Y);
+                BlowUpBoss(Boss2X, Boss2Y);
             ELSE
                 Disc(Boss2X + 50, Boss2Y + 50, 18, LightestWhite);
-                Sound(440); Delay(Boss2FlashDelay); NoSound;
-                Sound(220); Delay(Boss2FlashDelay); NoSound;
-                Sound(50); Delay (Boss2FlashDelay); NoSound;
+                Sound(440); Delay(BossFlashDelay); NoSound;
+                Sound(220); Delay(BossFlashDelay); NoSound;
+                Sound(50); Delay (BossFlashDelay); NoSound;
             END;
         END;
     ELSE
@@ -168,19 +168,19 @@ BEGIN
             Boss3Lives := Boss3Lives - 1;
             IF (Boss3Lives = 0) THEN
                   ThreeAlive := FALSE;
-                  BlowUpBoss2(Boss3X, Boss3Y);
+                  BlowUpBoss(Boss3X, Boss3Y);
             ELSE
                   Disc(Boss3X + 50, Boss3Y + 50, 18, LightestWhite);
-                  Sound(440); Delay(Boss2FlashDelay); NoSound;
-                  Sound(220); Delay(Boss2FlashDelay); NoSound;
-                  Sound(50); Delay (Boss2FlashDelay); NoSound;
+                  Sound(440); Delay(BossFlashDelay); NoSound;
+                  Sound(220); Delay(BossFlashDelay); NoSound;
+                  Sound(50); Delay (BossFlashDelay); NoSound;
             END;
          END;
     END;
-    DrawBarGraphs2;
-END HurtBoss2;
+    DrawBarGraphs();
+END HurtBoss;
 
-PROCEDURE DrawBulletBoss2;
+PROCEDURE DrawBossBullet;
 CONST
     BulletY5 = 170;
     BulletY4 = 150;
@@ -202,12 +202,12 @@ BEGIN
             Disc(BulletX, BulletY3, 2, Yellow);
             BulletY := 2;
         |2: Disc(BulletX, BulletY3, 2, Black);
-            HurtBoss2;
+            HurtBoss;
             BulletY := 0;
     END;
-END DrawBulletBoss2;
+END DrawBossBullet;
 
-PROCEDURE FinishScreenBoss2;
+PROCEDURE FinishScreenBoss4;
 BEGIN
     FOR PlaneY := 175 TO BossDipY BY -2 DO
         IF (PlaneX<155) THEN
@@ -221,9 +221,9 @@ BEGIN
         Delay(GameSpeed * 3);
     END;
     Graph.ClearScreen(Graph._GCLEARSCREEN);
-END FinishScreenBoss2;
+END FinishScreenBoss4;
 
-PROCEDURE Boss2;
+PROCEDURE Boss4;
 VAR
     BossFall, LeftBehind, BossSize, BossAnimFrame : CARDINAL;
 BEGIN
@@ -263,7 +263,7 @@ BEGIN
     (* Bring them down the screen *)
     FOR BossFall := 3 TO BossIdleY DO
         Rectangle(0, BossFall - 2, 319, BossFall, Black, TRUE);
-        DrawBoss2(Boss1X, BossFall, Boss2X, BossFall, Boss3X, BossFall, BossAnimFrame);
+        DrawBoss4(Boss1X, BossFall, Boss2X, BossFall, Boss3X, BossFall, BossAnimFrame);
         BossAnimFrame := (BossAnimFrame + 1) MOD 3;
         Delay(GameSpeed);
     END;
@@ -275,7 +275,7 @@ BEGIN
     ScreenComplete := FALSE;
     Boss1Y := BossFall; Boss2Y := BossFall; Boss3Y := BossFall;
     LeftBehind := 1;
-    DrawBarGraphs2();
+    DrawBarGraphs();
 
     WHILE NOT (GameOver OR ScreenComplete) DO
         (* Move downward *)
@@ -297,8 +297,8 @@ BEGIN
                 Rectangle(0, PlaneY - 2, 319, 199, Black, TRUE);
                 CheckMouse();
                 DrawPlane5025();
-                DrawBulletBoss2();
-                DrawBoss2(Boss1X, Boss1Y, Boss2X, Boss2Y, Boss3X, Boss3Y, BossAnimFrame);
+                DrawBossBullet();
+                DrawBoss4(Boss1X, Boss1Y, Boss2X, Boss2Y, Boss3X, Boss3Y, BossAnimFrame);
                 BossFall := BossFall + BossMove;
                 IF (BulletY=4) THEN
                     Disc (PlaneX + (PlaneWidth DIV 2), PlaneY - 4, 4, Black);
@@ -336,8 +336,8 @@ BEGIN
                 Rectangle(0, PlaneY - 1, 319, 199, Black, TRUE);
                 CheckMouse();
                 DrawPlane5025();
-                DrawBoss2(Boss1X, Boss1Y, Boss2X, Boss2Y, Boss3X, Boss3Y, BossAnimFrame);
-                DrawBulletBoss2();
+                DrawBoss4(Boss1X, Boss1Y, Boss2X, Boss2Y, Boss3X, Boss3Y, BossAnimFrame);
+                DrawBossBullet();
                 BossFall := BossFall - BossMove;
                 IF (BulletY=4) THEN
                     Disc(PlaneX + (PlaneWidth DIV 2), PlaneY - 4, 4, Black);
@@ -361,7 +361,7 @@ BEGIN
     END; (* ScreenComplete Check *)
     
     IF (ScreenComplete) THEN
-       FinishScreenBoss2();
+       FinishScreenBoss4();
     ELSE
        DrawGameOver();
     END;
@@ -369,7 +369,7 @@ BEGIN
     (* Deallocate - skip BossAddressA since that reuses the pre-alloc'd BkAddress *)
     Storage.DEALLOCATE(BossAddressC, BossSize);
     Storage.DEALLOCATE(BossAddressB, BossSize);
-END Boss2;
+END Boss4;
 
-END Bosses2.
+END Bosses4.
 

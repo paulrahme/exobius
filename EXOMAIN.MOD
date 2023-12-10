@@ -36,7 +36,7 @@ FROM Screens7 IMPORT Screen7, PlaneInAir, FlyThroughSpace;
 FROM Screens8 IMPORT Screen8;
 FROM Screens9 IMPORT Screen9;
 FROM Bosses1 IMPORT Boss1;
-FROM Bosses2 IMPORT Boss2;
+FROM Bosses4 IMPORT Boss4;
 FROM Bosses7 IMPORT Boss7;
 FROM Bosses8 IMPORT Boss8;
 FROM Bosses9 IMPORT Boss9;
@@ -48,7 +48,7 @@ BEGIN
     Screen2();      IF GameOver THEN RETURN; END;
     Screen3();      IF GameOver THEN RETURN; END;
     Screen4();      IF GameOver THEN RETURN; END;
-    Boss2();        IF GameOver THEN RETURN; END;
+    Boss4();        IF GameOver THEN RETURN; END;
     Screen6();      IF GameOver THEN RETURN; END;
     Screen7();      IF GameOver THEN RETURN; END;
 *)
