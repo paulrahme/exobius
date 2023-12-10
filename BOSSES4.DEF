@@ -1,6 +1,0 @@
-DEFINITION MODULE Bosses4;
-
-PROCEDURE Boss4;
-
-END Bosses4.
-

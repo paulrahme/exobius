@@ -1,4 +1,4 @@
-IMPLEMENTATION MODULE Bosses4;
+IMPLEMENTATION MODULE Bosses9;
 (*$I+,O+,R+,S+,Z+*)
 (*$S FF00*)
 
@@ -66,7 +66,7 @@ BEGIN
     Plot (x+Width*70 DIV 150,y+Width*137 DIV 150,LightBlue);
 END WritePlayExobius;
 
-PROCEDURE DrawBoss4 (x, y, Width : CARDINAL);
+PROCEDURE DrawBoss9(x, y, Width : CARDINAL);
 BEGIN
     Disc (x+Width*50 DIV 150,y+Width*50 DIV 150,Width*50 DIV 150,Red);
     Disc (x+Width*51 DIV 150,y+Width*49 DIV 150,Width*48 DIV 150,LightRed);
@@ -117,9 +117,9 @@ BEGIN
     Xs[0] := x+Width*42 DIV 150; Ys[0] := y+Width*120 DIV 150; Xs[1] := x+Width*23 DIV 150; Ys[1] := y+Width*144 DIV 150; Xs[2] := x+Width*21 DIV 150; Ys[2] := y+Width*134 DIV 150;
     Polygon (3, Xs, Ys, 40);
     WritePlayExobius(x,y,Width);
-END DrawBoss4;
+END DrawBoss9;
 
-PROCEDURE KillBoss4;
+PROCEDURE KillBoss9;
 VAR
   Explosions, Colour : CARDINAL;
 BEGIN
@@ -154,28 +154,28 @@ BEGIN
      NoSound;
  END; (* WHILE *)
  ScreenComplete := TRUE;
-END KillBoss4;
+END KillBoss9;
 
-PROCEDURE Boss4;
+PROCEDURE Boss9;
 CONST
     SpitMovement = 2;
     SpitHitY = 180;
     MouthY = 100;
     MouthX = 160;
 VAR
-    SpitX, SpitY, Boss4X, Boss4Y, Boss4Width, BossLives : CARDINAL;
+    SpitX, SpitY, BossWidth, BossLives : CARDINAL;
 BEGIN
     ScreenComplete := FALSE;
     Rectangle (PlaneX, PlaneY, PlaneX + PlaneWidth, PlaneY + PlaneHeight, DarkRed, TRUE);
     Graph.GetImage (0, 0, 320, 200, BkAddress);
-    FOR Boss4Width := 1 TO 150 BY 3 DO
+    FOR BossWidth := 1 TO 150 BY 3 DO
         Graph.PutImage (0, 0, BkAddress, Graph._GPSET);
-        DrawBoss4 ((160-Boss4Width DIV 2), (100-Boss4Width DIV 2), Boss4Width);
+        DrawBoss9((160-BossWidth DIV 2), (100-BossWidth DIV 2), BossWidth);
         DrawPlane (PlaneX, PlaneY, PlaneWidth);
         CheckMouse;
     END;
     Graph.PutImage (0, 0, BkAddress, Graph._GPSET);
-    DrawBoss4 ((160-Boss4Width DIV 2), (100-Boss4Width DIV 2), Boss4Width);
+    DrawBoss9((160-BossWidth DIV 2), (100-BossWidth DIV 2), BossWidth);
     Graph.GetImage (0, 0, 320, 200, BkAddress);
 
 (****************************************************************)
@@ -231,7 +231,7 @@ BEGIN
                         END;
                         IF (BossLives = 0) THEN
                                 Graph.PutImage (0, 0, BkAddress, Graph._GPSET);
-                                KillBoss4;
+                                KillBoss9();
                                 ScreenComplete := TRUE;
                         END;
                         Delay (GameSpeed);
@@ -244,6 +244,7 @@ BEGIN
            O(110, 60); V(140, 60); E(170, 60); R(200, 60);
            Key := IO.RdKey();
         END;
-END Boss4;
+END Boss9;
 
-END Bosses4.
+END Bosses9.
+
