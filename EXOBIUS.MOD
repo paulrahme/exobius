@@ -220,7 +220,7 @@ VAR
     DeltaX : CARDINAL;
 BEGIN
     CheckMouseAndSpecialKeys();
-    IF (MouseButtons.left_pressed) OR (MouseButtons.right_pressed) OR (MouseButtons.middle_pressed) THEN
+    IF (BulletY = 0) AND (MouseButtons.left_pressed OR MouseButtons.right_pressed OR MouseButtons.middle_pressed) THEN
         BulletX := PlaneX + 25;
         BulletY := 5;
     END;
@@ -288,9 +288,8 @@ BEGIN;
     Score := Score + 10;
 END CheckBulletAgainstEnemies;
 
-PROCEDURE Update3DBullet;
+PROCEDURE Update3DBullet(Check3DEnemies : BOOLEAN);
 VAR
-    NewBulletX : CARDINAL;
     Dist : INTEGER;
 BEGIN
     IF (BulletY = 0) THEN
@@ -302,61 +301,72 @@ BEGIN
     CASE BulletY OF
         |5: IF (BulletX >= 160) THEN
                 Dist := (10 + ((3*70) DIV 2)) * (BulletX-160) DIV 160;
-                NewBulletX := 160 + Dist;
+                DrawBulletX := 160 + Dist;
             ELSIF (BulletX < 160) THEN
                 Dist := (10 + ((3*70) DIV 2)) * (160-BulletX) DIV 160;
-                NewBulletX := 160 - Dist;
+                DrawBulletX := 160 - Dist;
             END;
-            Disc(NewBulletX, 170, 4, LightestYellow);
-            IF (EnemyY >= 158) THEN
+            Disc(DrawBulletX, BulletY5, 4, LightestYellow);
+            IF Check3DEnemies AND (EnemyY >= 158) THEN
                 CheckBulletAgainstEnemies();
             END;
         |4: IF (BulletX >= 160) THEN
                 Dist := (10 + ((3*45) DIV 2)) * (BulletX-160) DIV 160;
-                NewBulletX := 160 + Dist;
+                DrawBulletX := 160 + Dist;
             ELSIF (BulletX < 160) THEN
                 Dist := (10 + ((3*45) DIV 2)) * (160-BulletX) DIV 160;
-                NewBulletX := 160 - Dist;
+                DrawBulletX := 160 - Dist;
             END;
-            Disc(NewBulletX, 145, 3, LightYellow);
-            IF (EnemyY >= 132) THEN
+            Disc(DrawBulletX, BulletY4, 3, LightYellow);
+            IF Check3DEnemies AND (EnemyY >= 132) THEN
                 CheckBulletAgainstEnemies();
             END;
         |3: IF (BulletX >= 160) THEN
                 Dist := (10 + ((3*20) DIV 2)) * (BulletX-160) DIV 160;
-                NewBulletX := 160 + Dist;
+                DrawBulletX := 160 + Dist;
             ELSIF (BulletX < 160) THEN
                 Dist := (10 + ((3*20) DIV 2)) * (160-BulletX) DIV 160;
-                NewBulletX := 160 - Dist;
+                DrawBulletX := 160 - Dist;
             END;
-            Disc(NewBulletX, 120, 2, Yellow);
-            IF (EnemyY >= 113) THEN
+            Disc(DrawBulletX, BulletY3, 2, Yellow);
+            IF Check3DEnemies AND (EnemyY >= 113) THEN
                 CheckBulletAgainstEnemies();
             END;
         |2: IF (BulletX >= 160) THEN
                 Dist := (10 + ((3*5) DIV 2)) * (BulletX-160) DIV 160;
-                NewBulletX := 160 + Dist;
+                DrawBulletX := 160 + Dist;
             ELSIF (BulletX < 160) THEN
                 Dist := (10 + ((3*5) DIV 2)) * (160-BulletX) DIV 160;
-                NewBulletX := 160 - Dist;
+                DrawBulletX := 160 - Dist;
             END;
-            Disc(NewBulletX, 105, 1, DarkYellow);
-            IF (EnemyY >= 103) THEN
+            Disc(DrawBulletX, BulletY2, 1, DarkYellow);
+            IF Check3DEnemies AND (EnemyY >= 103) THEN
                 CheckBulletAgainstEnemies();
             END;
         |1: IF (BulletX >= 160) THEN
                 Dist := (10 + ((3*1) DIV 2)) * (BulletX-160) DIV 160;
-                NewBulletX := 160 + Dist;
+                DrawBulletX := 160 + Dist;
             ELSIF (BulletX < 160) THEN
                 Dist := (10 + ((3*1) DIV 2)) * (160-BulletX) DIV 160;
-                NewBulletX := 160 - Dist;
+                DrawBulletX := 160 - Dist;
             END;
-            Disc(NewBulletX, 101, 1, DarkestYellow);
-            IF (EnemyY >= 100) THEN
+            Disc(DrawBulletX, BulletY1, 1, DarkestYellow);
+            IF Check3DEnemies AND (EnemyY >= 100) THEN
                 CheckBulletAgainstEnemies();
             END;
     END;
 END Update3DBullet;
+
+PROCEDURE Clear3DBullet(Color : CARDINAL);
+BEGIN
+    CASE BulletY OF
+        |5: Disc(DrawBulletX, BulletY5, 4, Color);
+        |4: Disc(DrawBulletX, BulletY4, 3, Color);
+        |3: Disc(DrawBulletX, BulletY3, 2, Color);
+        |2: Disc(DrawBulletX, BulletY2, 1, Color);
+        |1: Disc(DrawBulletX, BulletY1, 1, Color);
+    END;
+END Clear3DBullet;
 
 PROCEDURE Die;
 CONST

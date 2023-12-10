@@ -1,0 +1,5 @@
+DEFINITION MODULE Bosses7;
+
+PROCEDURE Boss7;
+
+END Bosses7.

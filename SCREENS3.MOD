@@ -208,7 +208,7 @@ BEGIN
             CheckMouse();
             BlankGround3();
             DrawPlane5025();
-            Update3DBullet();
+            Update3DBullet(FALSE);
             Lib.Delay(GameSpeed);
         END;
         OneAlive := TRUE; TwoAlive := TRUE; ThreeAlive := TRUE; FourAlive := TRUE; FiveAlive := TRUE; SixAlive := TRUE;
@@ -218,7 +218,7 @@ BEGIN
                 BlankGround3();
                 DrawPlane5025();
                 DrawEnemies3();
-                Update3DBullet();
+                Update3DBullet(TRUE);
                 IF (BulletY > 99) THEN
                     BulletY := BulletY - 1;
                 END;

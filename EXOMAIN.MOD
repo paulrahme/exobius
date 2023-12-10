@@ -39,29 +39,30 @@ FROM Bosses1 IMPORT Boss1;
 FROM Bosses2 IMPORT Boss2;
 FROM Bosses3 IMPORT Boss3;
 FROM Bosses4 IMPORT Boss4;
+FROM Bosses7 IMPORT Boss7;
 
 PROCEDURE PlayLevels();
 BEGIN
-(*    Screen1();  IF GameOver THEN RETURN; END;
-    Boss1();    IF GameOver THEN RETURN; END;
-    Screen2();  IF GameOver THEN RETURN; END;
-    Screen3();  IF GameOver THEN RETURN; END;
-    Screen4();  IF GameOver THEN RETURN; END;
-    Boss2();    IF GameOver THEN RETURN; END;
-    Screen6();  IF GameOver THEN RETURN; END;
-*)    Screen7();  IF GameOver THEN RETURN; END;
-
+(*    Screen1();      IF GameOver THEN RETURN; END;
+    Boss1();        IF GameOver THEN RETURN; END;
+    Screen2();      IF GameOver THEN RETURN; END;
+    Screen3();      IF GameOver THEN RETURN; END;
+    Screen4();      IF GameOver THEN RETURN; END;
+    Boss2();        IF GameOver THEN RETURN; END;
+    Screen6();      IF GameOver THEN RETURN; END;
+    Screen7();      IF GameOver THEN RETURN; END;
+*)
     (* Stage/boss split *)
     IF NOT PlaneInAir THEN
-        (*Boss7();*)
+        Boss7();    IF GameOver THEN RETURN; END;
     ELSE
         FlyThroughSpace();
         Screen8();  IF GameOver THEN RETURN; END;
         Boss3();    IF GameOver THEN RETURN; END;
     END;
 
-    Screen9();  IF GameOver THEN RETURN; END;
-    Boss4();    IF GameOver THEN RETURN; END;
+    Screen9();      IF GameOver THEN RETURN; END;
+    Boss4();        IF GameOver THEN RETURN; END;
 END PlayLevels;
 
 (* Main loop *)

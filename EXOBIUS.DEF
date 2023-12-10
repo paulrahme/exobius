@@ -22,20 +22,19 @@ CONST
     DarkestBrown = 185; DarkBrown = 186; Brown = 114; LightBrown = 6; LightestBrown = 42;
     DarkestGreen = 187; DarkGreen = 190; Green = 120; LightGreen = 2; LightestGreen = 48;
     DarkestYellow = 42; DarkYellow = 43; Yellow = 44; LightYellow = 14; LightestYellow = 68;
+    BulletY5 = 170; BulletY4 = 145; BulletY3 = 120; BulletY2 = 105; BulletY1 = 101;
 
 VAR
     Key : CHAR;
-    PlaneX, PlaneY, BulletX, BulletY, OldBulletX, OldBulletY,
+    PlaneX, PlaneY, BulletX, BulletY, OldBulletX, OldBulletY, DrawBulletX,
     Enemies, Enemy1X, Enemy2X, Enemy3X, Enemy4X, Enemy5X, Enemy6X, EnemyY,
     Boss1Lives, Boss2Lives, Boss3Lives,
-    CoverRectangleX, Count, Lives,
-    Score, BkSize : CARDINAL;
+    CoverRectangleX, Count, Lives, Score, BkSize : CARDINAL;
     BkAddress : ADDRESS;
     BkColour, OldBkColor : LONGCARD;
     Xs, Ys : CoordArray;
     TextPos : Graph.TextCoords;
-    OneAlive, TwoAlive, ThreeAlive, FourAlive, FiveAlive, SixAlive,
-    ScreenComplete, GameOver, Cheat : BOOLEAN;
+    OneAlive, TwoAlive, ThreeAlive, FourAlive, FiveAlive, SixAlive, ScreenComplete, GameOver, Cheat : BOOLEAN;
     MouseButtons : MsMouse.MsData;
     MouseMove : MsMouse.MsMotion;
 
@@ -48,7 +47,8 @@ PROCEDURE SetPixel(pixPos : CARDINAL; Color : BYTE);
 PROCEDURE GetPixel(x, y : CARDINAL) : SHORTCARD;
 PROCEDURE DrawPlane(x, y, Width : CARDINAL);
 PROCEDURE DrawPlane5025;
-PROCEDURE Update3DBullet;
+PROCEDURE Update3DBullet(Check3DEnemies : BOOLEAN);
+PROCEDURE Clear3DBullet(Color : CARDINAL);
 PROCEDURE CheckSpecialKeys;
 PROCEDURE CheckMouseAndSpecialKeys;
 PROCEDURE CheckMouse;

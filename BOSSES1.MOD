@@ -85,7 +85,6 @@ END KillBoss1;
 
 PROCEDURE Boss1;
 CONST
-CONST
     GravityAccel = 0.2; TerminalVelocity = 3.0;
     BossFinalY = 150.0;
     BkFallingLeft = 120; BkFallingTop = 0; BkFallingRight = 200; BkFallingBottom = 199;
@@ -143,7 +142,7 @@ BEGIN
 
     CheckMouse();
     DrawPlane5025();
-    Update3DBullet();
+    Update3DBullet(FALSE);
     IF (BulletY > 99) THEN
         BulletY := BulletY - 1;
     END;
@@ -160,7 +159,7 @@ BEGIN
             END;
             CheckMouse();
             DrawPlane5025();
-            Update3DBullet;
+            Update3DBullet(FALSE);
             IF (BulletX > 130) AND (BulletX < 179) AND (BulletY < 3) THEN
                 Disc(160, 110, 40, LightestWhite);
                 BossLives := BossLives - 1;

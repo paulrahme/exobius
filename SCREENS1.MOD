@@ -362,7 +362,7 @@ BEGIN
             CheckMouse();
             Polygon(4, Xs, Ys, LightBrown);
             UpdateGroundDots();
-            Update3DBullet();
+            Update3DBullet(FALSE);
             DrawPlane5025();
             Lib.Delay(GameSpeed);
         END;
@@ -375,7 +375,7 @@ BEGIN
                 Polygon(4, Xs, Ys, LightBrown);
                 UpdateGroundDots();
                 DrawEnemies1();
-                Update3DBullet();
+                Update3DBullet(TRUE);
                 DrawPlane5025();
                 IF (BulletY > 99) THEN
                     BulletY := BulletY - 1;

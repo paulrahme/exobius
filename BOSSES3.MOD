@@ -22,7 +22,7 @@ FROM Exobius IMPORT
     Count, Lives, EnemyY, BkColour,
     OldBkColor,  Xs, Ys, OneAlive, TwoAlive, ThreeAlive, FourAlive, FiveAlive,
     SixAlive, ScreenComplete, GameOver,  MouseButtons,  MouseMove, GameSpeed,
-    Update3DBullet, DrawPlane, CheckMouse, Die,
+    DrawPlane, CheckMouse, Die,
     FinishScreen, Key, PlaneXMove, Score,
     BkAddress, DrawGameOver, TextPos;
 

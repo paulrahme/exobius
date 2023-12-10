@@ -183,7 +183,7 @@ BEGIN
         Graph.PutImage (0, 0, BkAddress, Graph._GPSET);
         CheckMouse;
         DrawPlane (PlaneX, PlaneY, PlaneWidth);
-        Update3DBullet;
+        Update3DBullet(FALSE);
         IF (BulletY  > 99) THEN
                 BulletY := BulletY - 1;
         END;
@@ -218,7 +218,7 @@ BEGIN
                         END;
                         CheckMouse;
                         DrawPlane (PlaneX, PlaneY, PlaneWidth);
-                        Update3DBullet;
+                        Update3DBullet(FALSE);
                         IF (BulletY  < 6) AND (BulletY > 0) THEN
                                 BulletY := BulletY - 1;
                         END;

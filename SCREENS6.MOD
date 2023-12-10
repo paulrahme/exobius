@@ -222,7 +222,7 @@ BEGIN
         DrawBoss();
 
         (* Bullet + collision checks *)
-        Update3DBullet();
+        Update3DBullet(FALSE);
         CheckBulletAgainstBoss();
         CheckPlayerCollision(Arches[0]);
 
