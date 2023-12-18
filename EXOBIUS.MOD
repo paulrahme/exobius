@@ -230,10 +230,12 @@ BEGIN
         IF (PlaneX < PlaneXMin + DeltaX) THEN
             PlaneX := PlaneXMin;
         ELSE
+            IF (DeltaX > PlaneX) THEN DeltaX := PlaneX; END; (* Avoids arithmetic overflow for large mouse movement *)
             PlaneX := PlaneX - DeltaX;
         END;
     ELSIF (MouseMove.horiz > 0) THEN
         (* Moving right *)
+        IF (DeltaX > PlaneXMax) THEN DeltaX := PlaneXMax; END; (* Avoids arithmetic overflow for large mouse movement *)
         IF (PlaneX > PlaneXMax - DeltaX) THEN
             PlaneX := PlaneXMax;
         ELSE
@@ -251,19 +253,19 @@ BEGIN;
     IF (BulletX <= 50) AND (OneAlive) THEN
         BlowUpX := Enemy1X;
         OneAlive := FALSE;
-    ELSIF (BulletX >= 55) AND (BulletX <= 100) AND (TwoAlive) THEN
+    ELSIF (BulletX > 50) AND (BulletX <= 100) AND (TwoAlive) THEN
         BlowUpX := Enemy2X;
         TwoAlive := FALSE;
-    ELSIF (BulletX >= 100) AND (BulletX <= 160) AND (ThreeAlive) THEN
+    ELSIF (BulletX > 100) AND (BulletX <= 160) AND (ThreeAlive) THEN
         BlowUpX := Enemy3X;
         ThreeAlive := FALSE;
-    ELSIF (BulletX >= 160) AND (BulletX <= 210) AND (FourAlive) THEN
+    ELSIF (BulletX > 160) AND (BulletX <= 210) AND (FourAlive) THEN
         BlowUpX := Enemy4X;
         FourAlive := FALSE;
-    ELSIF (BulletX >= 210) AND (BulletX <= 260) AND (FiveAlive) THEN
+    ELSIF (BulletX > 210) AND (BulletX <= 260) AND (FiveAlive) THEN
         BlowUpX := Enemy5X;
         FiveAlive := FALSE;
-    ELSIF (BulletX >= 260) AND (SixAlive) THEN
+    ELSIF (BulletX > 260) AND (SixAlive) THEN
         BlowUpX := Enemy6X;
         SixAlive := FALSE;
     ELSE
