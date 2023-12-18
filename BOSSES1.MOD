@@ -19,7 +19,7 @@ FROM Exobius IMPORT
     PlaneX, BulletX, BulletY, Lives,
     Xs, Ys,
     ScreenComplete, GameOver, GameSpeed,
-    Update3DBullet, BulletCooldownFrames, DrawPlane, DrawPlane5025, CheckMouse, Die,
+    Update3DBullet, StartBulletCooldown, DrawPlane, DrawPlane5025, CheckMouse, Die,
     FinishScreen, Key, Score,
     BkAddress, DrawGameOver, TextPos;
 
@@ -157,11 +157,11 @@ BEGIN
             CheckMouse();
             DrawPlane5025();
             Update3DBullet(FALSE);
-            IF (BulletX > 130) AND (BulletX < 179) AND (BulletY < 3) THEN
+            IF (BulletY = 1) AND (BulletX > 130) AND (BulletX < 179) THEN
                 Disc(160, 110, 40, LightestWhite);
                 BossLives := BossLives - 1;
                 Rectangle(1 + (BossLives * 40), 1, 318, 9, Black, TRUE);
-                BulletY := 100 - BulletCooldownFrames;
+                StartBulletCooldown();
                 Delay(5);
                 Score := Score + 150;
                 IF (BossLives = 0) THEN

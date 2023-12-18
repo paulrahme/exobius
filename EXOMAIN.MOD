@@ -46,12 +46,12 @@ BEGIN
 (*    Screen1();      IF GameOver THEN RETURN; END;
     Boss1();        IF GameOver THEN RETURN; END;
     Screen2();      IF GameOver THEN RETURN; END;
-    Screen3();      IF GameOver THEN RETURN; END;
+ *)   Screen3();      IF GameOver THEN RETURN; END;
     Screen4();      IF GameOver THEN RETURN; END;
     Boss4();        IF GameOver THEN RETURN; END;
     Screen6();      IF GameOver THEN RETURN; END;
     Screen7();      IF GameOver THEN RETURN; END;
-*)
+
     (* Stage/boss split *)
     IF NOT PlaneInAir THEN
         Boss7();    IF GameOver THEN RETURN; END;

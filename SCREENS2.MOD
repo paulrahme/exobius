@@ -15,7 +15,7 @@ FROM Exobius IMPORT
     DarkestYellow, DarkYellow, Yellow, LightYellow, LightestYellow,
     DarkestWhite, DarkWhite, White, LightWhite, LightestWhite,
     DarkestGreen, DarkGreen, Green, LightGreen, LightestGreen,
-    PlaneX, PlaneStartX, PlaneStartY, BulletX, BulletY, OldBulletX, PlaneY,
+    PlaneX, PlaneStartX, PlaneStartY, BulletX, BulletY, OldBulletX, StartBulletCooldown, PlaneY,
     BkAddress,
     PutPixel, SetPixel,
     CheckMouse, CheckSpecialKeys, CheckMouseAndSpecialKeys,
@@ -23,7 +23,7 @@ FROM Exobius IMPORT
     ScreenComplete, GameOver, GameSpeed, Lives, Die, DrawGameOver;
 
 VAR
-    OldBulletY : INTEGER;
+    OldBulletY : CARDINAL;
 
 PROCEDURE BlowUpEnemy2 (x, y : CARDINAL);
 CONST
@@ -68,7 +68,7 @@ END BlowUpEnemy2;
 
 PROCEDURE UpBullet;
 BEGIN
-    IF (BulletY < 60000) THEN
+    IF (BulletY > 0) AND (BulletY < 200) THEN
         IF (OldBulletX > 0) THEN
             Rectangle(OldBulletX - 1, OldBulletY, OldBulletX + 1, OldBulletY + 16, Black, FALSE);
             Line(OldBulletX, OldBulletY, OldBulletX, OldBulletY + 16, Black);
@@ -85,9 +85,9 @@ BEGIN
         IF (BulletY < 10) THEN
             Rectangle(BulletX - 1, BulletY, BulletX + 1, BulletY + 16, Black, FALSE);
             Line(BulletX, BulletY, BulletX, BulletY + 16, Black);
-            BulletY := 65000;
+            StartBulletCooldown();
         ELSE
-            BulletY := BulletY - 10;
+            BulletY := BulletY - 4;
             (* Draw bullet *)
             Rectangle(BulletX - 1, BulletY + 1, BulletX + 1, BulletY + 9, LightBlue, FALSE);
             Line(BulletX, BulletY, BulletX, BulletY + 10, LightWhite);
@@ -200,7 +200,7 @@ BEGIN
     Graph.ClearScreen (Graph._GCLEARSCREEN);
     PlayCaveIntro();
 
-    OldPlaneX := PlaneX; BulletY := 65530;
+    OldPlaneX := PlaneX; BulletX := 1000; OldBulletX := 1000; BulletY := 0; OldBulletY := 0;
     IF (NOT GameOver) THEN
         (* Draw enemies *)
         GlowSize := CARDINAL(Graph.ImageSize(0, 0, GlowWidth, GlowHeight));
@@ -224,7 +224,7 @@ BEGIN
             CheckMouse();
             Rectangle(CARDINAL(OldPlaneX), PlaneY, CARDINAL(OldPlaneX) + PlaneWidth, PlaneY + PlaneHeight, Black, TRUE);
             DrawPlane(PlaneX, PlaneY, PlaneWidth);
-            UpBullet;
+            UpBullet();
 
             (* Draw enemies *)
             FOR GlowIdx := 0 TO (GlowCount - 1) DO
@@ -256,9 +256,9 @@ BEGIN
                     Plot(GX + 5 + Lib.RANDOM(10), GY + 12 + Lib.RANDOM(8), 68);
 
                     (* Hit by bullet? *)
-                    IF (BulletY < GY + 10) AND (BulletX > GX) AND (BulletX < GX + GlowWidth) THEN
+                    IF (BulletY > 0) AND (BulletY < GY + 10) AND (BulletX > GX) AND (BulletX < GX + GlowWidth) THEN
                         BlowUpEnemy2(GX, GY);
-                        BulletY := 65000;
+                        StartBulletCooldown();
                         GY := 65000;
                         GlowsAlive := GlowsAlive - 1;
                     (* Hit player? *)

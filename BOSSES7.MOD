@@ -18,7 +18,7 @@ FROM Exobius IMPORT
     DarkestYellow, DarkYellow, Yellow, LightYellow, LightestYellow,
     PlaneX, PlaneY, PlaneWidth, PlaneHeight, BulletX, BulletY, Lives,
     GameOver, GameSpeed,
-    Update3DBullet, Clear3DBullet, BulletCooldownFrames, DrawPlane5025, CheckMouse, Die,
+    Update3DBullet, Clear3DBullet, StartBulletCooldown, DrawPlane5025, CheckMouse, Die,
     FinishScreen, Score,
     DrawGameOver, TextPos;
 
@@ -169,7 +169,7 @@ BEGIN
                 Disc(BossX, BossHoleY - BossHeight, BossHalfWidth, LightestWhite);
                 BossLives := BossLives - 1;
                 Rectangle(1 + (BossLives * 20), 1, 318, 9, Black, TRUE);
-                BulletY := 100 - BulletCooldownFrames;
+                StartBulletCooldown();
                 Sound(30); Delay(5); NoSound();
                 Score := Score + 150;
                 IF (BossLives = 0) THEN

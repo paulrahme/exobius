@@ -14,7 +14,6 @@ CONST
     PlaneWidth = 50; PlaneHeight = 25; PlaneStartX = 134; PlaneStartY = 174; CollisionY = 158;
     EnemyYStart = 87;  (* 200 - EnemyYStart is actually the y-coordinate *)
     PlaneXMin = 15; PlaneXMax = 255; PlaneMoveDiv = 5; PlaneXMove = 25;
-    BulletCooldownFrames = 5;
     Black = 0;
     DarkestGrey = 17; DarkGrey = 19; Grey = 21; LightGrey = 23; LightestGrey = 25;
     DarkestWhite = 26; DarkWhite = 27; White = 28; LightWhite = 29; LightestWhite = 30;
@@ -47,6 +46,7 @@ PROCEDURE SetPixel(pixPos : CARDINAL; Color : BYTE);
 PROCEDURE GetPixel(x, y : CARDINAL) : SHORTCARD;
 PROCEDURE DrawPlane(x, y, Width : CARDINAL);
 PROCEDURE DrawPlane5025;
+PROCEDURE StartBulletCooldown;
 PROCEDURE Update3DBullet(Check3DEnemies : BOOLEAN);
 PROCEDURE Clear3DBullet(Color : CARDINAL);
 PROCEDURE CheckSpecialKeys;

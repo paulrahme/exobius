@@ -10,6 +10,9 @@ FROM Font IMPORT A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, 
 TYPE
     BYTEPTR = POINTER TO BYTE;
 
+CONST
+    BulletCooldownFrames = 5;
+
 PROCEDURE SetVGAMode;
 VAR
     VideoMode : BOOLEAN;
@@ -215,14 +218,25 @@ BEGIN
     CheckSpecialKeys();
 END CheckMouseAndSpecialKeys;
 
+PROCEDURE StartBulletCooldown;
+BEGIN
+    BulletY := 1000 - BulletCooldownFrames;
+END StartBulletCooldown;
+
 PROCEDURE CheckMouse;
 VAR
     DeltaX : CARDINAL;
 BEGIN
     CheckMouseAndSpecialKeys();
-    IF ((BulletY = 0) OR (BulletY = 100)) AND (MouseButtons.left_pressed OR MouseButtons.right_pressed OR MouseButtons.middle_pressed) THEN
+    IF (BulletY = 0) AND (MouseButtons.left_pressed OR MouseButtons.right_pressed OR MouseButtons.middle_pressed) THEN
         BulletX := PlaneX + 25;
         BulletY := 5;
+    ELSIF (BulletY >= 1000 - BulletCooldownFrames) AND (BulletY < 1000) THEN
+        BulletY := BulletY + 1;
+        (* Cooldown period complete? *)
+        IF (BulletY = 1000) THEN
+            BulletY := 0;
+        END;
     END;
     DeltaX := ABS(MouseMove.horiz) DIV PlaneMoveDiv;
     IF (MouseMove.horiz < 0) THEN
@@ -294,11 +308,8 @@ PROCEDURE Update3DBullet(Check3DEnemies : BOOLEAN);
 VAR
     Dist : INTEGER;
 BEGIN
-    IF (BulletY = 0) OR (BulletY = 100) THEN
-        RETURN;
-    ELSIF (BulletY > 50) AND (BulletY < 100) THEN
-        (* Cooldown timer before next bullet can be fired *)
-        BulletY := BulletY + 1;
+    (* Bullet not currently active? *)
+    IF (BulletY = 0) OR ((BulletY >= 1000 - BulletCooldownFrames) AND (BulletY <= 1000)) THEN
         RETURN;
     END;
 
@@ -360,7 +371,7 @@ BEGIN
             IF Check3DEnemies AND (EnemyY >= 100) THEN
                 CheckBulletAgainstEnemies();
             END;
-        |0: BulletY := 100 - BulletCooldownFrames;
+        |0: StartBulletCooldown();
     END;
 END Update3DBullet;
 
