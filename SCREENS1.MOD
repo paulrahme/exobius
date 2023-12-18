@@ -58,8 +58,9 @@ BEGIN
             |4: DrawFlyTraps(Enemy1X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
             |5: DrawSpinners(Enemy1X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
             |6: DrawMaces(Enemy1X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
-            |7: DrawSpinners(Enemy1X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
-                ScreenComplete := TRUE;
+            |7: DrawPlants(Enemy1X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
+            |8: DrawSpinners(Enemy1X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
+            |9: ScreenComplete := TRUE;
         END;
     END;
     IF TwoAlive THEN
@@ -72,9 +73,7 @@ BEGIN
             |6: DrawMaces(Enemy2X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
             |7: DrawPlants(Enemy2X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
             |8: DrawSpinners(Enemy2X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
-            |9: DrawSpinners(Enemy2X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
-            |10:DrawSpinners(Enemy2X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
-                ScreenComplete := TRUE;
+            |9: ScreenComplete := TRUE;
         END;
     END;
     IF ThreeAlive THEN
@@ -87,9 +86,7 @@ BEGIN
             |6: DrawMaces(Enemy3X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
             |7: DrawPlants(Enemy3X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
             |8: DrawSpinners(Enemy3X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
-            |9: DrawSpinners(Enemy3X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
-            |10:DrawSpinners(Enemy3X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
-                ScreenComplete := TRUE;
+            |9: ScreenComplete := TRUE;
         END;
     END;
     IF FourAlive THEN
@@ -102,9 +99,7 @@ BEGIN
             |6: DrawMaces(Enemy4X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
             |7: DrawPlants(Enemy4X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
             |8: DrawSpinners(Enemy4X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
-            |9: DrawSpinners(Enemy4X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
-            |10:DrawSpinners(Enemy4X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
-                ScreenComplete := TRUE;
+            |9: ScreenComplete := TRUE;
         END;
     END;
     IF FiveAlive THEN
@@ -117,9 +112,7 @@ BEGIN
             |6: DrawMaces(Enemy5X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
             |7: DrawPlants(Enemy5X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
             |8: DrawSpinners(Enemy5X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
-            |9: DrawSpinners(Enemy5X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
-            |10:DrawSpinners(Enemy5X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
-                ScreenComplete := TRUE;
+            |9: ScreenComplete := TRUE;
         END;
     END;
     IF SixAlive THEN
@@ -132,28 +125,42 @@ BEGIN
             |6: DrawMaces(Enemy6X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
             |7: DrawPlants(Enemy6X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
             |8: DrawSpinners(Enemy6X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
-            |9: DrawSpinners(Enemy6X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
-            |10:DrawSpinners(Enemy6X, EnemyY, (EnemyY - EnemyYStart) DIV 3);
-                ScreenComplete := TRUE;
+            |9: ScreenComplete := TRUE;
         END;
     END;
 END DrawEnemies1;
+
+PROCEDURE DrawGroundWithEdge(DrawGrass : BOOLEAN);
+BEGIN
+    IF (DrawGrass) THEN
+        Rectangle(0, 100, 320, 200, LightGreen, TRUE);
+    END;
+    
+    Polygon (4, Xs, Ys, LightBrown);
+    Line (150, 100, 0, 200, Brown);
+    Line (149, 100 ,0, 199, Brown);
+    Line (170, 100, 320, 200, DarkBrown);
+    Line (171, 100, 320, 199, DarkBrown);
+    Line (148, 100, 0, 198, DarkestBrown);
+    Line (172, 100, 320, 198, DarkestBrown);
+END DrawGroundWithEdge;
 
 PROCEDURE CheckDeath1;
 VAR
     Dead : BOOLEAN;
 BEGIN
-    IF (PlaneX < 53) THEN Dead := OneAlive;
-    ELSIF (PlaneX < 106) THEN Dead := TwoAlive;
-    ELSIF (PlaneX < 160) THEN Dead := ThreeAlive;
-    ELSIF (PlaneX < 213) THEN Dead := FourAlive;
-    ELSIF (PlaneX < 266) THEN Dead := FiveAlive;
+    IF (PlaneX < 45) THEN Dead := OneAlive;
+    ELSIF (PlaneX < 90) THEN Dead := TwoAlive;
+    ELSIF (PlaneX < 135) THEN Dead := ThreeAlive;
+    ELSIF (PlaneX < 179) THEN Dead := FourAlive;
+    ELSIF (PlaneX < 225) THEN Dead := FiveAlive;
     ELSE Dead := SixAlive;
     END;
 
     IF (Dead) THEN
         Die();
         OneAlive := FALSE;
+        DrawGroundWithEdge(TRUE);
     END;
 END CheckDeath1;
 
@@ -281,8 +288,8 @@ BEGIN
     ClearScreen(_GCLEARSCREEN);
 
     DrawMountains();
+    
     (* Draw grass *)
-
     Rectangle(0, 100, 320, 200, LightGreen, TRUE);
     FOR Count := 1 TO 1000 DO
         Plot(Lib.RANDOM(320), Lib.RANDOM(25) + 100, DarkestGreen);
@@ -332,13 +339,7 @@ BEGIN
     Polygon (4, Xs, Ys, Brown);
     DrawPlane5025();
     Lib.Delay (20);
-    Polygon (4, Xs, Ys, LightBrown);
-    Line (150, 100, 0, 200, Brown);
-    Line (149, 100 ,0, 199, Brown);
-    Line (170, 100, 320, 200, DarkBrown);
-    Line (171, 100, 320, 199, DarkBrown);
-    Line (148, 100, 0, 198, DarkestBrown);
-    Line (172, 100, 320, 198, DarkestBrown);
+    DrawGroundWithEdge(FALSE);
 
     FOR DotIdx := 0 TO (NumGroundDots-1) DO
         WITH GroundDots[DotIdx] DO
@@ -377,9 +378,6 @@ BEGIN
                 DrawEnemies1();
                 Update3DBullet(TRUE);
                 DrawPlane5025();
-                IF (BulletY > 99) THEN
-                    BulletY := BulletY - 1;
-                END;
                 IF (EnemyY > CollisionY) THEN
                     CheckDeath1;
                 END;
@@ -388,7 +386,6 @@ BEGIN
         END;
         Enemies := Enemies + 1;
     END;
-
 
     IF GameOver THEN
         DrawGameOver;
