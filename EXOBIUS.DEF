@@ -14,6 +14,7 @@ CONST
     PlaneWidth = 50; PlaneHeight = 25; PlaneStartX = 134; PlaneStartY = 174; CollisionY = 158;
     EnemyYStart = 87;  (* 200 - EnemyYStart is actually the y-coordinate *)
     PlaneXMin = 15; PlaneXMax = 255; PlaneMoveDiv = 5; PlaneXMove = 25;
+    BulletCooldownFrames = 5;
     Black = 0;
     DarkestGrey = 17; DarkGrey = 19; Grey = 21; LightGrey = 23; LightestGrey = 25;
     DarkestWhite = 26; DarkWhite = 27; White = 28; LightWhite = 29; LightestWhite = 30;
@@ -26,10 +27,9 @@ CONST
 
 VAR
     Key : CHAR;
-    PlaneX, PlaneY, BulletX, BulletY, OldBulletX, OldBulletY, DrawBulletX,
-    Enemies, Enemy1X, Enemy2X, Enemy3X, Enemy4X, Enemy5X, Enemy6X, EnemyY,
-    Boss1Lives, Boss2Lives, Boss3Lives,
-    CoverRectangleX, Count, Lives, Score, BkSize : CARDINAL;
+    PlaneX, PlaneY, BulletX, OldBulletX, BulletY, DrawBulletX,
+        Enemies, Enemy1X, Enemy2X, Enemy3X, Enemy4X, Enemy5X, Enemy6X, EnemyY, Boss1Lives, Boss2Lives, Boss3Lives,
+        CoverRectangleX, Count, Lives, Score, BkSize : CARDINAL;
     BkAddress : ADDRESS;
     BkColour, OldBkColor : LONGCARD;
     Xs, Ys : CoordArray;

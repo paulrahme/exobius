@@ -18,12 +18,12 @@ FROM Exobius IMPORT
     DarkestYellow, DarkYellow, Yellow, LightYellow, LightestYellow,
     PlaneX, PlaneY, PlaneWidth, PlaneHeight, BulletX, BulletY, Lives,
     GameOver, GameSpeed,
-    Update3DBullet, Clear3DBullet, DrawPlane5025, CheckMouse, Die,
+    Update3DBullet, Clear3DBullet, BulletCooldownFrames, DrawPlane5025, CheckMouse, Die,
     FinishScreen, Score,
     DrawGameOver, TextPos;
 
 CONST
-    BossHoleY = 130; BossHoleWidth = 50; BossHoleHeight = 25; BossHoleHalfHeight = 12;
+    BossHoleY = 130; BossHoleWidth = 52; BossHoleHeight = 26; BossHoleHalfHeight = 13;
     BossMouthY = 110; BossHalfWidth = 12; BossHeight = 30;
     BossSpitColliderRadius = 40;
 
@@ -99,19 +99,24 @@ BEGIN
      |2: (* Rising out of hole *)
         StateProgress := StateProgress + 5;
         DrawBossHead(StateProgress, FALSE);
-        RETURN (StateProgress >= BossHeight);
+        IF (StateProgress >= BossHeight) THEN
+            StateProgress := BossHeight;
+            RETURN TRUE;
+        ELSE
+            RETURN FALSE;
+        END;
 
      |3: (* Spitting *)
         IF (StateProgress = 0) THEN
             SpitXOffset := INTEGER(RANDOM(240)) - 120;
             SpitY := BossMouthY;
         END;
-        DrawBossHead(BossHoleHeight, TRUE);
+        DrawBossHead(BossHeight, TRUE);
         StateProgress := StateProgress + 1;
         RETURN (StateProgress >= 10);
 
      |4: (* Lowering back into hole *)
-        StateProgress := StateProgress + 5;
+        StateProgress := StateProgress + 3;
         DrawBossHead(BossHeight - StateProgress, FALSE);
         RETURN (StateProgress >= BossHeight);
 
@@ -132,9 +137,13 @@ PROCEDURE Boss7;
 VAR
     BossLives, SpitYDiffWidth, SpitYDiffHeight : CARDINAL;
 BEGIN
-    BossLives := 8; BossState := 0; StateProgress := 0;
+    BossLives := 16; BossState := 0; StateProgress := 0;
     BossX := 160; SpitX := 160; SpitYDiffWidth := 1; SpitYDiffHeight := 1;
     Rectangle(0, 100, 319, 199, DarkBrown, TRUE);
+
+    (* Boss's health bar *)
+    Rectangle(0, 0, 319, 10, White, FALSE);
+    Rectangle(1, 1, 318, 9, Red, TRUE);
 
     WHILE NOT GameOver AND (BossLives > 0) DO
         (* Update plane *)
@@ -156,12 +165,12 @@ BEGIN
         IF (BulletY > 0) THEN
             Clear3DBullet(DarkBrown);
             Update3DBullet(FALSE);
-            IF (BulletY < 3) AND (BulletX > BossX - BossHalfWidth) AND (BulletX < BossX + BossHalfWidth) THEN
-                Disc(BossX, BossMouthY, BossHalfWidth, LightestWhite);
+            IF (BossState = 3) AND (BulletY = 1) AND (BulletX > BossX - BossHalfWidth) AND (BulletX < BossX + BossHalfWidth) THEN
+                Disc(BossX, BossHoleY - BossHeight, BossHalfWidth, LightestWhite);
                 BossLives := BossLives - 1;
-                Rectangle(1 + (BossLives * 40), 1, 318, 9, Black, TRUE);
-                BulletY := 50;
-                Delay(5);
+                Rectangle(1 + (BossLives * 20), 1, 318, 9, Black, TRUE);
+                BulletY := 100 - BulletCooldownFrames;
+                Sound(30); Delay(5); NoSound();
                 Score := Score + 150;
                 IF (BossLives = 0) THEN
                     KillBoss();
@@ -174,10 +183,10 @@ BEGIN
             IF (SpitY > BossHoleY + BossHoleHalfHeight) THEN
                 Rectangle(SpitX - SpitYDiffWidth - 2, SpitY - SpitYDiffHeight - 2, SpitX + SpitYDiffWidth + 2, SpitY + SpitYDiffHeight + 2, DarkBrown, TRUE);
             END;
-            SpitY := SpitY + 1 + (SpitY - BossMouthY) DIV 12;
+            SpitY := SpitY + 1 + (SpitY - BossMouthY) DIV 9;
             SpitYDiffWidth := (SpitY - BossMouthY) DIV 5;
             SpitYDiffHeight := SpitYDiffWidth DIV 2;
-            SpitX := CARDINAL(160 + (SpitXOffset * INTEGER(SpitYDiffWidth) DIV 100));
+            SpitX := CARDINAL(160 + (SpitXOffset * INTEGER(SpitYDiffWidth) DIV 50));
             Ellipse(SpitX, SpitY, SpitYDiffWidth, SpitYDiffHeight, Blue, TRUE);
             Ellipse(SpitX, SpitY, SpitYDiffWidth + 1, SpitYDiffHeight + 1, LightestBlue, FALSE);
             IF (SpitY > 200) THEN

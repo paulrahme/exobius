@@ -220,7 +220,7 @@ VAR
     DeltaX : CARDINAL;
 BEGIN
     CheckMouseAndSpecialKeys();
-    IF (BulletY = 0) AND (MouseButtons.left_pressed OR MouseButtons.right_pressed OR MouseButtons.middle_pressed) THEN
+    IF ((BulletY = 0) OR (BulletY = 100)) AND (MouseButtons.left_pressed OR MouseButtons.right_pressed OR MouseButtons.middle_pressed) THEN
         BulletX := PlaneX + 25;
         BulletY := 5;
     END;
@@ -292,7 +292,11 @@ PROCEDURE Update3DBullet(Check3DEnemies : BOOLEAN);
 VAR
     Dist : INTEGER;
 BEGIN
-    IF (BulletY = 0) THEN
+    IF (BulletY = 0) OR (BulletY = 100) THEN
+        RETURN;
+    ELSIF (BulletY > 50) AND (BulletY < 100) THEN
+        (* Cooldown timer before next bullet can be fired *)
+        BulletY := BulletY + 1;
         RETURN;
     END;
 
@@ -354,6 +358,7 @@ BEGIN
             IF Check3DEnemies AND (EnemyY >= 100) THEN
                 CheckBulletAgainstEnemies();
             END;
+        |0: BulletY := 100 - BulletCooldownFrames;
     END;
 END Update3DBullet;
 

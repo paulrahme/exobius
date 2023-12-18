@@ -15,12 +15,15 @@ FROM Exobius IMPORT
     DarkestYellow, DarkYellow, Yellow, LightYellow, LightestYellow,
     DarkestWhite, DarkWhite, White, LightWhite, LightestWhite,
     DarkestGreen, DarkGreen, Green, LightGreen, LightestGreen,
-    PlaneX, PlaneStartX, PlaneStartY, BulletX, BulletY, OldBulletX, OldBulletY, PlaneY,
+    PlaneX, PlaneStartX, PlaneStartY, BulletX, BulletY, OldBulletX, PlaneY,
     BkAddress,
     PutPixel, SetPixel,
     CheckMouse, CheckSpecialKeys, CheckMouseAndSpecialKeys,
     PlaneWidth, PlaneHeight, DrawPlane, DrawPlane5025,
     ScreenComplete, GameOver, GameSpeed, Lives, Die, DrawGameOver;
+
+VAR
+    OldBulletY : INTEGER;
 
 PROCEDURE BlowUpEnemy2 (x, y : CARDINAL);
 CONST
