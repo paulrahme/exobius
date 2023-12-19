@@ -41,7 +41,7 @@ CONST
 VAR
     PixelColour : SHORTCARD;
 BEGIN
-    Graph.GetImage(0, 190, 320, 200, BkAddress);
+    Graph.GetImage(0, 190, 319, 200, BkAddress);
     Rectangle(0, 190, 320, 200, Blue, TRUE);
     Circle(PlaneX + 10, PlaneY + 5, 2, LightestBlue);
     Circle(PlaneX + 10, PlaneY + 5, 4, LightestBlue);
