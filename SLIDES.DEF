@@ -1,6 +1,7 @@
 DEFINITION MODULE Slides;
 
 PROCEDURE PlayIntroSlideshow;
-PROCEDURE PlayEndSlideshow;
+PROCEDURE PlayGoodEnding;
+PROCEDURE PlayBadEnding;
 
 END Slides.

@@ -2,10 +2,9 @@ IMPLEMENTATION MODULE Slides;
 (*$I+,O+,R+,S+,Z+*)
 (*$S FF00*)
 
-IMPORT Str, Graph, Lib, IO, Exobius, Font;
+IMPORT Graph, Lib, Exobius, MsMouse;
 FROM Graph IMPORT Rectangle, Polygon, Line, HLine, Circle, Ellipse, Disc, Plot, Arc, Point, ClearScreen, _GCLEARSCREEN, OutText, SetTextPosition;
 FROM Lib IMPORT Delay;
-FROM Font IMPORT A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z;
 FROM Exobius IMPORT
     Black,
     DarkestGrey, DarkGrey, Grey, LightGrey, LightestGrey,
@@ -15,7 +14,8 @@ FROM Exobius IMPORT
     DarkestBrown, DarkBrown, Brown, LightBrown, LightestBrown,
     DarkestGreen, DarkGreen, Green, LightGreen, LightestGreen,
     DarkestYellow, DarkYellow, Yellow, LightYellow, LightestYellow,
-    Key, Xs, Ys, TextPos;
+    GameSpeed, Xs, Ys, TextPos, MouseButtons;
+FROM Font IMPORT D, E, H, N, T;
 
 PROCEDURE Intro1;
 BEGIN
@@ -1449,6 +1449,23 @@ BEGIN
     Plot (83,22,1);
 END EndingKeyInHand;
 
+PROCEDURE WaitForAnyMouseButton;
+BEGIN
+    MsMouse.GetStatus(MouseButtons);
+
+    (* Wait for button release *)
+    WHILE (MouseButtons.left_pressed OR MouseButtons.right_pressed OR MouseButtons.middle_pressed) DO
+        MsMouse.GetStatus(MouseButtons);
+        Lib.Delay(1);
+    END;
+
+    (* Wait for button down *)
+    WHILE NOT (MouseButtons.left_pressed OR MouseButtons.right_pressed OR MouseButtons.middle_pressed) DO
+        MsMouse.GetStatus(MouseButtons);
+        Lib.Delay(1);
+    END;    
+END WaitForAnyMouseButton;
+
 PROCEDURE PlayIntroSlideshow;
 BEGIN
     ClearScreen(_GCLEARSCREEN);
@@ -1457,49 +1474,85 @@ BEGIN
     OutText("Working at Le Grande Pizzeria");
     TextPos := SetTextPosition (2, 1);
     OutText("has bad days...");
-    Key := IO.RdKey();
+    WaitForAnyMouseButton();
     ClearScreen(_GCLEARSCREEN);
     Intro2;
     TextPos := SetTextPosition (23, 1);
     OutText("But does this look like your dream");
     TextPos := SetTextPosition (24, 1);
     OutText("ship?...");
-    Key := IO.RdKey();
+    WaitForAnyMouseButton();
     ClearScreen(_GCLEARSCREEN);
     Intro3;
     TextPos := SetTextPosition (1, 1);
     OutText("''Park it well'', he says...");
-    Key := IO.RdKey();
+    WaitForAnyMouseButton();
     ClearScreen(_GCLEARSCREEN);
     TextPos := SetTextPosition (1, 1);
     OutText("But you're in for a joyride!!");
-    Key := IO.RdKey();
+    WaitForAnyMouseButton();
 END PlayIntroSlideshow;
 
-PROCEDURE PlayEndSlideshow;
+PROCEDURE PlayGoodEnding;
 BEGIN
     ClearScreen(_GCLEARSCREEN);
     Intro1;
     Intro2;
-    Key := IO.RdKey();
+    WaitForAnyMouseButton();
     ClearScreen(_GCLEARSCREEN);
     Intro3;
     TextPos := SetTextPosition (1, 1);
     OutText("''You're not a bad driver'', he says...");
-    Key := IO.RdKey();
+    WaitForAnyMouseButton();
     TextPos := SetTextPosition (1, 1);
-    OutText("''What you doing in a place like this''");
-    Key := IO.RdKey();
-    ClearScreen(_GCLEARSCREEN);
+    OutText("''What you doing in a place like this?''");
+    WaitForAnyMouseButton();
     ClearScreen(_GCLEARSCREEN);
     EndingKeyInHand;
     TextPos := SetTextPosition (1, 1);
-    OutText("''...so just keep the car...''");
-    Key := IO.RdKey();
+    OutText("''You can keep the car...''");
+    WaitForAnyMouseButton();
     TextPos := SetTextPosition (2, 1);
     OutText("''...and go on home, okay?''");
-    Key := IO.RdKey();
-END PlayEndSlideshow;
+    WaitForAnyMouseButton();
+    TextPos := SetTextPosition (19, 30);
+    T(240, 150); H(265, 150); E(290, 150);
+    E(240, 180); N(265, 180); D(290, 180);
+    WaitForAnyMouseButton();
+END PlayGoodEnding;
+
+PROCEDURE PlayBadEnding;
+BEGIN
+    ClearScreen(_GCLEARSCREEN);
+    Intro1;
+    Intro2;
+    WaitForAnyMouseButton();
+    ClearScreen(_GCLEARSCREEN);
+    Intro3;
+    TextPos := SetTextPosition (1, 1);
+    OutText("''You fell off the pillars'', he says...");
+    WaitForAnyMouseButton();
+    TextPos := SetTextPosition (1, 1);
+    OutText("''Give back my car!''                   ");
+    WaitForAnyMouseButton();
+    ClearScreen(_GCLEARSCREEN);
+    Intro2;
+    TextPos := SetTextPosition (1, 1);
+    OutText("''I'm outta here.''");
+    WaitForAnyMouseButton();
+    ClearScreen(_GCLEARSCREEN);
+    Intro1;
+    TextPos := SetTextPosition (1, 1);
+    OutText("And back to your valet job you go.");
+    WaitForAnyMouseButton();
+    ClearScreen(_GCLEARSCREEN);
+    TextPos := SetTextPosition (1, 1);
+    OutText("Try do better next time!");
+    WaitForAnyMouseButton();
+    TextPos := SetTextPosition (13, 16);
+    OutText("THE END?");
+    WaitForAnyMouseButton();
+END PlayBadEnding;
 
 END Slides.
 

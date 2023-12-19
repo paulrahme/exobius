@@ -24,7 +24,7 @@ FROM Exobius IMPORT
     DarkestWhite, DarkWhite, White, LightWhite, LightestWhite,
     DarkestGreen, DarkGreen, Green, LightGreen, LightestGreen;
 
-FROM Slides IMPORT PlayIntroSlideshow, PlayEndSlideshow;
+FROM Slides IMPORT PlayIntroSlideshow, PlayGoodEnding, PlayBadEnding;
 FROM Intro1 IMPORT PlayTitleSequence;
 FROM Intro2 IMPORT PlaneToPlanet;
 FROM Screens1 IMPORT Screen1;
@@ -43,13 +43,15 @@ FROM Bosses9 IMPORT Boss9;
 
 PROCEDURE PlayLevels();
 BEGIN
-(*    Screen1();      IF GameOver THEN RETURN; END;
+(*
+    Screen1();      IF GameOver THEN RETURN; END;
     Boss1();        IF GameOver THEN RETURN; END;
     Screen2();      IF GameOver THEN RETURN; END;
- *)   Screen3();      IF GameOver THEN RETURN; END;
+    Screen3();      IF GameOver THEN RETURN; END;
     Screen4();      IF GameOver THEN RETURN; END;
     Boss4();        IF GameOver THEN RETURN; END;
     Screen6();      IF GameOver THEN RETURN; END;
+
     Screen7();      IF GameOver THEN RETURN; END;
 
     (* Stage/boss split *)
@@ -57,12 +59,15 @@ BEGIN
         Boss7();    IF GameOver THEN RETURN; END;
     ELSE
         FlyThroughSpace();
+*)
         Screen8();  IF GameOver THEN RETURN; END;
         Boss8();    IF GameOver THEN RETURN; END;
+        Screen9();  IF GameOver THEN RETURN; END;
+        Boss9();    IF GameOver THEN RETURN; END;
+(*
     END;
+*)
 
-    Screen9();      IF GameOver THEN RETURN; END;
-    Boss9();        IF GameOver THEN RETURN; END;
 END PlayLevels;
 
 (* Main loop *)
@@ -74,11 +79,16 @@ BEGIN
     PlayTitleSequence();
     ClearTheBuffer();
     PlaneToPlanet();
-*)
-    PlayLevels();
+
+*)    PlayLevels();
     IF NOT GameOver THEN
-        PlayEndSlideshow();
+        IF (PlaneInAir) THEN
+            PlayGoodEnding();
+        ELSE
+            PlayBadEnding();
+        END;
     END;
+
 
     ShutDown();
     SetTextMode();
