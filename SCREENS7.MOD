@@ -184,7 +184,7 @@ PROCEDURE Screen7;
 CONST
     LockedMovementBounces = 4;
     PlaneCenterX = 135;
-    BounceInitialVelocity = 40;
+    BounceInitialVelocity = 36;
     PlaneGravAccel = 1;
 VAR
     NextPillarIdx, NextPillarZ, PillarCount, ZMoveCount, DrawPillarIdx, DrawX, BehindPlaneSize : CARDINAL;
@@ -203,7 +203,7 @@ BEGIN
         ELSIF (Count < PillarsVisible * 2) THEN
             PillarXs[Count] := INTEGER(RANDOM(120)) - 60;
         ELSE
-            PillarXs[Count] := INTEGER(RANDOM(270)) - 140;
+            PillarXs[Count] := INTEGER(RANDOM(260)) - 130;
         END;
     END;
     NextPillarIdx := 0; NextPillarZ := PillarZDiff; ZMoveCount := 0;
@@ -261,6 +261,10 @@ BEGIN
             ZMoveCount := ZMoveCount - 1;
         ELSE
             IF (PlaneInAir) THEN
+                NoSound();
+                IF (BounceVelocity > 0) AND (BounceVelocity > BounceInitialVelocity DIV 2) THEN
+                    Sound(200 - CARDINAL(BounceVelocity + BounceInitialVelocity) * 2);
+                END;
                 ZMoveCount := 2;
             END;
             NextPillarZ := NextPillarZ - 1;
@@ -296,6 +300,7 @@ BEGIN
 
         Delay(GameSpeed);
     END;
+    NoSound();
 
     IF (GameOver) THEN
         DrawGameOver();
