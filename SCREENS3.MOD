@@ -167,24 +167,29 @@ VAR
 BEGIN
     DrawPlane5025();
     FOR RectY := 100 TO 0 BY -10 DO
-        Rectangle(RectY, RectY, 319 - RectY, 199 - RectY, Black ,TRUE);
+        Rectangle(RectY, RectY, 319 - RectY, 199 - RectY, Black, TRUE);
+        Delay(GameSpeed);
     END;
     DrawPlane5025();
     FOR RectY := 100 TO 0 BY -10 DO
         Rectangle(RectY, RectY, 319 - RectY, 199 - RectY, Grey ,TRUE);
+        Delay(GameSpeed);
     END;
     DrawPlane5025();
     FOR RectY := 100 TO 0 BY -10 DO
         Rectangle(RectY, RectY, 319 - RectY, 199 - RectY, DarkestWhite ,TRUE);
+        Delay(GameSpeed);
     END;
     DrawPlane5025();
     FOR RectY := 100 TO 0 BY -10 DO
         Rectangle(RectY, RectY, 319 - RectY, 199 - RectY, White ,TRUE);
+        Delay(GameSpeed);
     END;
     DrawPlane5025();
     FOR RectY := 100 TO 0 BY -10 DO
         Rectangle(RectY, RectY, 319 - RectY, 99, LightBlue, TRUE);
         Rectangle(RectY, 100, 319 - RectY, 199 - RectY, LightestWhite ,TRUE);
+        Delay(GameSpeed);
     END;
     Rectangle(0, 0, 319, 99, LightBlue, TRUE);
 
@@ -219,11 +224,8 @@ BEGIN
                 DrawPlane5025();
                 DrawEnemies3();
                 Update3DBullet(TRUE);
-                IF (BulletY > 99) THEN
-                    BulletY := BulletY - 1;
-                END;
                 IF (EnemyY > CollisionY) THEN
-                    CheckDeath1;
+                    CheckDeath1(FALSE);
                 END;
                 Lib.Delay(GameSpeed);
             END;

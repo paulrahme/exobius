@@ -145,7 +145,7 @@ BEGIN
     Line (172, 100, 320, 198, DarkestBrown);
 END DrawGroundWithEdge;
 
-PROCEDURE CheckDeath1;
+PROCEDURE CheckDeath1(RedrawGroundAfterDeath : BOOLEAN);
 VAR
     Dead : BOOLEAN;
 BEGIN
@@ -160,7 +160,9 @@ BEGIN
     IF (Dead) THEN
         Die();
         OneAlive := FALSE;
-        DrawGroundWithEdge(TRUE);
+        IF (RedrawGroundAfterDeath) THEN
+            DrawGroundWithEdge(TRUE);
+        END;
     END;
 END CheckDeath1;
 
@@ -379,7 +381,7 @@ BEGIN
                 Update3DBullet(TRUE);
                 DrawPlane5025();
                 IF (EnemyY > CollisionY) THEN
-                    CheckDeath1;
+                    CheckDeath1(TRUE);
                 END;
                 Lib.Delay(GameSpeed);
             END;
