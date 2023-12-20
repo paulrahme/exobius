@@ -7,7 +7,6 @@ IMPORT Graph, Lib, IO, Exobius;
 FROM Graph IMPORT Rectangle, Polygon, Line, HLine, Circle, Ellipse, Disc, Plot, Arc, Point, GetImage;
 FROM Lib IMPORT Sound, NoSound, Delay, RANDOM;
 FROM Font IMPORT A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z;
-FROM Screens8 IMPORT DrawPlanet;
 FROM Exobius IMPORT
   SolidFill, PlaneWidth, PlaneHeight,
   EnemyYStart, CollisionY,
@@ -30,7 +29,6 @@ FROM Exobius IMPORT
 CONST
     PlanetX = 160;
     PlanetY = 100;
-    PlanetRadius = 70;
 
 PROCEDURE DrawPartialSky (x : CARDINAL);
 BEGIN
@@ -78,23 +76,18 @@ CONST
     NoOfPillars = 16;
     NoOfCircles = 200;
     NewNoOfPillars = 35;
-(***) PlanetRadius = 50;
 VAR
   PillarCount, Pillar1X, Pillar2X, Pillar3X, Pillar4X, Pillar5X, Pillar1Y,
   Pillar2Y, Pillar3Y, Pillar4Y, Pillar5Y, Pillar6Y, OldPlaneX : CARDINAL;
 BEGIN
-    Count := PlanetRadius;
-    WHILE (Count<100) DO
-        DrawPlanet (PlanetX, PlanetY, Count);
-        Count := Count + (Count DIV 15);
+    Count := 50;
+    FOR Count := 50 TO 250 BY 7 DO
+        Disc(PlanetX, PlanetY, Count, DarkRed);
     END;
-    FOR Count := 100 TO 250 BY 7 DO
-        Disc (PlanetX, PlanetY, Count, DarkRed);
-    END;
-    Rectangle (0, 0, 320, 200, DarkRed, TRUE);
+    Rectangle(0, 0, 320, 200, DarkRed, TRUE);
     FOR Count := 0 TO 100 DO
-        HLine (0, Count, 320, 178);
-        Delay (9);
+        HLine(0, Count, 320, 178);
+        Delay(9);
     END;
     Rectangle (0,0,319,6,0,TRUE);
     Rectangle (0,7,319,13,184,TRUE);

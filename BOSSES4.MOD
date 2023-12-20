@@ -6,7 +6,6 @@ IMPORT Graph, Lib, Storage, Exobius;
 FROM Graph IMPORT Point, SetVideoMode, Rectangle, GraphMode, TextMode, Polygon, Line, HLine, Circle, Ellipse, Disc, Plot, Arc;
 FROM Lib IMPORT Sound, NoSound, Delay, RANDOM;
 FROM Sprites IMPORT DrawSpinners;
-FROM Screens8 IMPORT DrawStars8, DrawPlanet, PlanetRadius;
 FROM Exobius IMPORT
     Black, DarkestGrey, DarkGrey, Grey, LightGrey, LightestGrey,
     DarkestWhite, DarkWhite, White, LightWhite, LightestWhite,

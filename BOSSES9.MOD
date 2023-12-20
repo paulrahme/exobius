@@ -6,7 +6,7 @@ IMPORT Str, Graph, Lib, IO, Window, Storage, MsMouse, Exobius, Font;
 FROM Graph IMPORT Point, Rectangle, Polygon, Line, HLine, Circle, Ellipse, Disc, Plot, Arc;
 FROM Lib IMPORT Sound, NoSound, Delay, RANDOM;
 FROM Sprites IMPORT DrawSpinners;
-FROM Screens8 IMPORT DrawStars8, DrawPlanet, PlanetRadius;
+FROM Screens8 IMPORT DrawStars8, DrawPlanet;
 FROM Font IMPORT A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z;
 FROM Exobius IMPORT
   SolidFill, PlaneWidth, PlaneHeight,
