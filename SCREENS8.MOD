@@ -3,7 +3,7 @@ IMPLEMENTATION MODULE Screens8;
 (*$S FF00*)
 
 IMPORT Graph, Lib, Exobius;
-FROM Graph IMPORT Rectangle, Line, Disc, Plot, Point, ClearScreen;
+FROM Graph IMPORT Rectangle, Line, Circle, Disc, Plot, Point, ClearScreen;
 FROM Lib IMPORT Sound, NoSound, Delay, RANDOM;
 FROM Exobius IMPORT
     PlaneWidth, GetPixel, PutPixel,
@@ -48,7 +48,7 @@ BEGIN
     END;
 END DrawStars8;
 
-PROCEDURE DrawFallBall (x : CARDINAL);
+PROCEDURE DrawFallBall(x : CARDINAL);
 VAR
     y : CARDINAL;
 BEGIN
@@ -68,8 +68,10 @@ BEGIN
     END;
 END DrawFallBall;
 
-PROCEDURE DrawEnemies8;
+PROCEDURE SetEnemies(NewEnemyIndex : CARDINAL);
 BEGIN
+    Enemies := NewEnemyIndex;
+    
     CASE Enemies OF
         |1: EnemyColour1 := DarkestYellow;
             EnemyColour2 := DarkYellow;
@@ -91,93 +93,90 @@ BEGIN
             EnemyColour3 := Green;
             EnemyColour4 := LightGreen;
             EnemyColour5 := LightestGreen;
-        |5: EnemyColour1 := DarkestGrey;
-            EnemyColour2 := DarkGrey;
-            EnemyColour3 := Grey;
-            EnemyColour4 := LightGrey;
-            EnemyColour5 := LightestGrey;
+        |5: EnemyColour1 := Grey;
+            EnemyColour2 := LightGrey;
+            EnemyColour3 := LightestGrey;
+            EnemyColour4 := DarkestWhite;
+            EnemyColour5 := DarkWhite;
         |6: EnemyColour1 := DarkestBrown;
             EnemyColour2 := DarkBrown;
             EnemyColour3 := Brown;
             EnemyColour4 := LightBrown;
             EnemyColour5 := LightestBrown;
+
+        |7: ScreenComplete := TRUE;
     END;
-    IF (EnemyY<90) THEN
+END SetEnemies;
+
+PROCEDURE DrawEnemies8;
+BEGIN
+    IF (EnemyY < 90) THEN
         EnemyRadius := EnemyY DIV 10;
         Enemy1X := 160 - EnemyY;
         Enemy2X := 160 - (EnemyY DIV 2);
         Enemy4X := 160 + (EnemyY DIV 2);
         Enemy5X := 160 + EnemyY
-    ELSIF (EnemyY>89) AND (EnemyY<111) THEN
+    ELSIF (EnemyY < 111) THEN
         EnemyRadius := EnemyY DIV 10;
         Enemy1X := 70;
         Enemy2X := 115;
         Enemy4X := 205;
         Enemy5X := 250
-    ELSIF (EnemyY>110) AND (EnemyY<150) THEN
+    ELSIF (EnemyY < 150) THEN
         EnemyRadius := (150 - EnemyY) DIV 4;
         Enemy1X := 160 - (150 - EnemyY)*7 DIV 4;
         Enemy2X := 160 - (150 - EnemyY)*23 DIV 16;
         Enemy4X := 160 + (150 - EnemyY)*41 DIV 48;
         Enemy5X := 160 + (150 - EnemyY)*25 DIV 32
-    ELSIF (EnemyY>149) AND (EnemyY<200) THEN
+    ELSIF (EnemyY < 199) THEN
         EnemyRadius := (EnemyY - 150) DIV 2;
         Enemy1X := 160 - (EnemyY-150)*16 DIV 5;
         Enemy2X := 160 - (EnemyY-150)*8 DIV 5;
         Enemy4X := 160 + (EnemyY-150)*8 DIV 5;
         Enemy5X := 160 + (EnemyY-150)*15 DIV 5;
+    ELSE (* Gone offscreen *)
+        RETURN;
     END;
     Enemy3X := 160;
-    IF (OneDead=0) THEN DrawFallBall (Enemy1X); END;
-    IF (TwoDead=0) THEN DrawFallBall (Enemy2X); END;
-    IF (ThreeDead=0) THEN DrawFallBall (Enemy3X); END;
-    IF (FourDead=0) THEN DrawFallBall (Enemy4X); END;
-    IF (FiveDead=0) THEN DrawFallBall (Enemy5X); END;
+
+    IF (OneDead = 0) THEN DrawFallBall(Enemy1X); END;
+    IF (TwoDead = 0) THEN DrawFallBall(Enemy2X); END;
+    IF (ThreeDead = 0) THEN DrawFallBall(Enemy3X); END;
+    IF (FourDead = 0) THEN DrawFallBall(Enemy4X); END;
+    IF (FiveDead = 0) THEN DrawFallBall(Enemy5X); END;
 END DrawEnemies8;
 
-PROCEDURE DrawEnemyDead(X, DeadStage : CARDINAL);
+PROCEDURE CheckEnemyHitOrDying(EnemyX, DeadStage, Bullet3DMinX, Bullet3DMaxX, UpBulletMinX, UpBulletMaxX : CARDINAL) : CARDINAL;
 VAR
     SoundFreq, Colour : CARDINAL;
 BEGIN
     CASE DeadStage OF
-       |0: SoundFreq := 35; Colour := LightRed; Score := Score + 20;
-       |1: SoundFreq := 28; Colour := LightestRed;
-       |2: SoundFreq := 21; Colour := DarkestYellow;
+        |0: IF ((EnemyY > 80) AND (EnemyY < 120) AND (BulletX >= Bullet3DMinX) AND (BulletX <= Bullet3DMaxX)) OR
+                ((EnemyY >= 120) AND (EnemyY < 199) AND (UpBulletX >= UpBulletMinX) AND (UpBulletX <= UpBulletMaxX))
+            THEN
+                SoundFreq := 35; Colour := LightRed; Score := Score + 20; DeadStage := DeadStage + 1;
+            ELSE
+                RETURN 0;
+            END;
+        |1: SoundFreq := 28; Colour := LightestRed; DeadStage := DeadStage + 1;
+        |2: SoundFreq := 21; Colour := DarkestYellow; DeadStage := DeadStage + 1;
+        |3: RETURN 3;
     END;
+
     NoSound();
     Sound(SoundFreq);
-    Disc(X + EnemyRadius, EnemyY + EnemyRadius, EnemyRadius, Colour);
-END DrawEnemyDead;
+    Disc(EnemyX - EnemyRadius, EnemyY - EnemyRadius, EnemyRadius, Colour);
+    RETURN DeadStage;
+END CheckEnemyHitOrDying;
 
 PROCEDURE CheckEnemies8;
 BEGIN;
-    IF (EnemyY >= 150) THEN
-        UpBulletY := 65000;
-    END;
-
-    IF (OneDead < 3) AND ((BulletX <= 130) OR (UpBulletX <= 60)) THEN
-        DrawEnemyDead(Enemy1X, OneDead);
-        OneDead := OneDead + 1;
-    END;
-  
-    IF (TwoDead < 3) AND (((BulletX >= 128) AND (BulletX <= 160)) OR ((UpBulletX >= 100) AND (UpBulletX <= 160))) THEN
-        DrawEnemyDead(Enemy2X, TwoDead);
-        TwoDead := TwoDead + 1;
-    END;
-
-    IF (ThreeDead < 3) AND (((BulletX >= 160) AND (BulletX <= 190)) OR ((UpBulletX >= 160) AND (UpBulletX <= 200))) THEN
-        DrawEnemyDead(Enemy3X, ThreeDead);
-        ThreeDead := ThreeDead + 1;
-    END;
-
-    IF (FourDead < 3) AND (((BulletX >= 190) AND (BulletX <= 225)) OR ((UpBulletX >= 205) AND (UpBulletX <= 240))) THEN
-        DrawEnemyDead(Enemy4X, FourDead);
-        FourDead := FourDead + 1;
-    END;
-
-    IF (FiveDead < 3) AND ((BulletX >= 224) OR (UpBulletX >= 250)) THEN
-        DrawEnemyDead(Enemy5X, FiveDead);
-        FiveDead := FiveDead + 1;
+    IF (EnemyY < 200) THEN
+        OneDead := CheckEnemyHitOrDying(Enemy1X, OneDead, 0, 129, 0, 63);
+        TwoDead := CheckEnemyHitOrDying(Enemy2X, TwoDead, 130, 159, 64, 127);
+        ThreeDead := CheckEnemyHitOrDying(Enemy3X, ThreeDead, 160, 189, 128, 191);
+        FourDead := CheckEnemyHitOrDying(Enemy4X, FourDead, 190, 253, 192, 255);
+        FiveDead := CheckEnemyHitOrDying(Enemy5X, FiveDead, 256, 319, 256, 319);
     END;
 END CheckEnemies8;
 
@@ -186,9 +185,6 @@ VAR
     NewBulletX : CARDINAL;
     Dist : INTEGER;
 BEGIN
-    IF (EnemyY >= 150) THEN
-        UpBulletY := 65000;
-    END;
     CASE BulletY OF
         |5: IF (BulletX >= 160) THEN
                 Dist := (10 + ((3*70) DIV 2))*(BulletX-160) DIV 160;
@@ -288,34 +284,32 @@ PROCEDURE DrawPlanet(x, y : CARDINAL);
 CONST
     RadiusScaleDiv = 15;
 VAR
-    Radius, PlanetDots, DotX, DotY : CARDINAL;
+    Radius, PlanetDots, DotX, DotY, LeftX, TopY : CARDINAL;
 BEGIN
     Radius := 2 + (PlanetRadius DIV RadiusScaleDiv);
+    LeftX := x - Radius;
+    TopY := y - Radius;
     
-    Disc(x, y, Radius, DarkestRed);
-    Disc(x, y, Radius * 48 DIV 50, DarkRed);
+    Disc(x, y, Radius, DarkRed);
+    Circle(x, y, Radius, DarkestRed);
+    Circle(x, y, Radius - 1, DarkestRed);
 
-    IF (Radius < 100) THEN
-       Line ((x-Radius)+Radius*13 DIV 50,(y-Radius)+Radius*16 DIV 50,(x-Radius)+Radius*36 DIV 50,(y-Radius)+Radius*20 DIV 50,Red);
-       Line ((x-Radius)+Radius*28 DIV 50,(y-Radius)+Radius*39 DIV 50,(x-Radius)+Radius*64 DIV 50,(y-Radius)+Radius*36 DIV 50,Red);
-       Line ((x-Radius)+Radius*57 DIV 50,(y-Radius)+Radius*61 DIV 50,(x-Radius)+Radius*93 DIV 50,(y-Radius)+Radius*67 DIV 50,Red);
-       Line ((x-Radius)+Radius*99 DIV 50,(y-Radius)+Radius*43 DIV 50,(x-Radius)+Radius*71 DIV 50,(y-Radius)+Radius*44 DIV 50,Red);
-       Line ((x-Radius)+Radius*10 DIV 50,(y-Radius)+Radius*80 DIV 50,(x-Radius)+Radius*70 DIV 50,(y-Radius)+Radius*75 DIV 50,Red);
-       Line ((x-Radius)+Radius*80 DIV 50,(y-Radius)+Radius*90 DIV 50,(x-Radius)+Radius*64 DIV 50,(y-Radius)+Radius*89 DIV 50,Red);
-       Line ((x-Radius)+Radius*36 DIV 50,(y-Radius)+Radius*49 DIV 50,(x-Radius)+Radius*81 DIV 50,(y-Radius)+Radius*48 DIV 50,DarkRed);
-       Line ((x-Radius)+Radius*10 DIV 50,(y-Radius)+Radius*65 DIV 50,(x-Radius)+Radius*66 DIV 50,(y-Radius)+Radius*57 DIV 50,DarkRed);
-       Line ((x-Radius)+Radius*55 DIV 50,(y-Radius)+Radius*29 DIV 50,(x-Radius)+Radius*87 DIV 50,(y-Radius)+Radius*23 DIV 50,DarkRed);
-       Line ((x-Radius)+Radius*20 DIV 50,(y-Radius)+Radius*31 DIV 50,(x-Radius)+Radius*54 DIV 50,(y-Radius)+Radius*31 DIV 50,DarkestRed);
-       Line ((x-Radius)+Radius*37 DIV 50,(y-Radius)+Radius*81 DIV 50,(x-Radius)+Radius*64 DIV 50,(y-Radius)+Radius*79 DIV 50,DarkestRed);
-       Line ((x-Radius)+Radius*10 DIV 50,(y-Radius)+Radius*46 DIV 50,(x-Radius)+Radius*29 DIV 50,(y-Radius)+Radius*48 DIV 50,DarkestRed);
-       Line ((x-Radius)+Radius*41 DIV 50,(y-Radius)+Radius*14 DIV 50,(x-Radius)+Radius*74 DIV 50,(y-Radius)+Radius*9 DIV 50,DarkestRed);
-       Line ((x-Radius)+Radius*86 DIV 50,(y-Radius)+Radius*80 DIV 50,(x-Radius)+Radius*71 DIV 50,(y-Radius)+Radius*81 DIV 50,Black);
-       Line ((x-Radius)+Radius*8 DIV 50, (y-Radius)+Radius*21 DIV 50,(x-Radius)+Radius*45 DIV 50,(y-Radius)+Radius*26 DIV 50,Black);
-    END;
+    Line (LeftX + Radius*13 DIV 50, TopY + Radius*16 DIV 50, LeftX + Radius*36 DIV 50, TopY + Radius*20 DIV 50,Red);
+    Line (LeftX + Radius*28 DIV 50, TopY + Radius*39 DIV 50, LeftX + Radius*64 DIV 50, TopY + Radius*36 DIV 50,Red);
+    Line (LeftX + Radius*57 DIV 50, TopY + Radius*61 DIV 50, LeftX + Radius*93 DIV 50, TopY + Radius*67 DIV 50,Red);
+    Line (LeftX + Radius*99 DIV 50, TopY + Radius*43 DIV 50, LeftX + Radius*71 DIV 50, TopY + Radius*44 DIV 50,Red);
+    Line (LeftX + Radius*10 DIV 50, TopY + Radius*80 DIV 50, LeftX + Radius*70 DIV 50, TopY + Radius*75 DIV 50,Red);
+    Line (LeftX + Radius*80 DIV 50, TopY + Radius*90 DIV 50, LeftX + Radius*64 DIV 50, TopY + Radius*89 DIV 50,Red);
+    Line (LeftX + Radius*20 DIV 50, TopY + Radius*31 DIV 50, LeftX + Radius*54 DIV 50, TopY + Radius*31 DIV 50,DarkestRed);
+    Line (LeftX + Radius*37 DIV 50, TopY + Radius*81 DIV 50, LeftX + Radius*64 DIV 50, TopY + Radius*79 DIV 50,DarkestRed);
+    Line (LeftX + Radius*10 DIV 50, TopY + Radius*46 DIV 50, LeftX + Radius*29 DIV 50, TopY + Radius*48 DIV 50,DarkestRed);
+    Line (LeftX + Radius*41 DIV 50, TopY + Radius*14 DIV 50, LeftX + Radius*74 DIV 50, TopY + Radius*9 DIV 50,DarkestRed);
+    Line (LeftX + Radius*86 DIV 50, TopY + Radius*80 DIV 50, LeftX + Radius*71 DIV 50, TopY + Radius*81 DIV 50,Black);
+    Line (LeftX + Radius*8 DIV 50,  TopY + Radius*21 DIV 50, LeftX + Radius*45 DIV 50, TopY + Radius*26 DIV 50,Black);
 
-    FOR PlanetDots := 1 TO (Radius*10) DO
-        DotX := (x - Radius) + RANDOM(Radius*2);
-        DotY := (y - Radius) + RANDOM(Radius*2);
+    FOR PlanetDots := 1 TO (Radius * 8) DO
+        DotX := LeftX + RANDOM(Radius*2);
+        DotY := TopY + RANDOM(Radius*2);
         IF (GetPixel(DotX, DotY) > Black) THEN
             PutPixel(DotX, DotY, Red);
         END;
@@ -324,14 +318,14 @@ END DrawPlanet;
 
 PROCEDURE Screen8;
 BEGIN
-    Enemies := 0; BulletY := 0; UpBulletY := 65000; PlaneX := 145;
+    BulletY := 0; UpBulletY := 65000; PlaneX := 145;
     PlaneY := 175; UpBulletX := 65000; EnemyY := 0;
     ScreenComplete := FALSE; PlanetRadius := 2;
-    NoSound;
+    NoSound();
+    SetEnemies(0);
     WHILE NOT (GameOver) AND NOT (ScreenComplete) DO
         NoSound();
-        Enemies := Enemies + 1;
-        IF (Enemies = 6) THEN ScreenComplete := TRUE; END;
+        SetEnemies(Enemies + 1);
 
         (* Period between waves of enemies *)
         FOR TheStars := 1 TO 30 DO
@@ -350,7 +344,7 @@ BEGIN
         
         (* Wave of enemies *)
         OneDead := 0; TwoDead := 0; ThreeDead := 0; FourDead := 0; FiveDead := 0;
-        FOR EnemyY := 2 TO 199 BY 2 DO
+        FOR EnemyY := 2 TO 199 DO
             IF NOT (GameOver) AND NOT (ScreenComplete) THEN
                 CheckMouse8();
                 Graph.ClearScreen (Graph._GCLEARSCREEN);
@@ -360,15 +354,16 @@ BEGIN
                 DrawEnemies8();
                 DrawBullet8();
                 UpBullet8();
+                CheckEnemies8();
                 CheckDeath8();
-                IF (EnemyY>150) THEN CheckEnemies8(); END;
                 DrawStars8();
-                Delay(GameSpeed);
+                Delay(GameSpeed * 3 DIV 4);
             END;
         END;
     END;
 
     IF (GameOver) THEN
+        NoSound();
         DrawGameOver;
     END;
 END Screen8;
