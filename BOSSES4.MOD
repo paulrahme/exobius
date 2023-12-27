@@ -227,7 +227,7 @@ VAR
     BossFall, LeftBehind, BossSize, BossAnimFrame : CARDINAL;
 BEGIN
     PlaneX := 135; PlaneY := 174;
-    Boss1Lives := BossLives; Boss2Lives := BossLives; Boss3Lives := BossLives;
+    Boss1Lives := BossLives; Boss2Lives := BossLives; Boss3Lives := BossLives; BossAnimFrame := 0;
     OneAlive := TRUE; TwoAlive := TRUE; ThreeAlive := TRUE;
 
     BossSize := CARDINAL(Graph.ImageSize(0, 0, 100, 100));

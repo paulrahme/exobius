@@ -130,7 +130,7 @@ BEGIN
         DrawBridgePiece4(RectX, RectY);
     END;
     Line(RectX, 0, RectX, 200, DarkestGrey);
-    BehindPlaneSize := CARDINAL(Graph.ImageSize(0, 0, 20, 10));
+    BehindPlaneSize := CARDINAL(Graph.ImageSize(0, 0, SmallPlaneWidth, SmallPlaneHeight));
     Storage.ALLOCATE(BehindPlaneAddress, BehindPlaneSize);
     CheckMouse();
     PlaneX := RectX + 10; PlaneY := 190;
