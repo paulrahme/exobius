@@ -33,15 +33,15 @@ VAR
     Stars, StarX, StarY : CARDINAL;
     StarColour : BYTE;
 BEGIN
-    FOR Stars := 1 TO 15 DO
-        CASE (RANDOM(5)) OF
+    FOR Stars := 1 TO 5 DO
+        CASE (Stars) OF
             |1: StarColour := Blue;
             |2: StarColour := White;
             |3: StarColour := Grey;
             |4: StarColour := Yellow;
             |5: StarColour := LightestWhite;
         END;
-        StarX := RANDOM(319); StarY := RANDOM(199);
+        StarX := RANDOM(319); StarY := 20 + RANDOM(179);
         IF (GetPixel(StarX, StarY) = Black) THEN
             PutPixel(StarX, StarY, StarColour);
         END;
@@ -326,11 +326,10 @@ BEGIN
         SetEnemies(Enemies + 1);
 
         (* Period between waves of enemies *)
-        FOR TheStars := 1 TO 30 DO
+        FOR TheStars := 1 TO 20 DO
             IF NOT (GameOver) AND NOT (ScreenComplete) THEN
                 CheckMouse8();
                 ClearScreen(Graph._GCLEARSCREEN);
-                PlanetRadius := PlanetRadius + 1;
                 DrawPlanet();
                 DrawPlane(PlaneX, PlaneY, PlaneWidth);
                 DrawBullet8();
@@ -342,7 +341,7 @@ BEGIN
         
         (* Wave of enemies *)
         OneDead := 0; TwoDead := 0; ThreeDead := 0; FourDead := 0; FiveDead := 0;
-        FOR EnemyY := 2 TO 199 DO
+        FOR EnemyY := 5 TO 198 DO
             IF NOT (GameOver) AND NOT (ScreenComplete) THEN
                 CheckMouse8();
                 Graph.ClearScreen (Graph._GCLEARSCREEN);

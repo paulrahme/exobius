@@ -21,11 +21,11 @@ FROM Exobius IMPORT
     BkAddress, DrawGameOver, FinishScreen, TextPos;
 
 CONST
-    PlanetBkLeft = 140; PlanetBkTop = 40; PlanetBkRight = 220; PlanetBkBottom = 160;
+    PlanetBkLeft = 100; PlanetBkTop = 40; PlanetBkRight = 220; PlanetBkBottom = 160;
     Boss8Width = 75; Boss8Height = 30;
+    Boss8Health = 180; (* Warning, if this goes above 200ish, the health bar calculation will overflow *)
 VAR
-    Boss8X, Boss8Y : CARDINAL;
-    Boss8Lives : INTEGER;
+    Boss8X, Boss8Y, Boss8Lives : CARDINAL;
     BossDiving : BOOLEAN;
 
 PROCEDURE DrawBoss8;
@@ -64,22 +64,6 @@ BEGIN
     Polygon(4, Xs, Ys, WingColour2);
 END DrawBoss8;
 
-PROCEDURE HurtBoss8;
-BEGIN
-    Sound(100);
-    Xs[0] := Boss8X; Xs[1] := Boss8X + 25; Xs[2] := Boss8X + 50; Xs[3] := Boss8X + 75;
-    Xs[4] := Boss8X + 100; Xs[5] := Boss8X + 75; Xs[6] := Boss8X + 50; Xs[7] := Boss8X + 25;
-    Ys[0] := Boss8Y + 30; Ys[1] := Boss8Y; Ys[2] := Boss8Y + 15; Ys[3] := Boss8Y;
-    Ys[4] := Boss8Y + 30; Ys[5] := Boss8Y + 20; Ys[6] := Boss8Y + 30; Ys[7] := Boss8Y + 20;
-    Polygon(8, Xs, Ys, LightestWhite);
-    Boss8Lives := Boss8Lives - 1;
-    IF (Boss8Lives = 0) THEN
-       ScreenComplete := TRUE;
-    END;
-    Rectangle(1 + (Boss8Lives * 4), 1, 318, 9, Black, TRUE);
-    NoSound();
-END HurtBoss8;
-
 PROCEDURE KillBoss8;
 VAR
     Explosions, Colour : CARDINAL;
@@ -89,7 +73,7 @@ BEGIN
     ScreenComplete := TRUE;
     FOR Explosions := 200 TO 0 BY -1 DO
         Sound (Explosions);
-        CASE (Lib.RANDOM(10)) OF
+        CASE (RANDOM(10)) OF
             |1: Colour := DarkestRed;
             |2: Colour := DarkRed;
             |3: Colour := Red;
@@ -101,12 +85,34 @@ BEGIN
             |9: Colour := LightYellow;
             |10: Colour := LightestYellow;
         END;
-        Ellipse(Lib.RANDOM(100) + CARDINAL(Boss8X), Lib.RANDOM(30) + Boss8Y, Lib.RANDOM(20), Lib.RANDOM(20), Colour, TRUE);
-        Plot(Lib.RANDOM(100) + CARDINAL(Boss8X), Lib.RANDOM(30) + Boss8Y, Colour);
-        Delay(10);
+        Ellipse(Boss8X + RANDOM(Boss8Width), Boss8Y + Lib.RANDOM(Boss8Height), Lib.RANDOM(20), Lib.RANDOM(20), Colour, TRUE);
+        Plot(Boss8X + RANDOM(Boss8Width), Boss8Y + Lib.RANDOM(Boss8Height), Colour);
+        Delay(GameSpeed);
         NoSound();
     END;
+    Rectangle(0, 0, 319, 10, Black, TRUE);
 END KillBoss8;
+
+PROCEDURE HurtBoss8;
+BEGIN
+    Sound(100);
+    Xs[0] := Boss8X; Xs[1] := Boss8X + 25; Xs[2] := Boss8X + 50; Xs[3] := Boss8X + 75;
+    Xs[4] := Boss8X + 100; Xs[5] := Boss8X + 75; Xs[6] := Boss8X + 50; Xs[7] := Boss8X + 25;
+    Ys[0] := Boss8Y + 30; Ys[1] := Boss8Y; Ys[2] := Boss8Y + 15; Ys[3] := Boss8Y;
+    Ys[4] := Boss8Y + 30; Ys[5] := Boss8Y + 20; Ys[6] := Boss8Y + 30; Ys[7] := Boss8Y + 20;
+    Polygon(8, Xs, Ys, LightestWhite);
+    IF (Boss8Lives <= 1) THEN
+        Boss8Lives := 0;
+        Rectangle(1, 1, 318, 9, Black, TRUE);
+        ScreenComplete := TRUE;
+        KillBoss8();
+    ELSE
+        Boss8Lives := Boss8Lives - 1;
+    END;
+    Rectangle(1 + (Boss8Lives * 318 DIV Boss8Health), 1, 318, 9, Black, TRUE);
+    Delay(GameSpeed DIV 5);
+NoSound();
+END HurtBoss8;
 
 PROCEDURE DrawBoss8Bullet;
 CONST
@@ -126,50 +132,52 @@ END DrawBoss8Bullet;
 
 PROCEDURE DrawAllBoss8Things;
 BEGIN
-    Rectangle(PlaneX, PlaneY, PlaneWidth, PlaneHeight, Black, TRUE);
-    IF (Boss8X > PlanetBkLeft - Boss8Width) AND (Boss8X < PlanetBkRight) AND ((Boss8Y > PlanetBkBottom) OR (Boss8Y < PlanetBkTop - Boss8Height)) THEN
-        Rectangle(Boss8X, Boss8Y, Boss8Width, Boss8Height, Black, TRUE);
-    END;
     Graph.PutImage(PlanetBkLeft, PlanetBkTop, BkAddress, Graph._GPSET);
-    DrawPlane5025();
-    DrawBoss8();
-    IF (BulletY = 5) THEN
-        BulletY := 0;
-        DrawBoss8Bullet();
+    Rectangle(0, 11, 319, PlanetBkTop - 1, Black, TRUE);
+    Rectangle(0, PlanetBkTop, PlanetBkLeft - 1, 199, Black, TRUE);
+    Rectangle(PlanetBkRight + 1, PlanetBkTop, 319, 199, Black, TRUE);
+    Rectangle(PlanetBkLeft, PlanetBkBottom, PlanetBkRight, 199, Black, TRUE);
+    DrawStars8();
+    IF (Boss8Lives > 0) THEN
+        DrawBoss8();
+        DrawPlane5025();
+        IF (BulletY = 5) THEN
+            BulletY := 0;
+            DrawBoss8Bullet();
+        END;
     END;
-    (*DrawStars8;*)
 END DrawAllBoss8Things;
 
 PROCEDURE Boss8;
 VAR
     Boss8Move : CARDINAL;
 CONST
-    BossHealth = 80;
     BossDiveDownSpeed = 15; BossDiveUpSpeed = 10;
-    BossYTop = 20;
+    Boss8XMin = 35; Boss8XMax = 239; BossYTop = 20;
 BEGIN
-    Boss8Lives := BossHealth; BossDiving := FALSE; Boss8X := 160;
+    Boss8Lives := Boss8Health; BossDiving := FALSE; Boss8X := 160;
     GameOver := FALSE; ScreenComplete := FALSE; BulletY := 0;
     Graph.ClearScreen(Graph._GCLEARSCREEN);
-    PlanetRadius := 50 * PlanetRadiusScaleDiv;
+    PlanetRadius := 55 * PlanetRadiusScaleDiv;
     DrawPlanet();
     Rectangle(1, 1, 318, 9, Red, TRUE);
-    Rectangle(60, 40, 220, 160, White, FALSE);
+    Rectangle(0, 0, 319, 10, White, FALSE);
     Graph.GetImage(PlanetBkLeft, PlanetBkTop, PlanetBkRight, PlanetBkBottom, BkAddress);
 
     (* Boss rises *)
     FOR Boss8Y := 200 TO BossYTop BY -BossDiveUpSpeed DO
-    DrawAllBoss8Things();
+        DrawAllBoss8Things();
     END;
 
     WHILE NOT (GameOver) AND NOT (ScreenComplete) DO
         IF NOT (GameOver) AND NOT (ScreenComplete) THEN
-            Delay(GameSpeed);
             Boss8Move := Lib.RANDOM(5) + 1;
             IF (PlaneX < Boss8X) THEN
                 Boss8X := Boss8X - Boss8Move;
+                IF (Boss8X < Boss8XMin) THEN Boss8X := Boss8XMin; END;
             ELSIF (PlaneX > Boss8X) THEN
                 Boss8X := Boss8X + Boss8Move;
+                IF (Boss8X > Boss8XMax) THEN Boss8X := Boss8XMax; END;
             END;
             CheckMouse();
             DrawAllBoss8Things();
@@ -179,8 +187,9 @@ BEGIN
                     Boss8Y := Boss8Y + BossDiveDownSpeed;
                     CheckMouse();
                     DrawAllBoss8Things();
-                    IF (Boss8Y > 140) AND (PlaneX > Boss8X - 35) AND (PlaneX < Boss8X + 85) THEN
+                    IF (Boss8Y > 140) AND (PlaneX > Boss8X - 30) AND (PlaneX < Boss8X + 85) THEN
                         Die();
+                        IF (Boss8X > 159) THEN PlaneX := 0; ELSE PlaneX := 319 - PlaneWidth; END;
                     END;
                     Delay(GameSpeed);
                 END;
@@ -190,18 +199,20 @@ BEGIN
                     CheckMouse();
                     DrawAllBoss8Things();
                     IF (Boss8Y > 140) AND (PlaneX > Boss8X - 35) AND (PlaneX < Boss8X + 85) THEN
-                        Die;
+                        Die();
+                        IF (Boss8X > 159) THEN PlaneX := 0; ELSE PlaneX := 319 - PlaneWidth; END;
                     END;
                     Delay(GameSpeed);
                 END;
             END;
             BossDiving := FALSE;
+            Delay(GameSpeed);
         END;
     END;
 
     IF (ScreenComplete) THEN
         IF (Lives > 0) THEN Lives := Lives - 1; END;
-        KillBoss8();
+        DrawAllBoss8Things();
         FinishScreen();
     ELSIF (GameOver) THEN
         DrawGameOver();

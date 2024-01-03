@@ -83,6 +83,7 @@ BEGIN
     Count := 50;
     FOR Count := 50 TO 250 BY 7 DO
         Disc(PlanetX, PlanetY, Count, DarkRed);
+        Delay(GameSpeed);
     END;
     Rectangle(0, 0, 320, 200, DarkRed, TRUE);
     FOR Count := 0 TO 100 DO
