@@ -1,7 +1,13 @@
 DEFINITION MODULE Screens8;
 
+CONST
+    PlanetRadiusScaleDiv = 20;
+
+VAR
+    PlanetRadius : CARDINAL;
+
 PROCEDURE Screen8;
 PROCEDURE DrawStars8;
-PROCEDURE DrawPlanet(x, y : CARDINAL);
+PROCEDURE DrawPlanet();
 
 END Screens8.

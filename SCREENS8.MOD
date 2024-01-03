@@ -26,7 +26,7 @@ CONST
 VAR
     EnemyColour1, EnemyColour2, EnemyColour3, EnemyColour4, EnemyColour5,
     EnemyRadius, OneDead, TwoDead, ThreeDead, FourDead, FiveDead,
-    UpBulletX, UpBulletY, TheStars, PlanetRadius : CARDINAL;
+    UpBulletX, UpBulletY, TheStars : CARDINAL;
   
 PROCEDURE DrawStars8;
 VAR
@@ -160,7 +160,7 @@ BEGIN
             END;
         |1: SoundFreq := 28; Colour := LightestRed; DeadStage := DeadStage + 1;
         |2: SoundFreq := 21; Colour := DarkestYellow; DeadStage := DeadStage + 1;
-        |3: RETURN 3;
+        |3: NoSound(); RETURN 3;
     END;
 
     NoSound();
@@ -280,19 +280,17 @@ BEGIN
     END;
 END CheckDeath8;
 
-PROCEDURE DrawPlanet(x, y : CARDINAL);
-CONST
-    RadiusScaleDiv = 15;
+PROCEDURE DrawPlanet();
 VAR
     Radius, PlanetDots, DotX, DotY, LeftX, TopY : CARDINAL;
 BEGIN
-    Radius := 2 + (PlanetRadius DIV RadiusScaleDiv);
-    LeftX := x - Radius;
-    TopY := y - Radius;
-    
-    Disc(x, y, Radius, DarkRed);
-    Circle(x, y, Radius, DarkestRed);
-    Circle(x, y, Radius - 1, DarkestRed);
+    Radius := 2 + (PlanetRadius DIV PlanetRadiusScaleDiv);
+    LeftX := PlanetX - Radius;
+    TopY := PlanetY - Radius;
+
+    Disc(PlanetX, PlanetY, Radius, DarkRed);
+    Circle(PlanetX, PlanetY, Radius, DarkestRed);
+    Circle(PlanetX, PlanetY, Radius - 1, DarkestRed);
 
     Line (LeftX + Radius*13 DIV 50, TopY + Radius*16 DIV 50, LeftX + Radius*36 DIV 50, TopY + Radius*20 DIV 50,Red);
     Line (LeftX + Radius*28 DIV 50, TopY + Radius*39 DIV 50, LeftX + Radius*64 DIV 50, TopY + Radius*36 DIV 50,Red);
@@ -333,7 +331,7 @@ BEGIN
                 CheckMouse8();
                 ClearScreen(Graph._GCLEARSCREEN);
                 PlanetRadius := PlanetRadius + 1;
-                DrawPlanet(PlanetX, PlanetY);
+                DrawPlanet();
                 DrawPlane(PlaneX, PlaneY, PlaneWidth);
                 DrawBullet8();
                 UpBullet8();
@@ -349,7 +347,7 @@ BEGIN
                 CheckMouse8();
                 Graph.ClearScreen (Graph._GCLEARSCREEN);
                 PlanetRadius := PlanetRadius + 1;
-                DrawPlanet(PlanetX, PlanetY);
+                DrawPlanet();
                 DrawPlane(PlaneX, PlaneY, PlaneWidth);
                 DrawEnemies8();
                 DrawBullet8();
