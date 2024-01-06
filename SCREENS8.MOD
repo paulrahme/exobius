@@ -361,7 +361,7 @@ BEGIN
 
     IF (GameOver) THEN
         NoSound();
-        DrawGameOver;
+        DrawGameOver();
     END;
 END Screen8;
 
