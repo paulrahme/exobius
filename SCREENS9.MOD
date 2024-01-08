@@ -7,17 +7,17 @@ IMPORT Graph, Lib, IO, Exobius;
 FROM Graph IMPORT Rectangle, Polygon, Line, HLine, Circle, Ellipse, Disc, Plot, Arc, Point, GetImage;
 FROM Lib IMPORT NoSound, Delay, RANDOM;
 FROM Exobius IMPORT
-  PlaneWidth, PlaneHeight,
-  Black, DarkestGrey, DarkGrey, Grey, LightGrey, LightestGrey,
-  DarkestWhite, DarkWhite, White, LightWhite, LightestWhite,
-  DarkestBlue, DarkBlue, Blue, LightBlue, LightestBlue,
-  DarkestRed, DarkRed, Red, LightRed, LightestRed,
-  DarkestBrown, DarkBrown, Brown, LightBrown, LightestBrown,
-  DarkestGreen, DarkGreen, Green, LightGreen, LightestGreen,
-  DarkestYellow, DarkYellow, Yellow, LightYellow, LightestYellow,
-  PlaneX, PlaneY, PlaneStartX, PlaneStartY, DrawPlane5025, CheckMouse,
-  Count, GameOver, GameSpeed,
-  Die, DrawGameOver;
+    PlaneWidth, PlaneHeight,
+    Black, DarkestGrey, DarkGrey, Grey, LightGrey, LightestGrey,
+    DarkestWhite, DarkWhite, White, LightWhite, LightestWhite,
+    DarkestBlue, DarkBlue, Blue, LightBlue, LightestBlue,
+    DarkestRed, DarkRed, Red, LightRed, LightestRed,
+    DarkestBrown, DarkBrown, Brown, LightBrown, LightestBrown,
+    DarkestGreen, DarkGreen, Green, LightGreen, LightestGreen,
+    DarkestYellow, DarkYellow, Yellow, LightYellow, LightestYellow,
+    PlaneX, PlaneY, PlaneStartX, PlaneStartY, DrawPlane5025, CheckMouse,
+    Count, GameOver, GameSpeed,
+    Die, DrawGameOver;
 
 PROCEDURE DrawPillarBottom(x, y : CARDINAL);
 VAR
@@ -78,7 +78,7 @@ BEGIN
     END;
 
     (* Draw ground and pan up to show horizon *)
-    Rectangle(0, 0, 320, 200, DarkRed, TRUE);
+    Rectangle(0, 0, 319, 199, DarkRed, TRUE);
     FOR Count := 0 TO 100 DO
         HLine(0, Count, 320, 178);
         Delay(GameSpeed);

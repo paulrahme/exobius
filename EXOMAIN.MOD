@@ -61,8 +61,8 @@ BEGIN
 
         Screen8();  IF GameOver THEN RETURN; END;
         Boss8();    IF GameOver THEN RETURN; END;
-*)        Screen9();  IF GameOver THEN RETURN; END;
-        Boss9();    IF GameOver THEN RETURN; END;
+        Screen9();  IF GameOver THEN RETURN; END;
+*)        Boss9();    IF GameOver THEN RETURN; END;
  (*  END;
 *)
 END PlayLevels;
