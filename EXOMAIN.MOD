@@ -43,14 +43,13 @@ FROM Bosses9 IMPORT Boss9;
 
 PROCEDURE PlayLevels();
 BEGIN
-(*    Screen1();      IF GameOver THEN RETURN; END;
+    Screen1();      IF GameOver THEN RETURN; END;
     Boss1();        IF GameOver THEN RETURN; END;
     Screen2();      IF GameOver THEN RETURN; END;
     Screen3();      IF GameOver THEN RETURN; END;
     Screen4();      IF GameOver THEN RETURN; END;
     Boss4();        IF GameOver THEN RETURN; END;
     Screen6();      IF GameOver THEN RETURN; END;
-
     Screen7();      IF GameOver THEN RETURN; END;
 
     (* Stage/boss split *)
@@ -58,13 +57,12 @@ BEGIN
         Boss7();    IF GameOver THEN RETURN; END;
     ELSE
         FlyThroughSpace();
-
         Screen8();  IF GameOver THEN RETURN; END;
         Boss8();    IF GameOver THEN RETURN; END;
         Screen9();  IF GameOver THEN RETURN; END;
-*)        Boss9();    IF GameOver THEN RETURN; END;
- (*  END;
-*)
+        Boss9();    IF GameOver THEN RETURN; END;
+  END;
+
 END PlayLevels;
 
 (* Main loop *)
@@ -72,12 +70,13 @@ BEGIN
     SetVGAMode();
     Init();
 
-(*    PlayIntroSlideshow();
+    PlayIntroSlideshow();
     PlayTitleSequence();
     ClearTheBuffer();
     PlaneToPlanet();
-*)
+
     PlayLevels();
+
     IF NOT GameOver THEN
         IF (PlaneInAir) THEN
             PlayGoodEnding();
@@ -85,7 +84,6 @@ BEGIN
             PlayBadEnding();
         END;
     END;
-
 
     ShutDown();
     SetTextMode();
