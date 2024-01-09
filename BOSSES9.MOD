@@ -62,7 +62,7 @@ PROCEDURE DrawBossFlashing(Width : CARDINAL);
 VAR
     x, y : CARDINAL;
 BEGIN
-    x := 160 - Width DIV 2;
+    x := 183 - Width DIV 2;
     y := 100 - Width DIV 2;
     
     (* Head *)
@@ -86,7 +86,7 @@ PROCEDURE DrawBoss9(Width : CARDINAL);
 VAR
     x, y : CARDINAL;
 BEGIN
-    x := 160 - Width DIV 2;
+    x := 183 - Width DIV 2;
     y := 100 - Width DIV 2;
 
     (* Head *)
@@ -188,13 +188,14 @@ CONST
     SpitHitY = 180;
     MouthY = 100;
     MouthX = 160;
+    Boss9Health = 20;
 VAR
-    SpitX, SpitY, BossWidth, BossLives : CARDINAL;
+    SpitX, SpitY, SpitYOffset, BossWidth, BossLives : CARDINAL;
 BEGIN
     ScreenComplete := FALSE;
 
     (* Intro - approaching boss *)
-    Rectangle(0, 0, 319, 199, DarkRed, TRUE);
+    Rectangle(0, 100, 319, 199, DarkRed, TRUE);
     Graph.GetImage(100, 40, 220, 160, BkAddress);
     FOR BossWidth := 1 TO 150 BY 3 DO
         Rectangle(PlaneX, PlaneY, PlaneX + PlaneWidth, PlaneY + PlaneHeight, DarkRed, TRUE);
@@ -215,48 +216,48 @@ BEGIN
 
     (****************************************************************)
 
-    BossLives := 10;
+    BossLives := Boss9Health;
     WHILE NOT GameOver AND NOT ScreenComplete DO
-        IF NOT GameOver AND NOT ScreenComplete THEN
-            SpitY := MouthY;
-            SpitX := MouthX;
+        SpitX := MouthX;
+        SpitY := MouthY;
+        SpitYOffset := 0;
+        Graph.PutImage(0, 100, BkAddress, Graph._GPSET);
+
+        WHILE (SpitY < 200) AND NOT ScreenComplete AND NOT GameOver DO
             Graph.PutImage(0, 100, BkAddress, Graph._GPSET);
-            WHILE (SpitY < 200) AND NOT ScreenComplete DO
-                Graph.PutImage(0, 100, BkAddress, Graph._GPSET);
-                IF ((PlaneX+PlaneWidth DIV 2) > SpitX) THEN
-                    SpitX := SpitX + Lib.RANDOM(10) + 20
-                ELSIF (SpitX>10) THEN
-                    SpitX := SpitX - Lib.RANDOM(25)
-                ELSE
-                    SpitX := 2;
+            SpitY := SpitY + 1 + SpitYOffset DIV 15;
+            SpitYOffset := SpitY - MouthY;
+            IF (SpitYOffset > 10) THEN
+                IF (SpitX < PlaneX + (PlaneWidth DIV 2)) THEN
+                    SpitX := SpitX + Lib.RANDOM(SpitY DIV 10);
+                ELSIF (SpitX > 20) THEN
+                    SpitX := SpitX - Lib.RANDOM(SpitY DIV 10);
                 END;
-                Ellipse(SpitX, SpitY, (SpitY - MouthY)*4 DIV 15, (SpitY - MouthY)*2 DIV 15, Blue, TRUE);
-                Ellipse(SpitX, SpitY, (SpitY + 1 - MouthY)*4 DIV 15, (SpitY + 2 - MouthY)*2 DIV 15, LightestBlue, FALSE);
-                IF (SpitY > SpitHitY) AND (PlaneX + (PlaneWidth DIV 2) > SpitX-30) AND (PlaneX + (PlaneWidth DIV 2) < SpitX + 30) THEN
-                    Die();
-                END;
-                CheckMouse;
-                DrawPlane (PlaneX, PlaneY, PlaneWidth);
-                Update3DBullet(FALSE);
-                IF (BulletY  < 6) AND (BulletY > 0) THEN
-                    BulletY := BulletY - 1;
-                END;
-                IF (BulletX > 100) AND (BulletX < 180) AND (BulletY = 0) THEN
-                    DrawBossFlashing(BossWidth);
-                    BossLives := BossLives - 1;
-                    DrawBoss9(BossWidth);
-                    Delay(GameSpeed);
-                    Score := Score + 150;
-                END;
+            END;
+            Ellipse(SpitX, SpitY, SpitYOffset * 4 DIV 15, SpitYOffset * 2 DIV 15, Blue, TRUE);
+            Ellipse(SpitX, SpitY, (SpitYOffset + 1) * 4 DIV 15, (SpitYOffset + 2) * 2 DIV 15, LightestBlue, FALSE);
+            CheckMouse();
+            DrawPlane(PlaneX, PlaneY, PlaneWidth);
+            Update3DBullet(FALSE);
+            IF (BulletX > 80) AND (BulletX < 240) AND (BulletY = 1) THEN
+                DrawBossFlashing(BossWidth);
+                BossLives := BossLives - 1;
+                DrawBoss9(BossWidth);
+                Delay(GameSpeed);
+                Score := Score + 150;
+                Rectangle(319 * BossLives DIV Boss9Health, 1, 319, 9, Black, TRUE);
                 IF (BossLives = 0) THEN
                     Graph.PutImage(0, 100, BkAddress, Graph._GPSET);
                     KillBoss9();
                     ScreenComplete := TRUE;
                 END;
-                    Delay(GameSpeed);
-                    SpitY := SpitY + 1 + (SpitY - MouthY) DIV 2;
-            END; (* WHILE (SpitY < 200)... *)
-        END; (* IF NOT GameO... *)
+            END;
+            IF (SpitY > SpitHitY) AND (PlaneX + (PlaneWidth DIV 2) + 20 > SpitX) AND (PlaneX + (PlaneWidth DIV 2) < SpitX + 20) THEN
+                Die();
+                IF (SpitX < PlaneWidth) THEN PlaneX := 265; END;
+            END;
+            Delay(GameSpeed);
+        END; (* WHILE (SpitY < 200)... *)
     END; (* WHILE NOT GameO... *)
 
     IF GameOver THEN
