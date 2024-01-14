@@ -2,27 +2,9 @@ MODULE Exomain;
 (*$I+,O+,R+,S+,Z+*)
 (*$S FF00*)
 
-IMPORT Storage, Graph, IO, FIO, Process;
-
-FROM Graph IMPORT
-    ClearScreen, OutText, SetTextPosition, _GCLEARSCREEN;
-
-FROM IO IMPORT
-    WrLn, RdKey, RdCard, WrStr, KeyPressed, WrCard;
-
-FROM Lib IMPORT
-    Delay;
-
 FROM Exobius IMPORT
-    Init, ShutDown, SetVGAMode, SetTextMode, Cheat, Key,
-    GameOver, ScreenComplete, Score, ClearTheBuffer, Lives,
-    Black, DarkestGrey, DarkGrey, Grey, LightGrey, LightestGrey,
-    DarkestBlue, DarkBlue, Blue, LightBlue, LightestBlue,
-    DarkestBrown, DarkBrown, Brown, LightBrown, LightestBrown,
-    DarkestRed, DarkRed, Red, LightRed, LightestRed,
-    DarkestYellow, DarkYellow, Yellow, LightYellow, LightestYellow,
-    DarkestWhite, DarkWhite, White, LightWhite, LightestWhite,
-    DarkestGreen, DarkGreen, Green, LightGreen, LightestGreen;
+    Init, ShutDown, SetVGAMode, SetTextMode,
+    GameOver, ClearTheBuffer;
 
 FROM Slides IMPORT PlayIntroSlideshow, PlayGoodEnding, PlayBadEnding;
 FROM Intro1 IMPORT PlayTitleSequence;
