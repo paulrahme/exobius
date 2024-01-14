@@ -24,7 +24,7 @@ FROM Exobius IMPORT
     Enemies, Xs, Ys,
     Count, Lives, EnemyY,
     ScreenComplete, GameOver,  MouseButtons,  MouseMove, GameSpeed,
-    Update3DBullet, DrawPlane, DrawPlane5025, CheckMouse, CheckMouseAndSpecialKeys, Die, DrawGameOver,
+    Update3DBullet, DrawPlane, DrawPlane5025, CheckMouse, Die, DrawGameOver,
     FinishScreen,
     CheckSpecialKeys, ClearTheBuffer, DrawGameOver;
 

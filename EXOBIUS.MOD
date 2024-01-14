@@ -3,7 +3,7 @@ IMPLEMENTATION MODULE Exobius;
 (*$S FF00*)
 
 IMPORT Lib, IO, Graph, Storage, MsMouse, Font;
-FROM Graph IMPORT SetVideoMode, _MRES256COLOR, _DEFAULTMODE, Line, Disc, Ellipse, Rectangle, Plot, Polygon;
+FROM Graph IMPORT SetVideoMode, _MRES256COLOR, _DEFAULTMODE, Line, Disc, Ellipse, Rectangle, Plot, Polygon, GetImage, PutImage;
 FROM Lib IMPORT Sound, NoSound, Delay;
 FROM Font IMPORT A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z;
 
@@ -196,17 +196,38 @@ BEGIN
     Ellipse(x37, y22, 5, 2, Yellow, TRUE);
 END DrawPlane5025;
 
+PROCEDURE ShowPauseMenu;
+CONST
+    PauseLeftX = 85; PauseRightX = 235; PauseTopY = 80; PauseBottomY = 125;
+VAR
+    PauseBkAddress : ADDRESS;
+    PauseBkSize : CARDINAL;
+BEGIN
+    PauseBkSize := CARDINAL(Graph.ImageSize(PauseLeftX, PauseTopY, PauseRightX, PauseBottomY));
+    Storage.ALLOCATE(PauseBkAddress, PauseBkSize);
+    GetImage(PauseLeftX, PauseTopY, PauseRightX, PauseBottomY, PauseBkAddress);
+
+    Rectangle(PauseLeftX, PauseTopY, PauseRightX, PauseBottomY, LightestGreen, FALSE);
+    Rectangle(PauseLeftX + 1, PauseTopY + 1, PauseRightX - 1, PauseBottomY - 1, Green, FALSE);
+    Rectangle(PauseLeftX + 2, PauseTopY + 2, PauseRightX - 2, PauseBottomY - 2, DarkestGreen, TRUE);
+    P(90, 85); A(112, 85); U(137, 85); S(162, 85); E(187, 85); D(212, 85);
+    TextPos := Graph.SetTextPosition(15, 17);
+    Graph.OutText('Q = quit');
+
+    Key := IO.RdKey();
+    IF (Key="q") OR (Key="Q") THEN
+        GameOver := TRUE;
+    END;
+    PutImage(PauseLeftX, PauseTopY, PauseBkAddress, Graph._GPSET);
+    Storage.DEALLOCATE(PauseBkAddress, PauseBkSize);
+END ShowPauseMenu;
+
 PROCEDURE CheckSpecialKeys;
 BEGIN
     IF (IO.KeyPressed()) THEN
         Key := IO.RdKey();
-        IF (Key="q") OR (Key="Q") THEN
-            GameOver := TRUE;
-        ELSIF (Key="p") OR (Key="P") THEN
-            TextPos := Graph.SetTextPosition(25, 19);
-            Graph.OutText('PAUSED');
-            Key := IO.RdKey();
-            Rectangle(140, 190, 180, 199, Black, TRUE);
+        IF (Key=CHR(27)) THEN
+           ShowPauseMenu();
         END;
     END;
 END CheckSpecialKeys;
@@ -436,7 +457,7 @@ END DrawGameOver;
 
 PROCEDURE FinishScreen;
 BEGIN
-    Graph.GetImage(0, 100, 319, 199, BkAddress);
+    GetImage(0, 100, 319, 199, BkAddress);
     FOR PlaneY := PlaneStartY TO 100 BY -2 DO
         IF (PlaneX < 155) THEN
             PlaneX := PlaneX + 5;
@@ -444,7 +465,7 @@ BEGIN
         IF (PlaneX > 155) THEN
             PlaneX := PlaneX - 5;
         END;
-        Graph.PutImage(0, 100, BkAddress, Graph._GPSET);
+        PutImage(0, 100, BkAddress, Graph._GPSET);
         DrawPlane(PlaneX, PlaneY, (PlaneY - 100) DIV 2);
         Delay(GameSpeed * 4);
     END;
