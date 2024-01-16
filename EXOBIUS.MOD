@@ -279,6 +279,44 @@ BEGIN
     END;
 END CheckMouse;
 
+PROCEDURE WaitForMouseButtonUp;
+BEGIN
+        (* Wait for button release *)
+        WHILE (MouseButtons.left_pressed OR MouseButtons.right_pressed OR MouseButtons.middle_pressed) DO
+        MsMouse.GetStatus(MouseButtons);
+        Lib.Delay(1);
+    END;
+END WaitForMouseButtonUp;
+
+PROCEDURE WaitForAnyMouseButton;
+BEGIN
+    WaitForMouseButtonUp();
+
+    (* Wait for button down *)
+    WHILE NOT (MouseButtons.left_pressed OR MouseButtons.right_pressed OR MouseButtons.middle_pressed) DO
+        MsMouse.GetStatus(MouseButtons);
+        Lib.Delay(1);
+    END;    
+END WaitForAnyMouseButton;
+
+PROCEDURE CheckForAnyMouseButton() : BOOLEAN;
+BEGIN
+    MsMouse.GetStatus(MouseButtons);
+
+    (* Wait for button down *)
+    IF (MouseButtons.left_pressed OR MouseButtons.right_pressed OR MouseButtons.middle_pressed) THEN
+        (* Wait for button release *)
+        WHILE (MouseButtons.left_pressed OR MouseButtons.right_pressed OR MouseButtons.middle_pressed) DO
+            MsMouse.GetStatus(MouseButtons);
+            Lib.Delay(1);
+        END;
+
+        RETURN TRUE;
+    ELSE
+        RETURN FALSE;
+    END;
+END CheckForAnyMouseButton;
+
 PROCEDURE CheckBulletAgainstEnemies;
 CONST
     SoundDelay = 30;

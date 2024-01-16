@@ -16,7 +16,7 @@ FROM Exobius IMPORT
     DarkestGreen, DarkGreen, Green, LightGreen, LightestGreen,
     DarkestYellow, DarkYellow, Yellow, LightYellow, LightestYellow,
     DrawPlane, PlaneX, PlaneY,
-    Count, GameSpeed;
+    Count, GameSpeed, CheckForAnyMouseButton;
 
 CONST
     NoteDelay = 125;
@@ -57,7 +57,7 @@ BEGIN
     FOR Count := 0 TO 7 DO
         DrawInfiniteSoftwarePair(LetterXs[Count]);
         Delay(NoteDelay);
-        IF (KeyPressed()) THEN RETURN FALSE; END;
+        IF (CheckForAnyMouseButton()) THEN RETURN FALSE; END;
     END;
 
     (* Fill in bg segments on each beat *)
@@ -70,7 +70,7 @@ BEGIN
         END;
         DrawInfiniteSoftwareAll();
         Lib.Delay(NoteDelay);
-        IF (KeyPressed()) THEN RETURN FALSE; END;
+        IF (CheckForAnyMouseButton()) THEN RETURN FALSE; END;
     END;
 
     Rectangle(0, 0, 319, 199, LightestWhite, TRUE);
@@ -115,7 +115,7 @@ BEGIN
             Rectangle(Left, 100 + ScaledHalfHeight, Right, 100 + PrevScaledHalfHeight, Black, TRUE);
         END;
         Lib.Delay(GameSpeed);
-        IF (KeyPressed()) THEN RETURN FALSE; END;
+        IF (CheckForAnyMouseButton()) THEN RETURN FALSE; END;
     END;
     RETURN TRUE;
 END SpinRectangle;
@@ -173,12 +173,12 @@ BEGIN
         ELSE S(240, 90);
         END;
         Lib.Delay(GameSpeed);
-        IF (KeyPressed()) THEN RETURN FALSE; END;
+        IF (CheckForAnyMouseButton()) THEN RETURN FALSE; END;
     END;
     Rectangle(269, 70, 270, 130, Black, FALSE);
 
-    FOR Count := 1 TO 5 DO
-        Lib.Delay(500);
+    FOR Count := 1 TO 25 DO
+        Lib.Delay(100);
         IF (KeyPressed()) THEN RETURN FALSE; END;
     END;
 
@@ -225,14 +225,14 @@ BEGIN
         B(135 ,95); Y(165, 95);
         Lib.Delay(GameSpeed * 2);
 
-        IF (KeyPressed()) THEN Bounces := 1000; END;
+        IF (CheckForAnyMouseButton()) THEN Bounces := 1000; END;
     END;
 
     IF (Bounces < 900) THEN
         DrawStars;
-        FOR Count := 1 TO 5 DO
-            Lib.Delay(1000);
-            IF (KeyPressed()) THEN RETURN FALSE; END;
+        FOR Count := 1 TO 50 DO
+            Lib.Delay(100);
+            IF (CheckForAnyMouseButton()) THEN RETURN FALSE; END;
         END;
     END;
     RETURN TRUE;
@@ -280,7 +280,7 @@ BEGIN
         B(150 + CARDINAL(MusicByProgress * 75.0), LettersY);
         Y(150 + CARDINAL(MusicByProgress * 105.0), LettersY);
 
-        IF (KeyPressed()) THEN RETURN FALSE; END;
+        IF (CheckForAnyMouseButton()) THEN RETURN FALSE; END;
         MusicByProgress := MusicByProgress + 0.015;
     END;
     Lib.Delay(500);
@@ -298,7 +298,7 @@ BEGIN
         Line(RectangleX - TopCornerOffset, RectangleY, RectangleX, RectY2, White);
 
         Lib.Delay(GameSpeed);
-        IF (KeyPressed()) THEN RETURN FALSE; END;
+        IF (CheckForAnyMouseButton()) THEN RETURN FALSE; END;
     END;
     Rectangle(90, 120, 230, 158, Black, TRUE);
     HLine(120, LogoTop, 200, White);
@@ -307,23 +307,23 @@ BEGIN
     Line(210, LogoBottom, 200, LogoTop, White);
     Lib.Delay (200);
 
-    IF (KeyPressed()) THEN RETURN FALSE; END;
+    IF (CheckForAnyMouseButton()) THEN RETURN FALSE; END;
     Line(120, LogoTop, 130, LogoBottom, White);
     Line(200, LogoTop, 190, LogoBottom, White);
     Lib.Delay(500);
-    IF (KeyPressed()) THEN RETURN FALSE; END;
+    IF (CheckForAnyMouseButton()) THEN RETURN FALSE; END;
     Line(130, LogoBottom, 140, LogoTop, White);
     Line(190, LogoBottom, 180, LogoTop, White);
     Lib.Delay(500);
-    IF (KeyPressed()) THEN RETURN FALSE; END;
+    IF (CheckForAnyMouseButton()) THEN RETURN FALSE; END;
     Line(140, LogoTop, 150, LogoBottom, White);
     Line(180, LogoTop, 170, LogoBottom, White);
     Lib.Delay(500);
-    IF (KeyPressed()) THEN RETURN FALSE; END;
+    IF (CheckForAnyMouseButton()) THEN RETURN FALSE; END;
     Line(150, LogoBottom, 160, LogoTop, White);
     Line(170, LogoBottom, 160, LogoTop, White);
     Lib.Delay(500);
-    IF (KeyPressed()) THEN RETURN FALSE; END;
+    IF (CheckForAnyMouseButton()) THEN RETURN FALSE; END;
 
     FOR AtmosX := 110 TO 210 DO
         IF (AtmosX MOD 2 = 0) THEN BeamColor := Blue; ELSE BeamColor := LightestBlue; END;
@@ -435,13 +435,13 @@ BEGIN
             |210:   FillAtmosFear("1000000000000000", AtmosX);
         END;
         Lib.Delay(GameSpeed * 2);
-        IF (KeyPressed()) THEN RETURN FALSE; END;
+        IF (CheckForAnyMouseButton()) THEN RETURN FALSE; END;
     END;
     Rectangle(211, LogoTop - 5, 214, LogoBottom + 5, Black, TRUE);
 
     FOR Count := 1 TO 4 DO
         Delay(500);
-        IF (KeyPressed()) THEN RETURN FALSE; END;
+        IF (CheckForAnyMouseButton()) THEN RETURN FALSE; END;
     END;
 
     RETURN TRUE;
@@ -484,7 +484,7 @@ BEGIN
             END;
         END;
     END;
-    RETURN (NOT KeyPressed());
+    RETURN (NOT CheckForAnyMouseButton());
 END ReadyForWriting;
 
 PROCEDURE WriteThinks() : BOOLEAN;
@@ -532,11 +532,16 @@ BEGIN
     IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000000100001000100111110010011001000100000000000"); END;
     IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000000000000000000000000000000000000000000000000"); END;
     IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000000000000000000000000000000000000000000000000"); END;
-    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000010000001111100011110011111000111100000000000"); END;
-    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000010000001000100100000000100001000000000000000"); END;
-    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000010000001000100101110000100001000000000000000"); END;
-    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000010000001000100100010000100001000000000000000"); END;
-    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000011111001111100011110011111000111100000000000"); END;
+    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000001000000111110001111001111100011110011000000000"); END;
+    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000001000000100010010000000010000100000011000000000"); END;
+    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000001000000100010010111000010000100000011000000000"); END;
+    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000001000000100010010001000010000100000000000000000"); END;
+    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000001111100111110001111001111100011110011000000000"); END;
+    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000000000000000000000000000000000000000000000000"); END;
+    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000000000000000000000000000000000000000000000000"); END;
+    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000000000000000000000000000000000000000000000000"); END;
+    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000000000000000000000000000000000000000000000000"); END;
+    IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000000000000000000000000000000000000000000000000"); END;
     FOR RepeatCount := 0 TO 30 DO
         IF (NotSkipped) THEN NotSkipped := ReadyForWriting("000000000000000000000000000000000000000000000000000000"); END;
     END;
@@ -564,9 +569,8 @@ BEGIN
     IF (NotSkipped) THEN
         NotSkipped := WriteAtmosFear();
     END;
-    IF (NotSkipped) THEN
-        NotSkipped := WriteThinks();
-    END;
+
+    NotSkipped := WriteThinks();
 END PlayTitleSequence;
 
 END Intro1.

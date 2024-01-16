@@ -14,7 +14,7 @@ FROM Exobius IMPORT
     DarkestBrown, DarkBrown, Brown, LightBrown, LightestBrown,
     DarkestGreen, DarkGreen, Green, LightGreen, LightestGreen,
     DarkestYellow, DarkYellow, Yellow, LightYellow, LightestYellow,
-    GameSpeed, Xs, Ys, TextPos, MouseButtons;
+    GameSpeed, Xs, Ys, TextPos, WaitForAnyMouseButton, WaitForMouseButtonUp;
 FROM Font IMPORT D, E, H, N, T;
 
 PROCEDURE Intro1;
@@ -66,7 +66,7 @@ BEGIN
     Polygon (4, Xs, Ys, 113);
     Xs[0] := 295; Ys[0] := 78; Xs[1] := 298; Ys[1] := 79; Xs[2] := 298; Ys[2] := 82; Xs[3] := 295; Ys[3] := 80; 
     Polygon (4, Xs, Ys, 114);
-    Xs[0] := 298; Ys[0] := 64; Xs[1] := 299; Ys[1] := 68; Xs[2] := 302; Ys[2] := 68; Xs[3] := 304; Ys[3] := 64; Xs[4] := 302; Ys[4] := 62; Xs[5] := 295; Ys[5] := 59; 
+    Xs[0] := 298; Ys[0] := 64; Xs[1] := 299; Ys[1] := 68; Xs[2] := 302; Ys[2] := 68; Xs[3] := 304; Ys[3] := 64; Xs[4] := 302; Ys[4] := 62; Xs[5] := 295; Ys[5] := 59;
     Polygon (6, Xs, Ys, 114);
     Xs[0] := 298; Ys[0] := 52; Xs[1] := 298; Ys[1] := 50; Xs[2] := 301; Ys[2] := 51; 
     Polygon (3, Xs, Ys, 115);
@@ -1449,23 +1449,6 @@ BEGIN
     Plot (83,22,1);
 END EndingKeyInHand;
 
-PROCEDURE WaitForAnyMouseButton;
-BEGIN
-    MsMouse.GetStatus(MouseButtons);
-
-    (* Wait for button release *)
-    WHILE (MouseButtons.left_pressed OR MouseButtons.right_pressed OR MouseButtons.middle_pressed) DO
-        MsMouse.GetStatus(MouseButtons);
-        Lib.Delay(1);
-    END;
-
-    (* Wait for button down *)
-    WHILE NOT (MouseButtons.left_pressed OR MouseButtons.right_pressed OR MouseButtons.middle_pressed) DO
-        MsMouse.GetStatus(MouseButtons);
-        Lib.Delay(1);
-    END;    
-END WaitForAnyMouseButton;
-
 PROCEDURE PlayIntroSlideshow;
 BEGIN
     ClearScreen(_GCLEARSCREEN);
@@ -1491,6 +1474,7 @@ BEGIN
     TextPos := SetTextPosition (1, 1);
     OutText("But you're in for a joyride!!");
     WaitForAnyMouseButton();
+    WaitForMouseButtonUp();
 END PlayIntroSlideshow;
 
 PROCEDURE PlayGoodEnding;
@@ -1519,6 +1503,7 @@ BEGIN
     T(240, 150); H(265, 150); E(290, 150);
     E(240, 180); N(265, 180); D(290, 180);
     WaitForAnyMouseButton();
+    WaitForMouseButtonUp();
 END PlayGoodEnding;
 
 PROCEDURE PlayBadEnding;
@@ -1552,6 +1537,7 @@ BEGIN
     TextPos := SetTextPosition (13, 16);
     OutText("THE END?");
     WaitForAnyMouseButton();
+    WaitForMouseButtonUp();
 END PlayBadEnding;
 
 END Slides.

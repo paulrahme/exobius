@@ -16,7 +16,7 @@ FROM Exobius IMPORT
     DarkestGreen, DarkGreen, Green, LightGreen, LightestGreen,
     DarkestYellow, DarkYellow, Yellow, LightYellow, LightestYellow,
     DrawPlane, PlaneX, PlaneY,
-    Count, GameSpeed;
+    Count, GameSpeed, CheckForAnyMouseButton;
 
 PROCEDURE DrawVGAPlanet;
 VAR
@@ -56,28 +56,23 @@ END DrawVGAPlanet;
 PROCEDURE PlaneToPlanet;
 VAR
     RandomRed, Width : CARDINAL;
-    Skipped : BOOLEAN;
 BEGIN
     Graph.ClearScreen(Graph._GCLEARSCREEN);
     DrawVGAPlanet;
     Graph.GetImage(199, 29, 319, 201, BkAddress);
     PlaneX := 200; Width := 30;
     FOR PlaneY := 30 TO 200 DO
-        Skipped := KeyPressed();
-        IF (NOT Skipped) THEN
-            IF (PlaneY MOD 2 = 0) THEN
-                PlaneX := PlaneX + 1;
-            ELSE
-                Width := (Width * 99) DIV 100;
-            END;
-            Graph.PutImage(199, 29, BkAddress, Graph._GPSET);
-            DrawPlane(PlaneX, PlaneY, Width);
-            Lib.Delay(GameSpeed * 3);
+        IF (PlaneY MOD 2 = 0) THEN
+            PlaneX := PlaneX + 1;
+        ELSE
+            Width := (Width * 99) DIV 100;
         END;
-    END;
-    IF (NOT Skipped) THEN
-        Graph.PutImage(249, 59, BkAddress, Graph._GPSET);
-        Lib.Delay(100);
+        Graph.PutImage(199, 29, BkAddress, Graph._GPSET);
+        DrawPlane(PlaneX, PlaneY, Width);
+        Lib.Delay(GameSpeed * 3);
+        IF CheckForAnyMouseButton() THEN
+            PlaneY := 200;
+        END;
     END;
 END PlaneToPlanet;
 
