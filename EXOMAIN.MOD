@@ -51,12 +51,12 @@ END PlayLevels;
 BEGIN
     SetVGAMode();
     Init();
-
+(*
     PlayIntroSlideshow();
     PlayTitleSequence();
     ClearTheBuffer();
     PlaneToPlanet();
-
+*)
     PlayLevels();
 
     IF NOT GameOver THEN

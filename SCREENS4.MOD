@@ -54,13 +54,13 @@ BEGIN
     Sound(150); Delay(PlopSoundDelay); NoSound();
     Sound(240); Delay(PlopSoundDelay); NoSound();
     Graph.PutImage(0, 190, BkAddress, Graph._GPSET);
-    (*Lives := Lives + 1;*)
-    IF (Lives=3) THEN
+    IF (Lives = 0) THEN
         Lives := 0;
         IF (Cheat=FALSE) THEN
             GameOver := TRUE;
         END;
     ELSE
+        Lives := Lives - 1;
         PlaneX := 0;
         PixelColour := Blue;
         WHILE (PixelColour = Blue) OR (PixelColour = LightestBlue) DO

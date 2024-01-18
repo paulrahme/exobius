@@ -38,7 +38,7 @@ BEGIN
     TextPos := Graph.SetTextPosition(1, 15);
     Graph.OutText("Extra Life!");
     IF (Lives > 0) THEN
-        Lives := Lives - 1;
+        Lives := Lives + 1;
     END;
     FOR Explosions := 1 TO 200 DO
         Sound(Lib.RANDOM(15) + 20);
@@ -193,7 +193,7 @@ BEGIN
                 Rectangle(SpitX - SpitYDiffWidth - 2, SpitY - SpitYDiffHeight - 2, SpitX + SpitYDiffWidth + 2, SpitY + SpitYDiffHeight + 2, DarkBrown, TRUE);
                 SpitY := 0;
             ELSIF (SpitY > PlaneY) AND (PlaneX > SpitX - BossSpitColliderRadius) AND (PlaneX < SpitX + BossSpitColliderRadius) THEN
-                Die();
+                Die(0);
                 Rectangle(0, PlaneY - 20, 319, 199, DarkBrown, TRUE);
                 SpitY := 0;
             END;

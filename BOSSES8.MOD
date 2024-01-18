@@ -188,7 +188,7 @@ BEGIN
                     CheckMouse();
                     DrawAllBoss8Things();
                     IF (Boss8Y > 140) AND (PlaneX > Boss8X - 30) AND (PlaneX < Boss8X + 85) THEN
-                        Die();
+                        Die(0);
                         IF (Boss8X > 159) THEN PlaneX := 0; ELSE PlaneX := 319 - PlaneWidth; END;
                     END;
                     Delay(GameSpeed);
@@ -199,7 +199,7 @@ BEGIN
                     CheckMouse();
                     DrawAllBoss8Things();
                     IF (Boss8Y > 140) AND (PlaneX > Boss8X - 35) AND (PlaneX < Boss8X + 85) THEN
-                        Die();
+                        Die(0);
                         IF (Boss8X > 159) THEN PlaneX := 0; ELSE PlaneX := 319 - PlaneWidth; END;
                     END;
                     Delay(GameSpeed);
@@ -211,7 +211,7 @@ BEGIN
     END;
 
     IF (ScreenComplete) THEN
-        IF (Lives > 0) THEN Lives := Lives - 1; END;
+        Lives := Lives + 1;
         DrawAllBoss8Things();
         FinishScreen();
     ELSIF (GameOver) THEN

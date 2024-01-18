@@ -59,7 +59,7 @@ END SetupNextArch;
 PROCEDURE CheckPlayerCollision(arch : Arch);
 BEGIN
     IF (PlaneX < arch.FinalLeft + 10) OR (PlaneX + PlaneWidth > arch.FinalRight - 10) THEN
-        Die();
+        Die(0);
         PlaneX := ((arch.FinalLeft + arch.FinalRight) DIV 2) - (PlaneWidth DIV 2);
     END;
 END CheckPlayerCollision;
@@ -150,7 +150,7 @@ BEGIN
     END;
     Rectangle(0, 0, 319, 10, Black, TRUE);
     IF (Lives > 0) THEN
-        Lives := Lives - 1;
+        Lives := Lives + 1;
     END;
     Rectangle(0, 0, 319, 10, Black, TRUE);
 END BlowUpBoss;

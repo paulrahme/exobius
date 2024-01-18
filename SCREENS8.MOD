@@ -274,7 +274,7 @@ BEGIN
           (ThreeDead=0) AND (PlaneX>159) AND (PlaneX<192) OR
           (FourDead=0) AND (PlaneX>191) AND (PlaneX<224) OR
           (FiveDead=0) AND (PlaneX>223) THEN
-          Die;
+          Die(0);
           OneDead := 3;
        END;
     END;

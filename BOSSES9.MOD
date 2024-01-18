@@ -253,7 +253,7 @@ BEGIN
                 END;
             END;
             IF (SpitY > SpitHitY) AND (PlaneX + (PlaneWidth DIV 2) + 20 > SpitX) AND (PlaneX + (PlaneWidth DIV 2) < SpitX + 20) THEN
-                Die();
+                Die(0);
                 IF (SpitX < PlaneWidth) THEN PlaneX := 265; END;
             END;
             Delay(GameSpeed);

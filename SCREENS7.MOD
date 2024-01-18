@@ -280,7 +280,7 @@ BEGIN
                     END;
                 ELSE (* On ground, hit pillar? *)
                     IF (PlanePillarDiffX > -30) AND (PlanePillarDiffX < 30) THEN
-                        Die();
+                        Die(0);
                         Rectangle(0, PlaneY, 319, 199, DarkBrown, TRUE);
                     END;
                 END;

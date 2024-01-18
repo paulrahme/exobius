@@ -19,9 +19,8 @@ FROM Exobius IMPORT
     PlaneX, BulletX, BulletY, Lives,
     Xs, Ys,
     ScreenComplete, GameOver, GameSpeed,
-    Update3DBullet, StartBulletCooldown, DrawPlane, DrawPlane5025, CheckMouse, Die,
-    FinishScreen, Key, Score,
-    BkAddress, DrawGameOver, TextPos;
+    Update3DBullet, StartBulletCooldown, DrawPlane, DrawPlane5025, DrawLives, CheckMouse, Die,
+    FinishScreen, Key, Score, BkAddress, DrawGameOver, TextPos;
 
 PROCEDURE DrawBoss1(y : CARDINAL);
 BEGIN
@@ -60,7 +59,8 @@ BEGIN
     Graph.OutText("Extra Life!");
     ScreenComplete := TRUE;
     IF (Lives > 0) THEN
-        Lives := Lives - 1;
+        Lives := Lives + 1;
+        DrawLives(176);
     END;
     FOR Explosions := 1 TO 200 DO
         Sound(Lib.RANDOM(15) + 20);
@@ -152,7 +152,7 @@ BEGIN
             Ellipse(SpitX, SpitY, (SpitY - MouthY) * 2 DIV 3, (SpitY - MouthY) DIV 4, Blue, TRUE);
             Ellipse(SpitX, SpitY, (SpitY + 1 - MouthY) * 2 DIV 3, (SpitY + 2 - MouthY) DIV 4, LightestBlue, FALSE);
             IF (SpitY > SpitHitY) AND (PlaneX > 50) AND (PlaneX < 219) THEN
-                Die;
+                Die(0);
             END;
             CheckMouse();
             DrawPlane5025();

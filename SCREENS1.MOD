@@ -24,7 +24,7 @@ FROM Exobius IMPORT
     Enemies, Xs, Ys,
     Count, Lives, EnemyY,
     ScreenComplete, GameOver,  MouseButtons,  MouseMove, GameSpeed,
-    Update3DBullet, DrawPlane, DrawPlane5025, CheckMouse, Die, DrawGameOver,
+    Update3DBullet, DrawPlane, DrawPlane5025, DrawLives, CheckMouse, Die, DrawGameOver,
     FinishScreen,
     CheckSpecialKeys, ClearTheBuffer, DrawGameOver;
 
@@ -158,7 +158,7 @@ BEGIN
     END;
 
     IF (Dead) THEN
-        Die();
+        Die(176);
         OneAlive := FALSE;
         IF (RedrawGroundAfterDeath) THEN
             DrawGroundWithEdge(TRUE);
@@ -290,6 +290,7 @@ BEGIN
     ClearScreen(_GCLEARSCREEN);
 
     DrawMountains();
+    DrawLives(176);
     
     (* Draw grass *)
     Rectangle(0, 100, 320, 200, LightGreen, TRUE);
@@ -373,8 +374,8 @@ BEGIN
         (* Draw wave of enemies *)
         OneAlive := TRUE; TwoAlive := TRUE; ThreeAlive := TRUE; FourAlive := TRUE; FiveAlive := TRUE; SixAlive := TRUE;
         FOR EnemyY := 101 TO 200 DO
-            IF (GameOver=FALSE) AND (ScreenComplete=FALSE) THEN
-                CheckMouse;
+            IF NOT GameOver AND NOT ScreenComplete THEN
+                CheckMouse();
                 Polygon(4, Xs, Ys, LightBrown);
                 UpdateGroundDots();
                 DrawEnemies1();

@@ -73,7 +73,7 @@ BEGIN
     Score := 0;
     GameOver := FALSE;
     ScreenComplete := FALSE;
-    Lives := 0;
+    Lives := 3;
     PlaneX := PlaneStartX; PlaneY := PlaneStartY; BulletX := 0; BulletY := 0; EnemyY := 65000;
     BkSize := CARDINAL(Graph.ImageSize(0, 0, 319, 100));
     Storage.ALLOCATE(BkAddress, BkSize);
@@ -195,6 +195,16 @@ BEGIN
     Line(PlaneX + 42, y22, x37, y10, LightestWhite);
     Ellipse(x37, y22, 5, 2, Yellow, TRUE);
 END DrawPlane5025;
+
+PROCEDURE DrawLives(BgColor : CARDINAL);
+VAR
+    LifeCount : CARDINAL;
+BEGIN
+    Rectangle(0, 0, 200, 10, BgColor, TRUE);
+    FOR LifeCount := 0 TO (Lives - 1) DO
+        DrawPlane(LifeCount * 20, 0, 19);
+    END;
+END DrawLives;
 
 PROCEDURE ShowPauseMenu;
 CONST
@@ -445,7 +455,7 @@ BEGIN
     END;
 END Clear3DBullet;
 
-PROCEDURE Die;
+PROCEDURE Die(LivesBgColour : CARDINAL);
 CONST
     SoundDelay = 50;
 BEGIN
@@ -470,12 +480,13 @@ BEGIN
     Ellipse(PlaneX + (PlaneWidth DIV 2), PlaneY*(PlaneHeight DIV 2), PlaneWidth DIV 2, PlaneHeight DIV 2, White, TRUE);
     Lib.Delay(SoundDelay);
     NoSound();
-    Lives := Lives + 1;
-    IF (Lives = 5) THEN
-        Lives := 0;
+    IF (Lives = 0) THEN
         IF (Cheat = FALSE) THEN
             GameOver := TRUE;
         END;
+    ELSE
+        Lives := Lives - 1;
+        DrawLives(LivesBgColour);
     END;
     PlaneX := PlaneXMin;
 END Die;

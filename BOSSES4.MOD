@@ -127,7 +127,7 @@ BEGIN
         MakeBossRunAway(x, y);
     END;
     IF (Lives > 0) THEN
-        Lives := Lives - 1;
+        Lives := Lives + 1;
     END;
 END BlowUpBoss;
 
@@ -305,7 +305,7 @@ BEGIN
                 IF (Point(PlaneX + 10, PlaneY - 2) <> Black) OR
                    (Point(PlaneX + 40, PlaneY - 2) <> Black) OR
                    (Point(PlaneX + 25, PlaneY - 2) <> Black) THEN
-                    Die;
+                    Die(0);
                     CASE LeftBehind OF
                         |0: PlaneX := 30;
                         |1: PlaneX := 135;
@@ -344,7 +344,7 @@ BEGIN
                 IF (Point(PlaneX + 10, PlaneY - 2) <> Black) OR
                    (Point(PlaneX + 40, PlaneY - 2) <> Black) OR
                    (Point(PlaneX + 25, PlaneY - 2) <> Black) THEN
-                    Die;
+                    Die(0);
                     CASE LeftBehind OF
                         |0: PlaneX := 30;
                         |1: PlaneX := 135;

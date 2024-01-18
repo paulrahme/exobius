@@ -265,7 +265,7 @@ BEGIN
                     ELSIF (GY > PlaneY - 25) AND (GX > PlaneX - 15) AND (GX < PlaneX + PlaneWidth + 15) THEN
                         Disc(GX + (GlowWidth DIV 2), GY + (GlowHeight DIV 2), 10, DarkestRed);
                         OldPlaneX := PlaneX;
-                        Die;
+                        Die(0);
                         IF NOT GameOver THEN
                             Rectangle(CARDINAL(OldPlaneX), PlaneY, CARDINAL(OldPlaneX) + PlaneWidth, PlaneY + PlaneHeight, Black, TRUE);
                             Rectangle(GX, GY, GX + GlowWidth, GY + GlowHeight, Black, TRUE);

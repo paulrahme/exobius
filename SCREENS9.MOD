@@ -125,7 +125,7 @@ BEGIN
                 DrawPillarBottom(Pillar5X, Pillar5Y);
                 IF (Point(PlaneX + 15, PlaneY - 4) <> DarkRed) OR (Point(PlaneX + 35, PlaneY - 4) <> DarkRed) THEN
                     OldPlaneX := PlaneX;
-                    Die();
+                    Die(0);
                     REPEAT
                         PlaneX := Lib.RANDOM(250);
                     UNTIL (Point(PlaneX + (PlaneWidth DIV 2), PlaneY - 1) = DarkRed);
