@@ -15,7 +15,7 @@ FROM Exobius IMPORT
     OneAlive, TwoAlive, ThreeAlive, FourAlive, FiveAlive, SixAlive,
     EnemyY, EnemyYStart, CollisionY,
     ScreenComplete, GameOver, GameSpeed,
-    Update3DBullet, DrawPlane5025,
+    Update3DBullet, DrawPlane5025, DrawLives,
     BkAddress, CheckMouse, CheckMouseAndSpecialKeys, DrawGameOver;
 FROM Screens1 IMPORT CheckDeath1;
 
@@ -135,16 +135,16 @@ BEGIN
     END;
 END DrawSnowFlake;
 
-PROCEDURE BlankGround3;
+PROCEDURE RefreshScenery;
 VAR
     SnowFlakes : CARDINAL;
 BEGIN
-    PutImage(0, 0, BkAddress, Graph._GPSET);
+    PutImage(0, 9, BkAddress, Graph._GPSET);
     Rectangle(0, 100, 319, 199, LightestWhite, TRUE);
-    FOR SnowFlakes := 1 TO 5 DO
-        DrawSnowFlake(Lib.RANDOM(310), Lib.RANDOM(190), Lib.RANDOM(10));
+    FOR SnowFlakes := 1 TO 4 DO
+        DrawSnowFlake(Lib.RANDOM(310), 9 + Lib.RANDOM(182), Lib.RANDOM(10));
     END
-END BlankGround3;
+END RefreshScenery;
 
 PROCEDURE DrawCloud(CloudX, CloudY, Width : CARDINAL);
 VAR
@@ -199,10 +199,11 @@ BEGIN
 
     (* Main loop *)
     CheckMouseAndSpecialKeys();
-    FOR CloudCount := 1 TO 5 DO
-        DrawCloud(Lib.RANDOM(290), Lib.RANDOM(70), Lib.RANDOM(30));
+    FOR CloudCount := 1 TO 6 DO
+        DrawCloud(Lib.RANDOM(290), 10 + Lib.RANDOM(60), Lib.RANDOM(30));
     END;
-    GetImage(0, 0, 319, 99, BkAddress);
+    GetImage(0, 9, 319, 99, BkAddress);
+    DrawLives(LightBlue);
     WHILE NOT GameOver AND NOT ScreenComplete DO
         FOR GroundDots := 1 TO 20 DO
             DotX := Lib.RANDOM(70) + 125;
@@ -211,7 +212,7 @@ BEGIN
             Lib.Delay(GameSpeed);
             Plot(DotX, DotY, LightBlue);
             CheckMouse();
-            BlankGround3();
+            RefreshScenery();
             DrawPlane5025();
             Update3DBullet(FALSE);
             Lib.Delay(GameSpeed);
@@ -220,12 +221,12 @@ BEGIN
         FOR EnemyY := 101 TO 200 DO
             IF NOT (GameOver) THEN
                 CheckMouse();
-                BlankGround3();
+                RefreshScenery();
                 DrawPlane5025();
                 DrawEnemies3();
                 Update3DBullet(TRUE);
                 IF (EnemyY > CollisionY) THEN
-                    CheckDeath1(FALSE);
+                    CheckDeath1(FALSE, LightBlue);
                 END;
                 Lib.Delay(GameSpeed);
             END;

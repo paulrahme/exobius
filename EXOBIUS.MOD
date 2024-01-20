@@ -196,13 +196,31 @@ BEGIN
     Ellipse(x37, y22, 5, 2, Yellow, TRUE);
 END DrawPlane5025;
 
+PROCEDURE DrawPlane1507(x : CARDINAL);
+VAR
+    Xs, Ys : ARRAY [0..3] OF CARDINAL;
+BEGIN
+    Xs[0] := x; Ys[0] := 7; Xs[1] := x + 7; Ys[1] := 0; Xs[2] := x + 7; Ys[2] := 7; 
+    Polygon(3, Xs, Ys, DarkBlue);
+    Xs[0] := x + 15; Ys[0] := 7; Xs[1] := x + 8; Ys[1] := 0; Xs[2] := x + 8; Ys[2] := 7; 
+    Polygon(3, Xs, Ys, LightBlue);
+    Line(x + 3, 3, x + 3, 7, DarkGrey);
+    Line(x + 4, 2, x + 4, 6, Grey);
+    Line(x + 5, 2, x + 5, 6, LightGrey);
+    Line(x + 10, 2, x + 10, 7, DarkGrey);
+    Line(x + 11, 2, x + 11, 6, Grey);
+    Line(x + 12, 3, x + 12, 6, LightGrey);
+    Ellipse(x + 4, 7, 2, 1, DarkYellow, TRUE);
+    Ellipse(x + 11, 7, 2, 1, DarkYellow, TRUE);
+END DrawPlane1507;
+
 PROCEDURE DrawLives(BgColor : CARDINAL);
 VAR
     LifeCount : CARDINAL;
 BEGIN
-    Rectangle(0, 0, 200, 10, BgColor, TRUE);
-    FOR LifeCount := 0 TO (Lives - 1) DO
-        DrawPlane(LifeCount * 20, 0, 19);
+    Rectangle(0, 0, 150, 8, BgColor, TRUE);
+    FOR LifeCount := 1 TO Lives DO
+        DrawPlane1507((LifeCount - 1) * 16);
     END;
 END DrawLives;
 
@@ -481,12 +499,12 @@ BEGIN
     Lib.Delay(SoundDelay);
     NoSound();
     IF (Lives = 0) THEN
-        IF (Cheat = FALSE) THEN
-            GameOver := TRUE;
-        END;
+        GameOver := TRUE;
     ELSE
         Lives := Lives - 1;
-        DrawLives(LivesBgColour);
+        IF (LivesBgColour < 60000) THEN
+            DrawLives(LivesBgColour);
+        END;
     END;
     PlaneX := PlaneXMin;
 END Die;

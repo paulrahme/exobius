@@ -1,7 +1,7 @@
 DEFINITION MODULE Screens1;
 
 PROCEDURE DrawEnemies1;
-PROCEDURE CheckDeath1(RedrawGroundAfterDeath : BOOLEAN);
+PROCEDURE CheckDeath1(RedrawGroundAfterDeath : BOOLEAN; LivesBgColour : CARDINAL);
 PROCEDURE Screen1;
 
 END Screens1.

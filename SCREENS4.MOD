@@ -15,7 +15,7 @@ FROM Exobius IMPORT
     LightestGreen, DarkestYellow, DarkYellow, Yellow, LightYellow, LightestYellow,
     PlaneX, PlaneY, PlaneWidth, PlaneHeight, PlaneStartX, PlaneStartY, Xs, Ys, Lives, ScreenComplete, GameOver, GameSpeed,
     GetPixel, PutPixel, DrawPlane, DrawPlane5025, CheckMouse, CheckMouseAndSpecialKeys,
-    BkAddress, ClearTheBuffer, Cheat, DrawGameOver, TextPos;
+    BkAddress, ClearTheBuffer, DrawGameOver, TextPos;
 FROM Sprites IMPORT RandomBrown;
 
 CONST
@@ -55,10 +55,7 @@ BEGIN
     Sound(240); Delay(PlopSoundDelay); NoSound();
     Graph.PutImage(0, 190, BkAddress, Graph._GPSET);
     IF (Lives = 0) THEN
-        Lives := 0;
-        IF (Cheat=FALSE) THEN
-            GameOver := TRUE;
-        END;
+        GameOver := TRUE;
     ELSE
         Lives := Lives - 1;
         PlaneX := 0;

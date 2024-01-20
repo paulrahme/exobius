@@ -145,7 +145,7 @@ BEGIN
     Line (172, 100, 320, 198, DarkestBrown);
 END DrawGroundWithEdge;
 
-PROCEDURE CheckDeath1(RedrawGroundAfterDeath : BOOLEAN);
+PROCEDURE CheckDeath1(RedrawGroundAfterDeath : BOOLEAN; LivesBgColour : CARDINAL);
 VAR
     Dead : BOOLEAN;
 BEGIN
@@ -158,7 +158,7 @@ BEGIN
     END;
 
     IF (Dead) THEN
-        Die(176);
+        Die(LivesBgColour);
         OneAlive := FALSE;
         IF (RedrawGroundAfterDeath) THEN
             DrawGroundWithEdge(TRUE);
@@ -180,13 +180,14 @@ BEGIN
     Ellipse (x, y, radius - (radius*8 DIV 9), radius, LightestBrown, TRUE);
 END DrawMountain;
 
-PROCEDURE DrawMountains();
+PROCEDURE DrawScenery();
 VAR
     MountX, MtRadius, MtPointX, MtPointY : CARDINAL;
     GotPixel : SHORTCARD;
 BEGIN
     SetClipRgn (0, 0, 320, 101);
 
+    (* Draw sky *)
     Rectangle (0,0,320,15,176,TRUE);
     Rectangle (0,16,319,30,104,TRUE);
     Rectangle (0,31,319,45,1,TRUE);
@@ -194,7 +195,6 @@ BEGIN
     Rectangle (0,61,319,75,80,TRUE);
     Line (0,13,320,13,104);
     Line (0,10,319,10,104);
-    Line (0,5,319,5,104);
     Line (0,17,319,17,176);
     Line (0,20,319,20,176);
     Line (0,29,319,29,1);
@@ -220,6 +220,7 @@ BEGIN
     Line (0,92,319,92,29);
     Line (0,95,320,95,29);
 
+    (* Draw mountains *)
     FOR Count := 1 TO 20 DO
         MtRadius := Lib.RANDOM(50) + 40;
         MountX := Lib.RANDOM(320);
@@ -240,7 +241,7 @@ BEGIN
     END;
 
     SetClipRgn(0, 0, 320, 200);
-END DrawMountains;
+END DrawScenery;
 
 PROCEDURE UpdateGroundDots();
 VAR
@@ -289,7 +290,7 @@ VAR
 BEGIN
     ClearScreen(_GCLEARSCREEN);
 
-    DrawMountains();
+    DrawScenery();
     DrawLives(176);
     
     (* Draw grass *)
@@ -382,7 +383,7 @@ BEGIN
                 Update3DBullet(TRUE);
                 DrawPlane5025();
                 IF (EnemyY > CollisionY) THEN
-                    CheckDeath1(TRUE);
+                    CheckDeath1(TRUE, 176);
                 END;
                 Lib.Delay(GameSpeed);
             END;

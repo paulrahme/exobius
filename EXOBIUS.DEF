@@ -33,7 +33,7 @@ VAR
     BkColour, OldBkColor : LONGCARD;
     Xs, Ys : CoordArray;
     TextPos : Graph.TextCoords;
-    OneAlive, TwoAlive, ThreeAlive, FourAlive, FiveAlive, SixAlive, ScreenComplete, GameOver, Cheat : BOOLEAN;
+    OneAlive, TwoAlive, ThreeAlive, FourAlive, FiveAlive, SixAlive, ScreenComplete, GameOver : BOOLEAN;
     MouseButtons : MsMouse.MsData;
     MouseMove : MsMouse.MsMotion;
 

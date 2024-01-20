@@ -1,6 +1,5 @@
 DEFINITION MODULE Screens3;
 
-PROCEDURE BlankGround3;
 PROCEDURE DrawEnemies3;
 PROCEDURE Screen3;
 

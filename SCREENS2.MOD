@@ -19,7 +19,7 @@ FROM Exobius IMPORT
     BkAddress,
     PutPixel, SetPixel,
     CheckMouse, CheckSpecialKeys, CheckMouseAndSpecialKeys,
-    PlaneWidth, PlaneHeight, DrawPlane, DrawPlane5025,
+    PlaneWidth, PlaneHeight, DrawPlane, DrawPlane5025, DrawLives,
     ScreenComplete, GameOver, GameSpeed, Lives, Die, DrawGameOver;
 
 VAR
@@ -210,10 +210,11 @@ BEGIN
             FOR GX := 0 TO 5 DO
                 GlowIdx := (GY * 6) + GX;
                 GlowXs[GlowIdx] := 45 + (GX * 45);
-                GlowYs[GlowIdx] := GY * 35;
+                GlowYs[GlowIdx] := 8 + (GY * 35);
             END;
         END;
         DrawGlowWorms(GlowXs[0], GlowYs[0]);
+        DrawLives(0);
         GetImage(GlowXs[0], GlowYs[0], GlowXs[0] + GlowWidth, GlowYs[0] + GlowHeight, GlowAddress);
         CheckMouseAndSpecialKeys();
 
