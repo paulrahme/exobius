@@ -14,13 +14,13 @@ FROM Exobius IMPORT
     Brown, LightBrown, LightestBrown, DarkestGreen, DarkGreen, Green, LightGreen,
     LightestGreen, DarkestYellow, DarkYellow, Yellow, LightYellow, LightestYellow,
     PlaneX, PlaneY, PlaneWidth, PlaneHeight, PlaneStartX, PlaneStartY, Xs, Ys, Lives, ScreenComplete, GameOver, GameSpeed,
-    GetPixel, PutPixel, DrawPlane, DrawPlane5025, CheckMouse, CheckMouseAndSpecialKeys,
-    BkAddress, ClearTheBuffer, DrawGameOver, TextPos;
+    GetPixel, PutPixel, DrawPlane, DrawPlane5025, DrawPlane1608, CheckMouse, CheckMouseAndSpecialKeys,
+    BkAddress, ClearTheBuffer, DrawLives, DrawGameOver, TextPos;
 FROM Sprites IMPORT RandomBrown;
 
 CONST
-    SmallPlaneWidth = 20;
-    SmallPlaneHeight = 10;
+    SmallPlaneWidth = 16;
+    SmallPlaneHeight = 8;
     ScrollSpeed = 4;
 
 PROCEDURE DrawBridgePiece4(x, y : CARDINAL);
@@ -79,6 +79,7 @@ VAR
         PuddleX, PuddleHalfWidth, PuddleLeftX, PuddleLength, BehindPlaneSize : CARDINAL;
     LineXStart : INTEGER;
     BehindPlaneAddress : ADDRESS;
+    PixelColour : SHORTCARD;
 BEGIN
     PlaneX := 150; PlaneY := PlaneStartY; LineSpeed := 156; ScreenComplete := FALSE;
     ClearTheBuffer;
@@ -219,16 +220,24 @@ BEGIN
         Graph.GetImage(105, 0, 214, 198, BkAddress);
         Graph.PutImage(105, ScrollSpeed, BkAddress, Graph._GPSET);
 
+        (* Draw lives *)
+        PixelColour := GetPixel(0, 190);
+        IF (PixelColour = Blue) OR (PixelColour = LightBlue) THEN
+            DrawLives(191, Blue);
+        ELSE
+            DrawLives(191, LightBrown);
+        END;
+
         (* Update + draw plane *)
         CheckMouse();
         GetImage(PlaneX, PlaneY, PlaneX + SmallPlaneWidth, PlaneY + SmallPlaneHeight, BehindPlaneAddress);
-        DrawPlane(PlaneX, PlaneY, SmallPlaneWidth);
+        DrawPlane1608(PlaneX, PlaneY);
 
         (* Finished screen / Dead? *)
         IF (Distance >= TotalDistance) THEN
             ScreenComplete := TRUE;
         ELSIF (Point(PlaneX+10, PlaneY-1) = Blue) OR (Point(PlaneX+10, PlaneY-1) = LightestBlue) THEN
-            Die4;
+            Die4();
         END;
 
         Delay(GameSpeed);

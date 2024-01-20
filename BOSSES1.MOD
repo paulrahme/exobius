@@ -79,7 +79,7 @@ BEGIN
         NoSound();
     END;
     Rectangle(0, 0, 319, 10, 176, TRUE);
-    DrawLives(176);
+    DrawLives(0, 176);
 END KillBoss1;
 
 PROCEDURE Boss1;

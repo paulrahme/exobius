@@ -291,7 +291,7 @@ BEGIN
     ClearScreen(_GCLEARSCREEN);
 
     DrawScenery();
-    DrawLives(176);
+    DrawLives(0,176);
     
     (* Draw grass *)
     Rectangle(0, 100, 320, 200, LightGreen, TRUE);

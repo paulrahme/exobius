@@ -203,7 +203,7 @@ BEGIN
         DrawCloud(Lib.RANDOM(290), 10 + Lib.RANDOM(60), Lib.RANDOM(30));
     END;
     GetImage(0, 9, 319, 99, BkAddress);
-    DrawLives(LightBlue);
+    DrawLives(0, LightBlue);
     WHILE NOT GameOver AND NOT ScreenComplete DO
         FOR GroundDots := 1 TO 20 DO
             DotX := Lib.RANDOM(70) + 125;

@@ -214,7 +214,7 @@ BEGIN
             END;
         END;
         DrawGlowWorms(GlowXs[0], GlowYs[0]);
-        DrawLives(0);
+        DrawLives(0, 0);
         GetImage(GlowXs[0], GlowYs[0], GlowXs[0] + GlowWidth, GlowYs[0] + GlowHeight, GlowAddress);
         CheckMouseAndSpecialKeys();
 

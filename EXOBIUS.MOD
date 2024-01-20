@@ -196,31 +196,31 @@ BEGIN
     Ellipse(x37, y22, 5, 2, Yellow, TRUE);
 END DrawPlane5025;
 
-PROCEDURE DrawPlane1507(x : CARDINAL);
+PROCEDURE DrawPlane1608(x, y : CARDINAL);
 VAR
     Xs, Ys : ARRAY [0..3] OF CARDINAL;
 BEGIN
-    Xs[0] := x; Ys[0] := 7; Xs[1] := x + 7; Ys[1] := 0; Xs[2] := x + 7; Ys[2] := 7; 
+    Xs[0] := x; Ys[0] := y + 7; Xs[1] := x + 7; Ys[1] := y; Xs[2] := x + 7; Ys[2] := y + 7; 
     Polygon(3, Xs, Ys, DarkBlue);
-    Xs[0] := x + 15; Ys[0] := 7; Xs[1] := x + 8; Ys[1] := 0; Xs[2] := x + 8; Ys[2] := 7; 
+    Xs[0] := x + 15; Ys[0] := y + 7; Xs[1] := x + 8; Ys[1] := y; Xs[2] := x + 8; Ys[2] := y + 7; 
     Polygon(3, Xs, Ys, LightBlue);
-    Line(x + 3, 3, x + 3, 7, DarkGrey);
-    Line(x + 4, 2, x + 4, 6, Grey);
-    Line(x + 5, 2, x + 5, 6, LightGrey);
-    Line(x + 10, 2, x + 10, 7, DarkGrey);
-    Line(x + 11, 2, x + 11, 6, Grey);
-    Line(x + 12, 3, x + 12, 6, LightGrey);
-    Ellipse(x + 4, 7, 2, 1, DarkYellow, TRUE);
-    Ellipse(x + 11, 7, 2, 1, DarkYellow, TRUE);
-END DrawPlane1507;
+    Line(x + 3, y + 3, x + 3, y + 7, DarkGrey);
+    Line(x + 4, y + 2, x + 4, y + 6, Grey);
+    Line(x + 5, y + 2, x + 5, y + 6, LightGrey);
+    Line(x + 10, y + 2, x + 10, y + 7, DarkGrey);
+    Line(x + 11, y + 2, x + 11, y + 6, Grey);
+    Line(x + 12, y + 3, x + 12, y + 6, LightGrey);
+    Ellipse(x + 4, y + 7, 2, 1, DarkYellow, TRUE);
+    Ellipse(x + 11, y + 7, 2, 1, DarkYellow, TRUE);
+END DrawPlane1608;
 
-PROCEDURE DrawLives(BgColor : CARDINAL);
+PROCEDURE DrawLives(y, BgColor : CARDINAL);
 VAR
     LifeCount : CARDINAL;
 BEGIN
-    Rectangle(0, 0, 150, 8, BgColor, TRUE);
+    Rectangle(0, y, Lives * 16, y + 8, BgColor, TRUE);
     FOR LifeCount := 1 TO Lives DO
-        DrawPlane1507((LifeCount - 1) * 16);
+        DrawPlane1608((LifeCount - 1) * 16, y);
     END;
 END DrawLives;
 
@@ -503,7 +503,7 @@ BEGIN
     ELSE
         Lives := Lives - 1;
         IF (LivesBgColour < 60000) THEN
-            DrawLives(LivesBgColour);
+            DrawLives(0, LivesBgColour);
         END;
     END;
     PlaneX := PlaneXMin;
