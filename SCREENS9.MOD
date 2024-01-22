@@ -16,8 +16,7 @@ FROM Exobius IMPORT
     DarkestGreen, DarkGreen, Green, LightGreen, LightestGreen,
     DarkestYellow, DarkYellow, Yellow, LightYellow, LightestYellow,
     PlaneX, PlaneY, PlaneStartX, PlaneStartY, DrawPlane5025, CheckMouse,
-    Count, GameOver, GameSpeed,
-    Die, DrawGameOver;
+    Count, GameOver, GameSpeed, Die, DrawLives, DrawGameOver;
 
 PROCEDURE DrawPillarBottom(x, y : CARDINAL);
 VAR
@@ -42,25 +41,26 @@ BEGIN
     END;
 END DrawPillarBottom;
 
-PROCEDURE DeletePillar(x : CARDINAL);
+PROCEDURE DrawSkyPortion(LeftX, RightX : CARDINAL);
 BEGIN
-    Rectangle (x - 13, 0, x + 13, 6, 0, TRUE);
-    Rectangle (x - 13, 7, x + 13, 13, 184, TRUE);
-    Rectangle (x - 13, 14, x + 13, 20, 183, TRUE);
-    Rectangle (x - 13, 28, x + 13, 34, 181, TRUE);
-    Rectangle (x - 13, 21, x + 13, 28, 182, TRUE);
-    Rectangle (x - 13, 35, x + 13, 41, 180, TRUE);
-    Rectangle (x - 13, 42, x + 13, 48, 179, TRUE);
-    Rectangle (x - 13, 49, x + 13, 55, 178, TRUE);
-    Rectangle (x - 13, 56, x + 13, 62, 177, TRUE);
-    Rectangle (x - 13, 63, x + 13, 69, 176, TRUE);
-    Rectangle (x - 13, 70, x + 13, 76, 177, TRUE);
-    Rectangle (x - 13, 77, x + 13, 83, 178, TRUE);
-    Rectangle (x - 13, 84, x + 13, 90, 179, TRUE);
-    Rectangle (x - 13, 91, x + 13, 97, 180, TRUE);
-    Rectangle (x - 13, 98, x + 13, 104, 181, TRUE);
-    Rectangle (x - 13, 105, x + 13, 200, DarkRed, TRUE);
-END DeletePillar;
+    Rectangle(LeftX, 0, RightX, 8, 184, TRUE);
+    Rectangle(LeftX, 9, RightX, 15, 183, TRUE);
+    Rectangle(LeftX, 16, RightX, 21, 182, TRUE);
+    Rectangle(LeftX, 22, RightX, 27, 181, TRUE);
+    Rectangle(LeftX, 28, RightX, 34, 180, TRUE);
+    Rectangle(LeftX, 35, RightX, 41, 179, TRUE);
+    Rectangle(LeftX, 42, RightX, 48, 178, TRUE);
+    Rectangle(LeftX, 49, RightX, 55, 177, TRUE);
+    Rectangle(LeftX, 56, RightX, 62, 176, TRUE);
+    Rectangle(LeftX, 63, RightX, 69, 177, TRUE);
+    Rectangle(LeftX, 70, RightX, 76, 178, TRUE);
+    Rectangle(LeftX, 77, RightX, 83, 179, TRUE);
+    Rectangle(LeftX, 84, RightX, 90, 180, TRUE);
+    Rectangle(LeftX, 91, RightX, 97, 181, TRUE);
+    Rectangle(LeftX, 98, RightX, 104, 182, TRUE);
+    Rectangle(LeftX, 105, RightX, 199, DarkRed, TRUE);
+    DrawLives(0, 184);
+END DrawSkyPortion;
 
 PROCEDURE Screen9;
 CONST
@@ -85,21 +85,7 @@ BEGIN
     END;
 
     (* Draw faded sky *)
-    Rectangle(0,0,319,6,0,TRUE);
-    Rectangle(0,7,319,13,184,TRUE);
-    Rectangle(0,14,319,20,183,TRUE);
-    Rectangle(0,21,320,28,182,TRUE);
-    Rectangle(0,28,319,34,181,TRUE);
-    Rectangle(0,35,320,41,180,TRUE);
-    Rectangle(0,42,320,48,179,TRUE);
-    Rectangle(0,49,319,55,178,TRUE);
-    Rectangle(0,56,319,62,177,TRUE);
-    Rectangle(0,63,319,69,176,TRUE);
-    Rectangle(0,70,319,76,177,TRUE);
-    Rectangle(0,77,319,83,178,TRUE);
-    Rectangle(0,84,319,90,179,TRUE);
-    Rectangle(0,91,320,97,180,TRUE);
-    Rectangle(0,98,319,104,181,TRUE);
+    DrawSkyPortion(0, 319);
 
     PlaneX := PlaneStartX; PlaneY := PlaneStartY;
     PillarCount := 0;
@@ -125,7 +111,7 @@ BEGIN
                 DrawPillarBottom(Pillar5X, Pillar5Y);
                 IF (Point(PlaneX + 15, PlaneY - 4) <> DarkRed) OR (Point(PlaneX + 35, PlaneY - 4) <> DarkRed) THEN
                     OldPlaneX := PlaneX;
-                    Die(0);
+                    Die(184);
                     REPEAT
                         PlaneX := Lib.RANDOM(250);
                     UNTIL (Point(PlaneX + (PlaneWidth DIV 2), PlaneY - 1) = DarkRed);
@@ -138,7 +124,7 @@ BEGIN
                 Delay(GameSpeed);
             END;
         END;
-        DeletePillar(Pillar5X);
+        DrawSkyPortion(Pillar5X - 13, Pillar5X + 13);
         NoSound();
         IF (GameOver) THEN
             DrawGameOver();

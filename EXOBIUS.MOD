@@ -218,7 +218,7 @@ PROCEDURE DrawLives(y, BgColor : CARDINAL);
 VAR
     LifeCount : CARDINAL;
 BEGIN
-    Rectangle(0, y, Lives * 16, y + 8, BgColor, TRUE);
+    Rectangle(0, y, (Lives + 1) * 16, y + 8, BgColor, TRUE);
     FOR LifeCount := 1 TO Lives DO
         DrawPlane1608((LifeCount - 1) * 16, y);
     END;

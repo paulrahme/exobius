@@ -15,7 +15,7 @@ FROM Exobius IMPORT
     DarkestYellow, DarkYellow, Yellow, LightYellow, LightestYellow,
     PlaneX, PlaneY, PlaneStartX, PlaneStartY, PlaneWidth, BulletX, BulletY, Update3DBullet,
     Count, Lives, Enemy1X, EnemyY, Boss1Lives,
-    ScreenComplete, GameOver, FinishScreen, GameSpeed, Die, DrawGameOver, TextPos,
+    ScreenComplete, GameOver, FinishScreen, GameSpeed, Die, DrawGameOver, TextPos, DrawLives,
     DrawPlane, DrawPlane5025, CheckMouse, CheckMouseAndSpecialKeys;
 FROM Sprites IMPORT RandomBrown;
 
@@ -59,7 +59,7 @@ END SetupNextArch;
 PROCEDURE CheckPlayerCollision(arch : Arch);
 BEGIN
     IF (PlaneX < arch.FinalLeft + 10) OR (PlaneX + PlaneWidth > arch.FinalRight - 10) THEN
-        Die(0);
+        Die(64000);
         PlaneX := ((arch.FinalLeft + arch.FinalRight) DIV 2) - (PlaneWidth DIV 2);
     END;
 END CheckPlayerCollision;
@@ -128,8 +128,12 @@ PROCEDURE BlowUpBoss();
 VAR
     Explosions, Colour : CARDINAL;
 BEGIN
-    TextPos := Graph.SetTextPosition(3, 15);
+    Rectangle(0, 0, 319, 10, Black, TRUE);
+    TextPos := Graph.SetTextPosition(1, 15);
     Graph.OutText("Extra Life!");
+    Lives := Lives + 1;
+    DrawLives(0, 0);
+    
     FOR Explosions := 100 TO 0 BY -1 DO
         Sound(Explosions);
         CASE (Lib.RANDOM(10)) OF
@@ -148,11 +152,8 @@ BEGIN
         Delay(GameSpeed);
         NoSound;
     END;
-    Rectangle(0, 0, 319, 10, Black, TRUE);
-    IF (Lives > 0) THEN
-        Lives := Lives + 1;
-    END;
-    Rectangle(0, 0, 319, 10, Black, TRUE);
+    Rectangle(0, 0, 319, 20, Black, TRUE);
+    DrawLives(0, 0);
 END BlowUpBoss;
 
 PROCEDURE CheckBulletAgainstBoss();

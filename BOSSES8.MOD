@@ -17,7 +17,7 @@ FROM Exobius IMPORT
     DarkestYellow, DarkYellow, Yellow, LightYellow, LightestYellow,
     BulletY, PlaneY, PlaneStartY, PlaneWidth, PlaneHeight, Lives,
     Xs, Ys, ScreenComplete, GameOver, GameSpeed,
-    PlaneX, PlaneY, DrawPlane, DrawPlane5025, CheckMouse, Die,
+    PlaneX, PlaneY, DrawPlane, DrawPlane5025, CheckMouse, Die, DrawLives,
     BkAddress, DrawGameOver, FinishScreen, TextPos;
 
 CONST
@@ -70,6 +70,8 @@ VAR
 BEGIN
     TextPos := Graph.SetTextPosition (1, 15);
     Graph.OutText ("Extra Life!");
+    Lives := Lives + 1;
+    DrawLives(11, 0);
     ScreenComplete := TRUE;
     FOR Explosions := 200 TO 0 BY -1 DO
         Sound (Explosions);
@@ -134,6 +136,7 @@ PROCEDURE DrawAllBoss8Things;
 BEGIN
     Graph.PutImage(PlanetBkLeft, PlanetBkTop, BkAddress, Graph._GPSET);
     Rectangle(0, 11, 319, PlanetBkTop - 1, Black, TRUE);
+    DrawLives(11, 0);
     Rectangle(0, PlanetBkTop, PlanetBkLeft - 1, 199, Black, TRUE);
     Rectangle(PlanetBkRight + 1, PlanetBkTop, 319, 199, Black, TRUE);
     Rectangle(PlanetBkLeft, PlanetBkBottom, PlanetBkRight, 199, Black, TRUE);
@@ -162,6 +165,7 @@ BEGIN
     DrawPlanet();
     Rectangle(1, 1, 318, 9, Red, TRUE);
     Rectangle(0, 0, 319, 10, White, FALSE);
+    DrawLives(11, 0);
     Graph.GetImage(PlanetBkLeft, PlanetBkTop, PlanetBkRight, PlanetBkBottom, BkAddress);
 
     (* Boss rises *)
@@ -188,7 +192,8 @@ BEGIN
                     CheckMouse();
                     DrawAllBoss8Things();
                     IF (Boss8Y > 140) AND (PlaneX > Boss8X - 30) AND (PlaneX < Boss8X + 85) THEN
-                        Die(0);
+                        Die(64000);
+                        DrawLives(11, 0);
                         IF (Boss8X > 159) THEN PlaneX := 0; ELSE PlaneX := 319 - PlaneWidth; END;
                     END;
                     Delay(GameSpeed);
@@ -199,7 +204,8 @@ BEGIN
                     CheckMouse();
                     DrawAllBoss8Things();
                     IF (Boss8Y > 140) AND (PlaneX > Boss8X - 35) AND (PlaneX < Boss8X + 85) THEN
-                        Die(0);
+                        Die(64000);
+                        DrawLives(11, 0);
                         IF (Boss8X > 159) THEN PlaneX := 0; ELSE PlaneX := 319 - PlaneWidth; END;
                     END;
                     Delay(GameSpeed);
@@ -211,7 +217,6 @@ BEGIN
     END;
 
     IF (ScreenComplete) THEN
-        Lives := Lives + 1;
         DrawAllBoss8Things();
         FinishScreen();
     ELSIF (GameOver) THEN

@@ -17,7 +17,7 @@ FROM Exobius IMPORT
     GameSpeed, BkAddress,
     PlaneX, PlaneY, PlaneWidth, BulletX, BulletY, OldBulletX, Lives,
     Boss1Lives, Boss2Lives, Boss3Lives, OneAlive, TwoAlive, ThreeAlive,
-    ScreenComplete, GameOver,
+    ScreenComplete, GameOver, DrawLives,
     DrawPlane, DrawPlane5025, CheckMouse, Die, DrawGameOver, TextPos;
 
 CONST
@@ -47,26 +47,29 @@ BEGIN
     IF ThreeAlive THEN Graph.PutImage(X3, Y3, BossAddress, Graph._GPSET); END;
 END DrawBoss4;
 
-PROCEDURE DrawBarGraphs;
+PROCEDURE DrawHealthBars;
 BEGIN
-    Rectangle(0, 0, 102, 10, White, FALSE);
-    Rectangle(1, 1, 101, 9, Black, TRUE);
     IF OneAlive THEN
+        Rectangle(0, 0, 102, 10, White, FALSE);
+        Rectangle(1, 1, 101, 9, Black, TRUE);
         Rectangle(1, 1, 1 + (Boss1Lives * 5), 9, Red, TRUE);
+    ELSE
+        Rectangle(0, 0, 102, 10, Black, TRUE);
+        DrawLives(0, 0);
     END;
 
-    Rectangle(110, 0, 212, 10, White, FALSE);
-    Rectangle(111, 1, 211, 9, Black, TRUE);
     IF TwoAlive THEN
+        Rectangle(110, 0, 212, 10, White, FALSE);
+        Rectangle(111, 1, 211, 9, Black, TRUE);
         Rectangle(111, 1, 111 + (Boss2Lives * 5), 9, Red, TRUE);
     END;
 
-    Rectangle(217, 0, 319, 10, White, FALSE);
-    Rectangle(218, 1, 318, 9, Black, TRUE);
     IF ThreeAlive THEN
+        Rectangle(217, 0, 319, 10, White, FALSE);
+        Rectangle(218, 1, 318, 9, Black, TRUE);
         Rectangle(218, 1, 218 + (Boss3Lives * 5), 9, Red, TRUE);
     END;
-END DrawBarGraphs;
+END DrawHealthBars;
 
 PROCEDURE MakeBossRunAway(x, y : CARDINAL);
 CONST
@@ -79,6 +82,7 @@ BEGIN
     x := x + 50; StartOffsetX := INTEGER(x) - 159;
     y := y + 50; StartOffsetY := INTEGER(y) - 99;
 
+    DrawLives(0, 0);
     FOR Progress := UpdateFrames TO 0 BY -1 DO
         Rectangle(x - 30, y - 30, x + 30, y + 30, Black, TRUE);
         x := (CARDINAL(159 + (StartOffsetX * Progress DIV UpdateFrames)));
@@ -99,9 +103,10 @@ PROCEDURE BlowUpBoss(x, y : CARDINAL);
 VAR
     Explosions, Colour : CARDINAL;
 BEGIN
-    DrawBarGraphs();
     TextPos := Graph.SetTextPosition (3, 2 + (x DIV 8));
     Graph.OutText("Extra Life!");
+    Lives := Lives + 1;
+    DrawHealthBars();
     FOR Explosions := 100 TO 0 BY -1 DO
         Sound(Explosions);
         CASE (Lib.RANDOM(10)) OF
@@ -121,13 +126,13 @@ BEGIN
         Delay(GameSpeed);
         NoSound;
     END;
+
     Graph.ClearScreen(Graph._GCLEARSCREEN);
+    DrawHealthBars();
+
     IF NOT (OneAlive OR TwoAlive OR ThreeAlive) THEN
         ScreenComplete := TRUE;
         MakeBossRunAway(x, y);
-    END;
-    IF (Lives > 0) THEN
-        Lives := Lives + 1;
     END;
 END BlowUpBoss;
 
@@ -176,7 +181,7 @@ BEGIN
             END;
          END;
     END;
-    DrawBarGraphs();
+    DrawHealthBars();
 END HurtBoss;
 
 PROCEDURE DrawBossBullet;
@@ -274,7 +279,7 @@ BEGIN
     ScreenComplete := FALSE;
     Boss1Y := BossFall; Boss2Y := BossFall; Boss3Y := BossFall;
     LeftBehind := 1;
-    DrawBarGraphs();
+    DrawHealthBars();
 
     WHILE NOT (GameOver OR ScreenComplete) DO
         (* Move downward *)
@@ -306,6 +311,7 @@ BEGIN
                    (Point(PlaneX + 40, PlaneY - 2) <> Black) OR
                    (Point(PlaneX + 25, PlaneY - 2) <> Black) THEN
                     Die(0);
+                    DrawHealthBars();
                     CASE LeftBehind OF
                         |0: PlaneX := 30;
                         |1: PlaneX := 135;
@@ -345,6 +351,7 @@ BEGIN
                    (Point(PlaneX + 40, PlaneY - 2) <> Black) OR
                    (Point(PlaneX + 25, PlaneY - 2) <> Black) THEN
                     Die(0);
+                    DrawHealthBars();
                     CASE LeftBehind OF
                         |0: PlaneX := 30;
                         |1: PlaneX := 135;

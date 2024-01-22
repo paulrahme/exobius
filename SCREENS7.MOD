@@ -15,7 +15,7 @@ FROM Exobius IMPORT
     DarkestYellow, DarkYellow, Yellow, LightYellow, LightestYellow,
     PlaneX, PlaneY, PlaneStartX, PlaneStartY, PlaneWidth, PlaneHeight, DrawPlane5025,
     PutPixel, Count, ClearTheBuffer, CheckSpecialKeys, CheckMouseAndSpecialKeys, CheckMouse,
-    GameSpeed, Die, GameOver, DrawGameOver;
+    GameSpeed, Die, GameOver, DrawGameOver, DrawLives;
 
 CONST
     NoOfPillars = 30;
@@ -227,6 +227,7 @@ BEGIN
                 DrawPillar3D(NextPillarIdx + PillarCount, PillarXs[NextPillarIdx + PillarCount], (PillarCount * PillarZDiff) + NextPillarZ, PlaneInAir);
             END;
         END;
+        DrawLives(0, 0);
 
         (* Update bouncing movement *)
         IF (PlaneInAir) THEN

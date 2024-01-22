@@ -44,19 +44,18 @@ BEGIN
         Screen9();  IF GameOver THEN RETURN; END;
         Boss9();    IF GameOver THEN RETURN; END;
   END;
-
 END PlayLevels;
 
 (* Main loop *)
 BEGIN
     SetVGAMode();
     Init();
-(*
+
     PlayIntroSlideshow();
     PlayTitleSequence();
     ClearTheBuffer();
     PlaneToPlanet();
-*)
+
     PlayLevels();
 
     IF NOT GameOver THEN

@@ -17,7 +17,7 @@ FROM Exobius IMPORT
     PlaneX, BulletX, BulletY, PlaneY, CoverRectangleX,
     Enemies, Enemy1X, Enemy2X, Enemy3X, Enemy4X, Enemy5X, Enemy6X, EnemyY,
     ScreenComplete, GameOver, DrawGameOver, GameSpeed,
-    DrawPlane, CheckMouse, Die, Score;
+    DrawPlane5025, DrawLives, CheckMouse, Die, Score;
 
 CONST
     PlanetX = 159;
@@ -27,7 +27,7 @@ VAR
     EnemyColour1, EnemyColour2, EnemyColour3, EnemyColour4, EnemyColour5,
     EnemyRadius, OneDead, TwoDead, ThreeDead, FourDead, FiveDead,
     UpBulletX, UpBulletY, TheStars : CARDINAL;
-  
+
 PROCEDURE DrawStars8;
 VAR
     Stars, StarX, StarY : CARDINAL;
@@ -71,7 +71,7 @@ END DrawFallBall;
 PROCEDURE SetEnemies(NewEnemyIndex : CARDINAL);
 BEGIN
     Enemies := NewEnemyIndex;
-    
+
     CASE Enemies OF
         |1: EnemyColour1 := DarkestYellow;
             EnemyColour2 := DarkYellow;
@@ -331,10 +331,11 @@ BEGIN
                 CheckMouse8();
                 ClearScreen(Graph._GCLEARSCREEN);
                 DrawPlanet();
-                DrawPlane(PlaneX, PlaneY, PlaneWidth);
+                DrawPlane5025();
                 DrawBullet8();
                 UpBullet8();
                 DrawStars8();
+                DrawLives(0, 0);
                 Delay(GameSpeed);
             END;
         END;
@@ -347,13 +348,14 @@ BEGIN
                 Graph.ClearScreen (Graph._GCLEARSCREEN);
                 PlanetRadius := PlanetRadius + 1;
                 DrawPlanet();
-                DrawPlane(PlaneX, PlaneY, PlaneWidth);
+                DrawPlane5025();
                 DrawEnemies8();
                 DrawBullet8();
                 UpBullet8();
                 CheckEnemies8();
                 CheckDeath8();
                 DrawStars8();
+                DrawLives(0, 0);
                 Delay(GameSpeed * 3 DIV 4);
             END;
         END;
