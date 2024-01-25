@@ -6,6 +6,7 @@ FROM Exobius IMPORT
     Init, ShutDown, SetVGAMode, SetTextMode,
     GameOver, ClearTheBuffer;
 
+FROM Font IMPORT DrawFontTest;
 FROM Slides IMPORT PlayIntroSlideshow, PlayGoodEnding, PlayBadEnding;
 FROM Intro1 IMPORT PlayTitleSequence;
 FROM Intro2 IMPORT PlaneToPlanet;
@@ -51,6 +52,8 @@ BEGIN
     SetVGAMode();
     Init();
 
+    DrawFontTest();
+(*
     PlayIntroSlideshow();
     PlayTitleSequence();
     ClearTheBuffer();
@@ -65,7 +68,7 @@ BEGIN
             PlayBadEnding();
         END;
     END;
-
+*)
     ShutDown();
     SetTextMode();
 END Exomain.
