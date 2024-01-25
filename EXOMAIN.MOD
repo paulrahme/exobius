@@ -52,8 +52,6 @@ BEGIN
     SetVGAMode();
     Init();
 
-    DrawFontTest();
-(*
     PlayIntroSlideshow();
     PlayTitleSequence();
     ClearTheBuffer();
@@ -68,7 +66,7 @@ BEGIN
             PlayBadEnding();
         END;
     END;
-*)
+
     ShutDown();
     SetTextMode();
 END Exomain.
