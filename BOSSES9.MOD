@@ -16,7 +16,7 @@ FROM Exobius IMPORT
     DarkestYellow, DarkYellow, Yellow, LightYellow, LightestYellow,
     PlaneX, PlaneY, PlaneStartX, PlaneStartY, DrawPlane5025, DrawPlane,
     CheckMouse, Count, GameOver, ScreenComplete, GameSpeed, Update3DBullet,
-    Die, DrawLives, DrawGameOver, BulletX, BulletY, Score;
+    Die, DrawLives, DrawGameOver, BulletX, BulletY, Score, HudY, HudBg;
 
 PROCEDURE WritePlayExobius(x, y, Width : CARDINAL);
 BEGIN
@@ -213,7 +213,8 @@ BEGIN
     DrawPlane5025();
     Rectangle(1, 1, 319, 9, Red, TRUE);
     Rectangle(0, 0, 319, 10, White, FALSE);
-    DrawLives(11, 184);
+    HudY := 11; HudBg := 184;
+    DrawLives();
 
     (****************************************************************)
 
@@ -254,8 +255,7 @@ BEGIN
                 END;
             END;
             IF (SpitY > SpitHitY) AND (PlaneX + (PlaneWidth DIV 2) + 20 > SpitX) AND (PlaneX + (PlaneWidth DIV 2) < SpitX + 20) THEN
-                Die(64000);
-                DrawLives(11, 184);
+                Die();
                 IF (SpitX < PlaneWidth) THEN PlaneX := 265; END;
             END;
             Delay(GameSpeed);

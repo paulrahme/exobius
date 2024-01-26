@@ -16,10 +16,9 @@ FROM Exobius IMPORT
     DarkestWhite, DarkWhite, White, LightWhite, LightestWhite,
     DarkestGreen, DarkGreen, Green, LightGreen, LightestGreen,
     PlaneX, PlaneStartX, PlaneStartY, BulletX, BulletY, OldBulletX, StartBulletCooldown, PlaneY,
-    BkAddress,
-    PutPixel, SetPixel,
+    BkAddress, PutPixel, SetPixel,
     CheckMouse, CheckSpecialKeys, CheckMouseAndSpecialKeys,
-    PlaneWidth, PlaneHeight, DrawPlane, DrawPlane5025, DrawLives,
+    PlaneWidth, PlaneHeight, DrawPlane, DrawPlane5025, DrawLives, HudY, HudBg,
     ScreenComplete, GameOver, GameSpeed, Lives, Die, DrawGameOver;
 
 VAR
@@ -214,7 +213,8 @@ BEGIN
             END;
         END;
         DrawGlowWorms(GlowXs[0], GlowYs[0]);
-        DrawLives(0, 0);
+        HudY := 0; HudBg := 0;
+        DrawLives();
         GetImage(GlowXs[0], GlowYs[0], GlowXs[0] + GlowWidth, GlowYs[0] + GlowHeight, GlowAddress);
         CheckMouseAndSpecialKeys();
 
@@ -266,7 +266,7 @@ BEGIN
                     ELSIF (GY > PlaneY - 25) AND (GX > PlaneX - 15) AND (GX < PlaneX + PlaneWidth + 15) THEN
                         Disc(GX + (GlowWidth DIV 2), GY + (GlowHeight DIV 2), 10, DarkestRed);
                         OldPlaneX := PlaneX;
-                        Die(0);
+                        Die();
                         IF NOT GameOver THEN
                             Rectangle(CARDINAL(OldPlaneX), PlaneY, CARDINAL(OldPlaneX) + PlaneWidth, PlaneY + PlaneHeight, Black, TRUE);
                             Rectangle(GX, GY, GX + GlowWidth, GY + GlowHeight, Black, TRUE);

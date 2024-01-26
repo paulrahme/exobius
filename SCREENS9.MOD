@@ -16,7 +16,7 @@ FROM Exobius IMPORT
     DarkestGreen, DarkGreen, Green, LightGreen, LightestGreen,
     DarkestYellow, DarkYellow, Yellow, LightYellow, LightestYellow,
     PlaneX, PlaneY, PlaneStartX, PlaneStartY, DrawPlane5025, CheckMouse,
-    Count, GameOver, GameSpeed, Die, DrawLives, DrawGameOver;
+    Count, GameOver, GameSpeed, Die, DrawLives, HudY, HudBg, DrawGameOver;
 
 PROCEDURE DrawPillarBottom(x, y : CARDINAL);
 VAR
@@ -59,7 +59,7 @@ BEGIN
     Rectangle(LeftX, 91, RightX, 97, 181, TRUE);
     Rectangle(LeftX, 98, RightX, 104, 182, TRUE);
     Rectangle(LeftX, 105, RightX, 199, DarkRed, TRUE);
-    DrawLives(0, 184);
+    DrawLives();
 END DrawSkyPortion;
 
 PROCEDURE Screen9;
@@ -85,6 +85,7 @@ BEGIN
     END;
 
     (* Draw faded sky *)
+    HudY := 0; HudBg := 184;
     DrawSkyPortion(0, 319);
 
     PlaneX := PlaneStartX; PlaneY := PlaneStartY;
@@ -111,7 +112,7 @@ BEGIN
                 DrawPillarBottom(Pillar5X, Pillar5Y);
                 IF (Point(PlaneX + 15, PlaneY - 4) <> DarkRed) OR (Point(PlaneX + 35, PlaneY - 4) <> DarkRed) THEN
                     OldPlaneX := PlaneX;
-                    Die(184);
+                    Die();
                     REPEAT
                         PlaneX := Lib.RANDOM(250);
                     UNTIL (Point(PlaneX + (PlaneWidth DIV 2), PlaneY - 1) = DarkRed);

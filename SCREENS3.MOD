@@ -15,7 +15,7 @@ FROM Exobius IMPORT
     OneAlive, TwoAlive, ThreeAlive, FourAlive, FiveAlive, SixAlive,
     EnemyY, EnemyYStart, CollisionY,
     ScreenComplete, GameOver, GameSpeed,
-    Update3DBullet, DrawPlane5025, DrawLives,
+    Update3DBullet, DrawPlane5025, DrawLives, HudY, HudBg,
     BkAddress, CheckMouse, CheckMouseAndSpecialKeys, DrawGameOver;
 FROM Screens1 IMPORT CheckDeath1;
 
@@ -203,7 +203,8 @@ BEGIN
         DrawCloud(Lib.RANDOM(290), 10 + Lib.RANDOM(60), Lib.RANDOM(30));
     END;
     GetImage(0, 9, 319, 99, BkAddress);
-    DrawLives(0, LightBlue);
+    HudY := 0; HudBg := LightBlue;
+    DrawLives();
     WHILE NOT GameOver AND NOT ScreenComplete DO
         FOR GroundDots := 1 TO 20 DO
             DotX := Lib.RANDOM(70) + 125;

@@ -16,7 +16,7 @@ FROM Exobius IMPORT
     DarkestBrown, DarkBrown, Brown, LightBrown, LightestBrown,
     DarkestGreen, DarkGreen, Green, LightGreen, LightestGreen,
     DarkestYellow, DarkYellow, Yellow, LightYellow, LightestYellow,
-    PlaneX, PlaneY, PlaneWidth, PlaneHeight, BulletX, BulletY, Lives,
+    PlaneX, PlaneY, PlaneWidth, PlaneHeight, BulletX, BulletY, Lives, HudY, HudBg,
     GameOver, GameSpeed, DrawLives,
     Update3DBullet, Clear3DBullet, StartBulletCooldown, DrawPlane5025, CheckMouse, Die,
     FinishScreen, Score, DrawGameOver, TextPos;
@@ -37,7 +37,7 @@ BEGIN
     TextPos := Graph.SetTextPosition(1, 15);
     Graph.OutText("Extra Life!");
     Lives := Lives + 1;
-    DrawLives(11, 0);
+    DrawLives();
 
     FOR Explosions := 1 TO 200 DO
         Sound(Lib.RANDOM(15) + 20);
@@ -143,7 +143,8 @@ BEGIN
     (* Boss's health bar *)
     Rectangle(0, 0, 319, 10, White, FALSE);
     Rectangle(1, 1, 318, 9, Red, TRUE);
-    DrawLives(11, 0);
+    HudY := 11; HudBg := 0;
+    DrawLives();
 
     WHILE NOT GameOver AND (BossLives > 0) DO
         (* Update plane *)
@@ -193,8 +194,7 @@ BEGIN
                 Rectangle(SpitX - SpitYDiffWidth - 2, SpitY - SpitYDiffHeight - 2, SpitX + SpitYDiffWidth + 2, SpitY + SpitYDiffHeight + 2, DarkBrown, TRUE);
                 SpitY := 0;
             ELSIF (SpitY > PlaneY) AND (PlaneX > SpitX - BossSpitColliderRadius) AND (PlaneX < SpitX + BossSpitColliderRadius) THEN
-                Die(64000);
-                DrawLives(11, 0);
+                Die();
                 Rectangle(0, PlaneY - 20, 319, 199, DarkBrown, TRUE);
                 SpitY := 0;
             END;

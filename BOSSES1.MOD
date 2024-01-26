@@ -16,7 +16,7 @@ FROM Exobius IMPORT
     DarkestBrown, DarkBrown, Brown, LightBrown, LightestBrown,
     DarkestGreen, DarkGreen, Green, LightGreen, LightestGreen,
     DarkestYellow, DarkYellow, Yellow, LightYellow, LightestYellow,
-    PlaneX, BulletX, BulletY, Lives,
+    PlaneX, BulletX, BulletY, Lives, HudY, HudBg,
     Xs, Ys,
     ScreenComplete, GameOver, GameSpeed,
     Update3DBullet, StartBulletCooldown, DrawPlane, DrawPlane5025, DrawLives, CheckMouse, Die,
@@ -79,7 +79,7 @@ BEGIN
         NoSound();
     END;
     Rectangle(0, 0, 319, 10, 176, TRUE);
-    DrawLives(0, 176);
+    DrawLives();
 END KillBoss1;
 
 PROCEDURE Boss1;
@@ -151,7 +151,7 @@ BEGIN
             Ellipse(SpitX, SpitY, (SpitY - MouthY) * 2 DIV 3, (SpitY - MouthY) DIV 4, Blue, TRUE);
             Ellipse(SpitX, SpitY, (SpitY + 1 - MouthY) * 2 DIV 3, (SpitY + 2 - MouthY) DIV 4, LightestBlue, FALSE);
             IF (SpitY > SpitHitY) AND (PlaneX > 50) AND (PlaneX < 219) THEN
-                Die(64000);
+                Die();
             END;
             CheckMouse();
             DrawPlane5025();

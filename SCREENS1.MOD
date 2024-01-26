@@ -21,11 +21,10 @@ FROM Exobius IMPORT
     DarkestGreen, DarkGreen, Green, LightGreen, LightestGreen,
     Enemy1X, Enemy2X, Enemy3X, Enemy4X, Enemy5X, Enemy6X,
     OneAlive, TwoAlive, ThreeAlive, FourAlive, FiveAlive, SixAlive,
-    Enemies, Xs, Ys,
-    Count, Lives, EnemyY,
+    Enemies, Xs, Ys, Count, Lives, EnemyY, HudY, HudBg,
     ScreenComplete, GameOver,  MouseButtons,  MouseMove, GameSpeed,
-    Update3DBullet, DrawPlane, DrawPlane5025, DrawLives, CheckMouse, Die, DrawGameOver,
-    FinishScreen,
+    Update3DBullet, DrawPlane, DrawPlane5025, DrawLives, UpdateScore, HudY, HudBg,
+    CheckMouse, Die, DrawGameOver, FinishScreen,
     CheckSpecialKeys, ClearTheBuffer, DrawGameOver;
 
 CONST
@@ -158,7 +157,7 @@ BEGIN
     END;
 
     IF (Dead) THEN
-        Die(LivesBgColour);
+        Die();
         OneAlive := FALSE;
         IF (RedrawGroundAfterDeath) THEN
             DrawGroundWithEdge(TRUE);
@@ -291,7 +290,9 @@ BEGIN
     ClearScreen(_GCLEARSCREEN);
 
     DrawScenery();
-    DrawLives(0,176);
+    HudBg := 176; HudY := 0;
+    DrawLives();
+    UpdateScore(0);
     
     (* Draw grass *)
     Rectangle(0, 100, 320, 200, LightGreen, TRUE);

@@ -14,7 +14,7 @@ FROM Exobius IMPORT
     DarkestGreen, DarkGreen, Green, LightGreen, LightestGreen,
     DarkestYellow, DarkYellow, Yellow, LightYellow, LightestYellow,
     PlaneX, PlaneY, PlaneStartX, PlaneStartY, PlaneWidth, BulletX, BulletY, Update3DBullet,
-    Count, Lives, Enemy1X, EnemyY, Boss1Lives,
+    Count, Lives, Enemy1X, EnemyY, Boss1Lives, HudY, HudBg,
     ScreenComplete, GameOver, FinishScreen, GameSpeed, Die, DrawGameOver, TextPos, DrawLives,
     DrawPlane, DrawPlane5025, CheckMouse, CheckMouseAndSpecialKeys;
 FROM Sprites IMPORT RandomBrown;
@@ -59,7 +59,7 @@ END SetupNextArch;
 PROCEDURE CheckPlayerCollision(arch : Arch);
 BEGIN
     IF (PlaneX < arch.FinalLeft + 10) OR (PlaneX + PlaneWidth > arch.FinalRight - 10) THEN
-        Die(64000);
+        Die();
         PlaneX := ((arch.FinalLeft + arch.FinalRight) DIV 2) - (PlaneWidth DIV 2);
     END;
 END CheckPlayerCollision;
@@ -132,7 +132,7 @@ BEGIN
     TextPos := Graph.SetTextPosition(1, 15);
     Graph.OutText("Extra Life!");
     Lives := Lives + 1;
-    DrawLives(0, 0);
+    DrawLives();
     
     FOR Explosions := 100 TO 0 BY -1 DO
         Sound(Explosions);
@@ -153,7 +153,7 @@ BEGIN
         NoSound;
     END;
     Rectangle(0, 0, 319, 20, Black, TRUE);
-    DrawLives(0, 0);
+    DrawLives();
 END BlowUpBoss;
 
 PROCEDURE CheckBulletAgainstBoss();
@@ -197,6 +197,7 @@ BEGIN
     Boss1Lives := BossLives;
     Enemy1X := 160;
     EnemyY := 0; (* Don't try automatically checking bullet against enemies *)
+    HudY := 0; HudBg := 0;
     DrawBossHealthBar();
     WHILE NOT ScreenComplete AND NOT GameOver DO
         (* Closest arch passed? *)

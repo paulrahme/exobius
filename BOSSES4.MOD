@@ -15,7 +15,7 @@ FROM Exobius IMPORT
     DarkestGreen, DarkGreen, Green, LightGreen, LightestGreen,
     DarkestYellow, DarkYellow, Yellow, LightYellow, LightestYellow,
     GameSpeed, BkAddress,
-    PlaneX, PlaneY, PlaneWidth, BulletX, BulletY, OldBulletX, Lives,
+    PlaneX, PlaneY, PlaneWidth, BulletX, BulletY, OldBulletX, Lives, HudY, HudBg,
     Boss1Lives, Boss2Lives, Boss3Lives, OneAlive, TwoAlive, ThreeAlive,
     ScreenComplete, GameOver, DrawLives,
     DrawPlane, DrawPlane5025, CheckMouse, Die, DrawGameOver, TextPos;
@@ -55,7 +55,7 @@ BEGIN
         Rectangle(1, 1, 1 + (Boss1Lives * 5), 9, Red, TRUE);
     ELSE
         Rectangle(0, 0, 102, 10, Black, TRUE);
-        DrawLives(0, 0);
+        DrawLives();
     END;
 
     IF TwoAlive THEN
@@ -82,7 +82,7 @@ BEGIN
     x := x + 50; StartOffsetX := INTEGER(x) - 159;
     y := y + 50; StartOffsetY := INTEGER(y) - 99;
 
-    DrawLives(0, 0);
+    DrawLives();
     FOR Progress := UpdateFrames TO 0 BY -1 DO
         Rectangle(x - 30, y - 30, x + 30, y + 30, Black, TRUE);
         x := (CARDINAL(159 + (StartOffsetX * Progress DIV UpdateFrames)));
@@ -234,6 +234,7 @@ BEGIN
     PlaneX := 135; PlaneY := 174;
     Boss1Lives := BossLives; Boss2Lives := BossLives; Boss3Lives := BossLives; BossAnimFrame := 0;
     OneAlive := TRUE; TwoAlive := TRUE; ThreeAlive := TRUE;
+    HudY := 0; HudBg := 0;
 
     BossSize := CARDINAL(Graph.ImageSize(0, 0, 100, 100));
     BossAddressA := BkAddress; (* First one can use existing alloc *)
@@ -310,7 +311,7 @@ BEGIN
                 IF (Point(PlaneX + 10, PlaneY - 2) <> Black) OR
                    (Point(PlaneX + 40, PlaneY - 2) <> Black) OR
                    (Point(PlaneX + 25, PlaneY - 2) <> Black) THEN
-                    Die(0);
+                    Die();
                     DrawHealthBars();
                     CASE LeftBehind OF
                         |0: PlaneX := 30;
@@ -350,7 +351,7 @@ BEGIN
                 IF (Point(PlaneX + 10, PlaneY - 2) <> Black) OR
                    (Point(PlaneX + 40, PlaneY - 2) <> Black) OR
                    (Point(PlaneX + 25, PlaneY - 2) <> Black) THEN
-                    Die(0);
+                    Die();
                     DrawHealthBars();
                     CASE LeftBehind OF
                         |0: PlaneX := 30;

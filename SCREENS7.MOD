@@ -15,7 +15,7 @@ FROM Exobius IMPORT
     DarkestYellow, DarkYellow, Yellow, LightYellow, LightestYellow,
     PlaneX, PlaneY, PlaneStartX, PlaneStartY, PlaneWidth, PlaneHeight, DrawPlane5025,
     PutPixel, Count, ClearTheBuffer, CheckSpecialKeys, CheckMouseAndSpecialKeys, CheckMouse,
-    GameSpeed, Die, GameOver, DrawGameOver, DrawLives;
+    GameSpeed, Die, GameOver, DrawGameOver, DrawLives, HudY, HudBg;
 
 CONST
     NoOfPillars = 30;
@@ -192,6 +192,7 @@ VAR
     PillarXs : ARRAY[0..NoOfPillars] OF INTEGER;
     BehindPlaneAddress : ADDRESS;
 BEGIN
+    HudY := 0; HudBg := 0;
     ClearTheBuffer();
     CreateLookupTable();
 
@@ -227,7 +228,7 @@ BEGIN
                 DrawPillar3D(NextPillarIdx + PillarCount, PillarXs[NextPillarIdx + PillarCount], (PillarCount * PillarZDiff) + NextPillarZ, PlaneInAir);
             END;
         END;
-        DrawLives(0, 0);
+        DrawLives();
 
         (* Update bouncing movement *)
         IF (PlaneInAir) THEN
@@ -281,7 +282,7 @@ BEGIN
                     END;
                 ELSE (* On ground, hit pillar? *)
                     IF (PlanePillarDiffX > -30) AND (PlanePillarDiffX < 30) THEN
-                        Die(0);
+                        Die();
                         Rectangle(0, PlaneY, 319, 199, DarkBrown, TRUE);
                     END;
                 END;

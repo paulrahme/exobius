@@ -28,7 +28,7 @@ VAR
     Key : CHAR;
     PlaneX, PlaneY, BulletX, OldBulletX, BulletY, DrawBulletX,
         Enemies, Enemy1X, Enemy2X, Enemy3X, Enemy4X, Enemy5X, Enemy6X, EnemyY, Boss1Lives, Boss2Lives, Boss3Lives,
-        CoverRectangleX, Count, Lives, Score, BkSize : CARDINAL;
+        CoverRectangleX, Count, Lives, Score, BkSize, HudY, HudBg : CARDINAL;
     BkAddress : ADDRESS;
     BkColour, OldBkColor : LONGCARD;
     Xs, Ys : CoordArray;
@@ -47,7 +47,8 @@ PROCEDURE GetPixel(x, y : CARDINAL) : SHORTCARD;
 PROCEDURE DrawPlane(x, y, Width : CARDINAL);
 PROCEDURE DrawPlane5025;
 PROCEDURE DrawPlane1608(x, y : CARDINAL);
-PROCEDURE DrawLives(y, BgColor : CARDINAL);
+PROCEDURE DrawLives;
+PROCEDURE UpdateScore(ScoreInc : CARDINAL);
 PROCEDURE StartBulletCooldown;
 PROCEDURE Update3DBullet(Check3DEnemies : BOOLEAN);
 PROCEDURE Clear3DBullet(Color : CARDINAL);
@@ -57,7 +58,7 @@ PROCEDURE CheckMouse;
 PROCEDURE WaitForMouseButtonUp;
 PROCEDURE WaitForAnyMouseButton;
 PROCEDURE CheckForAnyMouseButton() : BOOLEAN;
-PROCEDURE Die(LivesBgColour : CARDINAL);
+PROCEDURE Die();
 PROCEDURE DrawGameOver;
 PROCEDURE FinishScreen;
 PROCEDURE ClearTheBuffer;

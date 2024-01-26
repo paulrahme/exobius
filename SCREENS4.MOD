@@ -13,9 +13,9 @@ FROM Exobius IMPORT
     DarkRed, Red, LightRed, LightestRed, DarkestBrown, DarkBrown,
     Brown, LightBrown, LightestBrown, DarkestGreen, DarkGreen, Green, LightGreen,
     LightestGreen, DarkestYellow, DarkYellow, Yellow, LightYellow, LightestYellow,
-    PlaneX, PlaneY, PlaneWidth, PlaneHeight, PlaneStartX, PlaneStartY, Xs, Ys, Lives, ScreenComplete, GameOver, GameSpeed,
-    GetPixel, PutPixel, DrawPlane, DrawPlane5025, DrawPlane1608, CheckMouse, CheckMouseAndSpecialKeys,
-    BkAddress, ClearTheBuffer, DrawLives, DrawGameOver, TextPos;
+    PlaneX, PlaneY, PlaneWidth, PlaneHeight, PlaneStartX, PlaneStartY, Xs, Ys, Lives,  HudY, HudBg, 
+    ScreenComplete, GameOver, GameSpeed, GetPixel, PutPixel, DrawPlane, DrawPlane5025, DrawPlane1608,
+    CheckMouse, CheckMouseAndSpecialKeys, BkAddress, ClearTheBuffer, DrawLives, DrawGameOver, TextPos;
 FROM Sprites IMPORT RandomBrown;
 
 CONST
@@ -82,6 +82,7 @@ VAR
     PixelColour : SHORTCARD;
 BEGIN
     PlaneX := 150; PlaneY := PlaneStartY; LineSpeed := 156; ScreenComplete := FALSE;
+    HudY := 191;
     ClearTheBuffer;
     LineXStart := 150; LineXEnd := 170;
     Rectangle(0, 0, 320, 100, LightBlue, TRUE);
@@ -223,10 +224,11 @@ BEGIN
         (* Draw lives *)
         PixelColour := GetPixel(0, 190);
         IF (PixelColour = Blue) OR (PixelColour = LightBlue) THEN
-            DrawLives(191, Blue);
+            HudBg := Blue;
         ELSE
-            DrawLives(191, LightBrown);
+            HudBg := LightBlue;
         END;
+        DrawLives();
 
         (* Update + draw plane *)
         CheckMouse();

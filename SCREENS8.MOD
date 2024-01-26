@@ -16,7 +16,7 @@ FROM Exobius IMPORT
     DarkestYellow, DarkYellow, Yellow, LightYellow, LightestYellow,
     PlaneX, BulletX, BulletY, PlaneY, CoverRectangleX,
     Enemies, Enemy1X, Enemy2X, Enemy3X, Enemy4X, Enemy5X, Enemy6X, EnemyY,
-    ScreenComplete, GameOver, DrawGameOver, GameSpeed,
+    ScreenComplete, GameOver, DrawGameOver, GameSpeed, HudY, HudBg,
     DrawPlane5025, DrawLives, CheckMouse, Die, Score;
 
 CONST
@@ -274,7 +274,7 @@ BEGIN
           (ThreeDead=0) AND (PlaneX>159) AND (PlaneX<192) OR
           (FourDead=0) AND (PlaneX>191) AND (PlaneX<224) OR
           (FiveDead=0) AND (PlaneX>223) THEN
-          Die(0);
+          Die();
           OneDead := 3;
        END;
     END;
@@ -319,6 +319,7 @@ BEGIN
     BulletY := 0; UpBulletY := 65000; PlaneX := 145;
     PlaneY := 175; UpBulletX := 65000; EnemyY := 0;
     ScreenComplete := FALSE; PlanetRadius := 2;
+    HudY := 0; HudBg := 0;
     NoSound();
     SetEnemies(0);
     WHILE NOT (GameOver) AND NOT (ScreenComplete) DO
@@ -335,7 +336,7 @@ BEGIN
                 DrawBullet8();
                 UpBullet8();
                 DrawStars8();
-                DrawLives(0, 0);
+                DrawLives();
                 Delay(GameSpeed);
             END;
         END;
@@ -355,7 +356,7 @@ BEGIN
                 CheckEnemies8();
                 CheckDeath8();
                 DrawStars8();
-                DrawLives(0, 0);
+                DrawLives();
                 Delay(GameSpeed * 3 DIV 4);
             END;
         END;

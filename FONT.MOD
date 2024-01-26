@@ -3,7 +3,8 @@ IMPLEMENTATION MODULE Font;
 (*$S FF00*)
 
 IMPORT Graph, IO;
-FROM Graph IMPORT Polygon, Line, HLine;
+FROM Graph IMPORT Polygon, Line, HLine, Rectangle;
+FROM Exobius IMPORT PutPixel, Yellow;
 
 VAR
     FXs, FYs : ARRAY[0..5] OF CARDINAL;
@@ -437,6 +438,107 @@ BEGIN
     HLine(x, y, x + 19, 20);
     Line(x + 10, y + 3, x + 18, y + 1, 20);
 END Z;
+
+PROCEDURE Num_0(x, y: CARDINAL);
+BEGIN
+    Rectangle(x + 1, y + 1, x + 6, y + 6, Yellow, FALSE);
+    PutPixel(x + 2, y + 5, Yellow);
+    PutPixel(x + 3, y + 4, Yellow);
+    PutPixel(x + 4, y + 3, Yellow);
+    PutPixel(x + 5, y + 2, Yellow);
+END Num_0;
+
+PROCEDURE Num_1(x, y: CARDINAL);
+BEGIN
+    Line(x + 4, y + 1, x + 4, y + 5, Yellow);
+    Line(x + 5, y + 1, x + 5, y + 5, Yellow);
+    HLine(x + 1, y + 6, x + 6, Yellow);
+    PutPixel(x + 3, y + 3, Yellow);
+END Num_1;
+
+PROCEDURE Num_2(x, y: CARDINAL);
+BEGIN
+    HLine(x + 2, y + 1, x + 5, Yellow);
+    HLine(x + 1, y + 6, x + 6, Yellow);
+    PutPixel(x + 1, y + 2, Yellow);
+    PutPixel(x + 6, y + 2, Yellow);
+    PutPixel(x + 5, y + 3, Yellow);
+    PutPixel(x + 4, y + 3, Yellow);
+    PutPixel(x + 3, y + 4, Yellow);
+    PutPixel(x + 2, y + 5, Yellow);
+END Num_2;
+
+PROCEDURE Num_3(x, y: CARDINAL);
+BEGIN
+    HLine(x + 2, y + 1, x + 5, Yellow);
+    HLine(x + 3, y + 3, x + 5, Yellow);
+    HLine(x + 2, y + 6, x + 5, Yellow);
+    PutPixel(x + 1, y + 2, Yellow);
+    PutPixel(x + 6, y + 2, Yellow);
+    PutPixel(x + 6, y + 4, Yellow);
+    PutPixel(x + 1, y + 5, Yellow);
+    PutPixel(x + 6, y + 5, Yellow);
+END Num_3;
+
+PROCEDURE Num_4(x, y: CARDINAL);
+BEGIN
+    Line(x + 5, y + 1, x + 5, y + 6, Yellow);
+    HLine(x + 1, y + 5, x + 6, Yellow);
+    PutPixel(x + 4, y + 2, Yellow);
+    PutPixel(x + 3, y + 3, Yellow);
+    PutPixel(x + 2, y + 4, Yellow);
+END Num_4;
+
+PROCEDURE Num_5(x, y: CARDINAL);
+BEGIN
+    HLine(x + 1, y + 1, x + 6, Yellow);
+    HLine(x + 1, y + 3, x + 5, Yellow);
+    HLine(x + 2, y + 6, x + 5, Yellow);
+    PutPixel(x + 1, y + 2, Yellow);
+    PutPixel(x + 6, y + 4, Yellow);
+    PutPixel(x + 6, y + 5, Yellow);
+    PutPixel(x + 1, y + 5, Yellow);
+END Num_5;
+
+PROCEDURE Num_6(x, y: CARDINAL);
+BEGIN
+    HLine(x + 2, y + 1, x + 6, Yellow);
+    HLine(x + 2, y + 3, x + 5, Yellow);
+    HLine(x + 2, y + 6, x + 5, Yellow);
+    Line(x + 1, y + 2, x + 1, y + 5, Yellow);
+    PutPixel(x + 6, y + 4, Yellow);
+    PutPixel(x + 6, y + 5, Yellow);
+END Num_6;
+
+PROCEDURE Num_7(x, y: CARDINAL);
+BEGIN
+    HLine(x + 1, y + 1, x + 6, Yellow);
+    Line(x + 5, y + 2, x + 1, y + 6, Yellow);
+    Line(x + 6, y + 2, x + 2, y + 6, Yellow);
+END Num_7;
+
+PROCEDURE Num_8(x, y: CARDINAL);
+BEGIN
+    HLine(x + 2, y + 1, x + 5, Yellow);
+    HLine(x + 2, y + 3, x + 5, Yellow);
+    HLine(x + 2, y + 6, x + 5, Yellow);
+    PutPixel(x + 1, y + 2, Yellow);
+    PutPixel(x + 6, y + 2, Yellow);
+    PutPixel(x + 1, y + 4, Yellow);
+    PutPixel(x + 6, y + 4, Yellow);
+    PutPixel(x + 1, y + 5, Yellow);
+    PutPixel(x + 6, y + 5, Yellow);
+END Num_8;
+
+PROCEDURE Num_9(x, y: CARDINAL);
+BEGIN
+    HLine(x + 2, y + 1, x + 5, Yellow);
+    HLine(x + 2, y + 3, x + 5, Yellow);
+    HLine(x + 1, y + 6, x + 5, Yellow);
+    PutPixel(x + 1, y + 2, Yellow);
+    PutPixel(x + 6, y + 2, Yellow);
+    Line(x + 6, y + 2, x + 6, y + 5, Yellow);
+END Num_9;
 
 END Font.
 

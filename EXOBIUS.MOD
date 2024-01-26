@@ -5,7 +5,8 @@ IMPLEMENTATION MODULE Exobius;
 IMPORT Lib, IO, Graph, Storage, MsMouse, Font;
 FROM Graph IMPORT SetVideoMode, _MRES256COLOR, _DEFAULTMODE, Line, Disc, Ellipse, Rectangle, Plot, Polygon, GetImage, PutImage;
 FROM Lib IMPORT Sound, NoSound, Delay;
-FROM Font IMPORT A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z;
+FROM Font IMPORT A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z,
+    Num_0, Num_1, Num_2, Num_3, Num_4, Num_5, Num_6, Num_7, Num_8, Num_9;
 
 TYPE
     BYTEPTR = POINTER TO BYTE;
@@ -214,15 +215,45 @@ BEGIN
     Ellipse(x + 11, y + 7, 2, 1, DarkYellow, TRUE);
 END DrawPlane1608;
 
-PROCEDURE DrawLives(y, BgColor : CARDINAL);
+PROCEDURE DrawLives();
 VAR
     LifeCount : CARDINAL;
 BEGIN
-    Rectangle(0, y, (Lives + 1) * 16, y + 8, BgColor, TRUE);
+    Rectangle(0, HudY, (Lives + 1) * 16, HudY + 8, HudBg, TRUE);
     FOR LifeCount := 1 TO Lives DO
-        DrawPlane1608((LifeCount - 1) * 16, y);
+        DrawPlane1608((LifeCount - 1) * 16, HudY);
     END;
 END DrawLives;
+
+PROCEDURE UpdateScore(ScoreInc : CARDINAL);
+CONST
+    StartX = 263;
+    NumDigits = 6;
+VAR
+    DigitX, DivScore : CARDINAL;
+BEGIN
+    Rectangle(StartX, HudY, 319, HudY + 8, HudBg, TRUE);
+
+    Score := Score + ScoreInc;
+    DigitX := 319;
+    DivScore := Score;
+    WHILE (DigitX > StartX) DO
+        DigitX := DigitX - 8;
+        CASE (DivScore MOD 10) OF
+            |0: Num_0(DigitX, 0);
+            |1: Num_1(DigitX, 0);
+            |2: Num_2(DigitX, 0);
+            |3: Num_3(DigitX, 0);
+            |4: Num_4(DigitX, 0);
+            |5: Num_5(DigitX, 0);
+            |6: Num_6(DigitX, 0);
+            |7: Num_7(DigitX, 0);
+            |8: Num_8(DigitX, 0);
+            |9: Num_9(DigitX, 0);
+        END;
+        DivScore := DivScore DIV 10;
+    END;
+END UpdateScore;
 
 PROCEDURE ShowPauseMenu;
 CONST
@@ -378,17 +409,18 @@ BEGIN;
     Sound(30);
     Disc(BlowUpX + BlowUpYOffset, EnemyY + BlowUpYOffset, BlowUpYOffset DIV 2, LightRed);
     Lib.Delay(SoundDelay);
-    NoSound;
+    NoSound();
     Sound(25);
     Disc(BlowUpX + BlowUpYOffset, EnemyY + BlowUpYOffset, BlowUpYOffset DIV 3, LightestRed);
     Lib.Delay(SoundDelay);
-    NoSound;
+    NoSound();
     Sound(21);
     Disc(BlowUpX + BlowUpYOffset, EnemyY + BlowUpYOffset, BlowUpYOffset DIV 4, DarkestYellow);
     Lib.Delay(SoundDelay);
-    NoSound;
+    NoSound();
+
     BulletY := 0;
-    Score := Score + 10;
+    UpdateScore(10);
 END CheckBulletAgainstEnemies;
 
 PROCEDURE Update3DBullet(Check3DEnemies : BOOLEAN);
@@ -473,7 +505,7 @@ BEGIN
     END;
 END Clear3DBullet;
 
-PROCEDURE Die(LivesBgColour : CARDINAL);
+PROCEDURE Die();
 CONST
     SoundDelay = 50;
 BEGIN
@@ -502,9 +534,7 @@ BEGIN
         GameOver := TRUE;
     ELSE
         Lives := Lives - 1;
-        IF (LivesBgColour < 60000) THEN
-            DrawLives(0, LivesBgColour);
-        END;
+        DrawLives();
     END;
     PlaneX := PlaneXMin;
 END Die;
