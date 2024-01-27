@@ -4,14 +4,20 @@
     - Lowercase = natural note, Capital = sharp.
     - Special case chars:
         - r: Set repeat/loop point (jumps back to here at end of song)
+
+    Usage:
+        - Init();
+        - LoadNewSong("xxxxxx.dat");
+    (then once per tick)
+        - UpdateSong();
 *)
 
-MODULE Music;
+IMPLEMENTATION MODULE BgMusic;
+(*$I+,O+,R+,S+,Z+*)
+(*$S FF00*)
 
-IMPORT FIO, Str, IO, Lib, SYSTEM;
-
-FROM Lib IMPORT
-    Sound, NoSound;
+IMPORT FIO, Lib, IO;
+FROM Lib IMPORT Sound, NoSound;
 
 TYPE
     NoteCharType = CHAR['A'..'g'];
@@ -19,13 +25,12 @@ TYPE
 
 CONST
     NotesPerChord = 3;
-    MaxSongLength = 4096;
+    MaxSongLength = 2048;
     MaxMarkers = 10;
 
 VAR
     Frequencies : ARRAY[0..5] OF FreqArrayType;
     SongData : ARRAY[0..MaxSongLength] OF CARDINAL;
-    f : FIO.File;
     Chord : RECORD
         Pitches : ARRAY[0..(NotesPerChord-1)] OF CARDINAL;
     END;
@@ -57,6 +62,7 @@ PROCEDURE ProcessSpecialChars(Char : CHAR) : BOOLEAN;
 BEGIN;
     CASE Char OF
         |'r': RepeatIndex := SongIndex; RETURN TRUE;
+        |'_': SongData[SongIndex] := 0; SongIndex := SongIndex + 1; RETURN TRUE;
     END;
 
     RETURN FALSE;
@@ -66,21 +72,23 @@ PROCEDURE LoadNewSong(FileName : ARRAY OF CHAR);
 VAR
     Card : CARDINAL;
     Char : CHAR;
+    FileHandle : FIO.File;
 BEGIN
     SongIndex := 0;
     RepeatIndex := 0;
-    f := FIO.Open(FileName);
+    FileHandle := FIO.OpenRead(FileName);
     SongIndex := 0;
     WHILE NOT FIO.EOF DO
-        Card := FIO.RdCard(f);
-        Char := FIO.RdChar(f);
-        IF (NOT ProcessSpecialChars(Char)) THEN
+        Card := FIO.RdCard(FileHandle);
+        Char := FIO.RdChar(FileHandle);
+        IF (NOT FIO.EOF) AND (NOT ProcessSpecialChars(Char)) THEN
+            (*IO.WrChar(Char); IO.WrChar(' '); IO.WrLn();*)
             SongData[SongIndex] := Frequencies[Card][Char];
             SongIndex := SongIndex + 1;
         END;
     END;
     SongEndIndex := SongIndex - 1;
-    FIO.Close(f);
+    FIO.Close(FileHandle);
     SongIndex := 0;
     ChordNoteIdx := 0;
 END LoadNewSong;
@@ -91,7 +99,6 @@ BEGIN
 
     IF NOT (HSecs = PrevHSecs) THEN
         PrevHSecs := HSecs;
-        IO.WrCard(HSecs, 6);
         RETURN TRUE;
     ELSE
         RETURN FALSE;
@@ -117,12 +124,5 @@ BEGIN
     END;
 END UpdateSong;
 
-BEGIN
-    Init();
-    LoadNewSong("music.dat");
-    WHILE (NOT IO.KeyPressed()) DO
-        UpdateSong();
-    END;
-    NoSound;
-END Music.
+END BgMusic.
 

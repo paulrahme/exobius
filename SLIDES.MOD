@@ -2,7 +2,7 @@ IMPLEMENTATION MODULE Slides;
 (*$I+,O+,R+,S+,Z+*)
 (*$S FF00*)
 
-IMPORT Graph, Lib, Exobius, MsMouse;
+IMPORT Graph, Lib, Exobius, BgMusic;
 FROM Graph IMPORT Rectangle, Polygon, Line, HLine, Circle, Ellipse, Disc, Plot, Arc, Point, ClearScreen, _GCLEARSCREEN, OutText, SetTextPosition;
 FROM Lib IMPORT Delay;
 FROM Exobius IMPORT
@@ -14,7 +14,7 @@ FROM Exobius IMPORT
     DarkestBrown, DarkBrown, Brown, LightBrown, LightestBrown,
     DarkestGreen, DarkGreen, Green, LightGreen, LightestGreen,
     DarkestYellow, DarkYellow, Yellow, LightYellow, LightestYellow,
-    GameSpeed, Xs, Ys, TextPos, WaitForAnyMouseButton, WaitForMouseButtonUp,
+    GameSpeed, Xs, Ys, TextPos, CheckForAnyMouseButton, WaitForAnyMouseButton, WaitForMouseButtonUp,
     HudY, HudBg, DrawLives, UpdateScore;
 FROM Font IMPORT D, E, H, N, T;
 
@@ -88,7 +88,7 @@ BEGIN
     Line (311,104,319,95,20);
     Line (316,110,320,106,21);
     Line (313,93,318,87,21);
-    Xs[0] := 243; Ys[0] := 0; Xs[1] := 294; Ys[1] := 18; Xs[2] := 320; Ys[2] := 8; Xs[3] := 319; Ys[3] := 0; 
+    Xs[0] := 243; Ys[0] := 0; Xs[1] := 294; Ys[1] := 18; Xs[2] := 320; Ys[2] := 8; Xs[3] := 319; Ys[3] := 0;
     Polygon (4, Xs, Ys, 47);
     Line (319,0,319,7,47);
     Line (301,15,266,0,77);
@@ -1453,29 +1453,34 @@ END EndingKeyInHand;
 PROCEDURE PlayIntroSlideshow;
 BEGIN
     ClearScreen(_GCLEARSCREEN);
-    Intro1;
+    Intro1();
     TextPos := SetTextPosition(1, 1);
     OutText("Working at Le Grande Pizzeria");
     TextPos := SetTextPosition(2, 1);
     OutText("has bad days...");
-    WaitForAnyMouseButton();
+    WHILE NOT CheckForAnyMouseButton() DO BgMusic.UpdateSong(); END;
+
     ClearScreen(_GCLEARSCREEN);
-    Intro2;
+    Intro2();
     TextPos := SetTextPosition(23, 1);
     OutText("But does this look like your dream");
     TextPos := SetTextPosition(24, 1);
     OutText("ship?...");
-    WaitForAnyMouseButton();
+    WHILE NOT CheckForAnyMouseButton() DO BgMusic.UpdateSong(); END;
+
     ClearScreen(_GCLEARSCREEN);
-    Intro3;
+    Intro3();
     TextPos := SetTextPosition(1, 1);
     OutText("''Park it well'', he says...");
-    WaitForAnyMouseButton();
+    WHILE NOT CheckForAnyMouseButton() DO BgMusic.UpdateSong(); END;
+
     ClearScreen(_GCLEARSCREEN);
     TextPos := SetTextPosition(1, 1);
     OutText("But you're in for a joyride!!");
-    WaitForAnyMouseButton();
+    WHILE NOT CheckForAnyMouseButton() DO BgMusic.UpdateSong(); END;
+
     WaitForMouseButtonUp();
+    Lib.NoSound();
 END PlayIntroSlideshow;
 
 PROCEDURE PlayGoodEnding;
@@ -1483,25 +1488,30 @@ VAR
     OldColour : CARDINAL;
 BEGIN
     ClearScreen(_GCLEARSCREEN);
-    Intro1;
-    Intro2;
-    WaitForAnyMouseButton();
+    Intro1();
+    Intro2();
+    WHILE NOT CheckForAnyMouseButton() DO BgMusic.UpdateSong(); END;
+
     ClearScreen(_GCLEARSCREEN);
     Intro3;
     TextPos := SetTextPosition(1, 1);
     OutText("''You're not a bad driver'', he says...");
-    WaitForAnyMouseButton();
+    WHILE NOT CheckForAnyMouseButton() DO BgMusic.UpdateSong(); END;
+
     TextPos := SetTextPosition(1, 1);
     OutText("''What you doing in a place like this?''");
-    WaitForAnyMouseButton();
+    WHILE NOT CheckForAnyMouseButton() DO BgMusic.UpdateSong(); END;
+
     ClearScreen(_GCLEARSCREEN);
     EndingKeyInHand;
     TextPos := SetTextPosition(1, 1);
     OutText("''You can keep the car...''");
-    WaitForAnyMouseButton();
+    WHILE NOT CheckForAnyMouseButton() DO BgMusic.UpdateSong(); END;
+
     TextPos := SetTextPosition(2, 1);
     OutText("''...and go on home, okay?''");
-    WaitForAnyMouseButton();
+    WHILE NOT CheckForAnyMouseButton() DO BgMusic.UpdateSong(); END;
+
     TextPos := SetTextPosition (19, 30);
     T(240, 150); H(265, 150); E(290, 150);
     E(240, 180); N(265, 180); D(290, 180);
@@ -1511,8 +1521,10 @@ BEGIN
     TextPos := SetTextPosition(1, 35); OutText("FINAL");
     TextPos := SetTextPosition(2, 35); OutText("SCORE");
     UpdateScore(0);
-    WaitForAnyMouseButton();
+    WHILE NOT CheckForAnyMouseButton() DO BgMusic.UpdateSong(); END;
+
     WaitForMouseButtonUp();
+    Lib.NoSound();
 END PlayGoodEnding;
 
 PROCEDURE PlayBadEnding;
@@ -1520,33 +1532,41 @@ BEGIN
     ClearScreen(_GCLEARSCREEN);
     Intro1;
     Intro2;
-    WaitForAnyMouseButton();
+    WHILE NOT CheckForAnyMouseButton() DO BgMusic.UpdateSong(); END;
+
     ClearScreen(_GCLEARSCREEN);
     Intro3;
     TextPos := SetTextPosition(1, 1);
     OutText("''You fell off the pillars'', he says...");
-    WaitForAnyMouseButton();
+    WHILE NOT CheckForAnyMouseButton() DO BgMusic.UpdateSong(); END;
+
     TextPos := SetTextPosition(1, 1);
     OutText("''Give back my car!''                   ");
-    WaitForAnyMouseButton();
+    WHILE NOT CheckForAnyMouseButton() DO BgMusic.UpdateSong(); END;
+
     ClearScreen(_GCLEARSCREEN);
     Intro2;
     TextPos := SetTextPosition(1, 1);
     OutText("''I'm outta here.''");
-    WaitForAnyMouseButton();
+    WHILE NOT CheckForAnyMouseButton() DO BgMusic.UpdateSong(); END;
+
     ClearScreen(_GCLEARSCREEN);
     Intro1;
     TextPos := SetTextPosition(1, 1);
     OutText("And back to your valet job you go.");
-    WaitForAnyMouseButton();
+    WHILE NOT CheckForAnyMouseButton() DO BgMusic.UpdateSong(); END;
+
     ClearScreen(_GCLEARSCREEN);
     TextPos := SetTextPosition(1, 1);
     OutText("Try do better next time!");
-    WaitForAnyMouseButton();
+    WHILE NOT CheckForAnyMouseButton() DO BgMusic.UpdateSong(); END;
+
     TextPos := SetTextPosition(13, 16);
     OutText("THE END?");
-    WaitForAnyMouseButton();
+    WHILE NOT CheckForAnyMouseButton() DO BgMusic.UpdateSong(); END;
+
     WaitForMouseButtonUp();
+    Lib.NoSound();
 END PlayBadEnding;
 
 END Slides.

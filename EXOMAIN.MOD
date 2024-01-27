@@ -66,8 +66,8 @@ BEGIN
             PlayBadEnding();
         END;
     END;
-
     ShutDown();
+
     SetTextMode();
 END Exomain.
 

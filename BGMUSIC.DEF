@@ -1,0 +1,7 @@
+DEFINITION MODULE BgMusic;
+
+PROCEDURE Init;
+PROCEDURE LoadNewSong(FileName : ARRAY OF CHAR);
+PROCEDURE UpdateSong();
+
+END BgMusic.

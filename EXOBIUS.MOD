@@ -2,7 +2,7 @@ IMPLEMENTATION MODULE Exobius;
 (*$I+,O+,R+,S+,Z+*)
 (*$S FF00*)
 
-IMPORT Lib, IO, Graph, Storage, MsMouse, Font;
+IMPORT Lib, IO, Graph, Storage, MsMouse, Font, BgMusic;
 FROM Graph IMPORT SetVideoMode, _MRES256COLOR, _DEFAULTMODE, Line, Disc, Ellipse, Rectangle, Plot, Polygon, GetImage, PutImage;
 FROM Lib IMPORT Sound, NoSound, Delay;
 FROM Font IMPORT A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z,
@@ -81,6 +81,8 @@ BEGIN
     PlaneX := PlaneStartX; PlaneY := PlaneStartY; BulletX := 0; BulletY := 0; EnemyY := 65000;
     BkSize := CARDINAL(Graph.ImageSize(0, 0, 319, 100));
     Storage.ALLOCATE(BkAddress, BkSize);
+    BgMusic.Init();
+    BgMusic.LoadNewSong("BGM_INTR.DAT");
 END Init;
 
 PROCEDURE ShutDown();
@@ -276,6 +278,8 @@ BEGIN
     TextPos := Graph.SetTextPosition(15, 17);
     Graph.OutText('Q = quit');
 
+    WHILE NOT IO.KeyPressed() DO BgMusic.UpdateSong(); END;
+    Lib.NoSound();
     Key := IO.RdKey();
     IF (Key="q") OR (Key="Q") THEN
         GameOver := TRUE;

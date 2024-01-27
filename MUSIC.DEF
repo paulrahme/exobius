@@ -1,6 +1,0 @@
-DEFINITION MODULE Music;
-
-PROCEDURE ReadFile(Song : ARRAY OF CHAR);
-PROCEDURE PlaySong();
-
-END Music.
