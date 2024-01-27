@@ -15,7 +15,7 @@ FROM Exobius IMPORT
     OneAlive, TwoAlive, ThreeAlive, FourAlive, FiveAlive, SixAlive,
     EnemyY, EnemyYStart, CollisionY,
     ScreenComplete, GameOver, GameSpeed,
-    Update3DBullet, DrawPlane5025, DrawLives, HudY, HudBg,
+    Update3DBullet, DrawPlane5025, DrawLives, UpdateScore, HudY, HudBg,
     BkAddress, CheckMouse, CheckMouseAndSpecialKeys, DrawGameOver;
 FROM Screens1 IMPORT CheckDeath1;
 
@@ -205,6 +205,7 @@ BEGIN
     GetImage(0, 9, 319, 99, BkAddress);
     HudY := 0; HudBg := LightBlue;
     DrawLives();
+    UpdateScore(0);
     WHILE NOT GameOver AND NOT ScreenComplete DO
         FOR GroundDots := 1 TO 20 DO
             DotX := Lib.RANDOM(70) + 125;

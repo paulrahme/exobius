@@ -17,7 +17,7 @@ FROM Exobius IMPORT
     PlaneX, BulletX, BulletY, PlaneY, CoverRectangleX,
     Enemies, Enemy1X, Enemy2X, Enemy3X, Enemy4X, Enemy5X, Enemy6X, EnemyY,
     ScreenComplete, GameOver, DrawGameOver, GameSpeed, HudY, HudBg,
-    DrawPlane5025, DrawLives, CheckMouse, Die, Score;
+    DrawPlane5025, DrawLives, UpdateScore, CheckMouse, Die;
 
 CONST
     PlanetX = 159;
@@ -154,7 +154,8 @@ BEGIN
         |0: IF ((EnemyY > 80) AND (EnemyY < 120) AND (BulletX >= Bullet3DMinX) AND (BulletX <= Bullet3DMaxX)) OR
                 ((EnemyY >= 120) AND (EnemyY < 199) AND (UpBulletX >= UpBulletMinX) AND (UpBulletX <= UpBulletMaxX))
             THEN
-                SoundFreq := 35; Colour := LightRed; Score := Score + 20; DeadStage := DeadStage + 1;
+                SoundFreq := 35; Colour := LightRed; DeadStage := DeadStage + 1;
+                UpdateScore(20);
             ELSE
                 RETURN 0;
             END;
@@ -337,6 +338,7 @@ BEGIN
                 UpBullet8();
                 DrawStars8();
                 DrawLives();
+                UpdateScore(0);
                 Delay(GameSpeed);
             END;
         END;
@@ -357,6 +359,7 @@ BEGIN
                 CheckDeath8();
                 DrawStars8();
                 DrawLives();
+                UpdateScore(0);
                 Delay(GameSpeed * 3 DIV 4);
             END;
         END;

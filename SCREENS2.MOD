@@ -18,13 +18,13 @@ FROM Exobius IMPORT
     PlaneX, PlaneStartX, PlaneStartY, BulletX, BulletY, OldBulletX, StartBulletCooldown, PlaneY,
     BkAddress, PutPixel, SetPixel,
     CheckMouse, CheckSpecialKeys, CheckMouseAndSpecialKeys,
-    PlaneWidth, PlaneHeight, DrawPlane, DrawPlane5025, DrawLives, HudY, HudBg,
+    PlaneWidth, PlaneHeight, DrawPlane, DrawPlane5025, DrawLives, UpdateScore, HudY, HudBg,
     ScreenComplete, GameOver, GameSpeed, Lives, Die, DrawGameOver;
 
 VAR
     OldBulletY : CARDINAL;
 
-PROCEDURE BlowUpEnemy2 (x, y : CARDINAL);
+PROCEDURE BlowUpEnemy2(x, y : CARDINAL);
 CONST
     SoundDelay = 16;
 BEGIN
@@ -215,6 +215,7 @@ BEGIN
         DrawGlowWorms(GlowXs[0], GlowYs[0]);
         HudY := 0; HudBg := 0;
         DrawLives();
+        UpdateScore(0);
         GetImage(GlowXs[0], GlowYs[0], GlowXs[0] + GlowWidth, GlowYs[0] + GlowHeight, GlowAddress);
         CheckMouseAndSpecialKeys();
 
@@ -258,6 +259,7 @@ BEGIN
 
                     (* Hit by bullet? *)
                     IF (BulletY > 0) AND (BulletY < GY + 10) AND (BulletX > GX) AND (BulletX < GX + GlowWidth) THEN
+                        UpdateScore(20);
                         BlowUpEnemy2(GX, GY);
                         StartBulletCooldown();
                         GY := 65000;

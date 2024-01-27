@@ -13,9 +13,9 @@ FROM Exobius IMPORT
     DarkRed, Red, LightRed, LightestRed, DarkestBrown, DarkBrown,
     Brown, LightBrown, LightestBrown, DarkestGreen, DarkGreen, Green, LightGreen,
     LightestGreen, DarkestYellow, DarkYellow, Yellow, LightYellow, LightestYellow,
-    PlaneX, PlaneY, PlaneWidth, PlaneHeight, PlaneStartX, PlaneStartY, Xs, Ys, Lives,  HudY, HudBg, 
+    PlaneX, PlaneY, PlaneWidth, PlaneHeight, PlaneStartX, PlaneStartY, Xs, Ys, Lives, HudY, HudBg, 
     ScreenComplete, GameOver, GameSpeed, GetPixel, PutPixel, DrawPlane, DrawPlane5025, DrawPlane1608,
-    CheckMouse, CheckMouseAndSpecialKeys, BkAddress, ClearTheBuffer, DrawLives, DrawGameOver, TextPos;
+    CheckMouse, CheckMouseAndSpecialKeys, BkAddress, ClearTheBuffer, DrawLives, UpdateScore, DrawGameOver, TextPos;
 FROM Sprites IMPORT RandomBrown;
 
 CONST
@@ -212,8 +212,10 @@ BEGIN
             END;
         END;
 
-        (* Hide plane, scroll up *)
+        (* Hide plane + HUD, scroll up *)
         Graph.PutImage(PlaneX, PlaneY, BehindPlaneAddress, Graph._GPSET);
+        Rectangle(0, HudY, (Lives + 1) * 16, HudY + 8, HudBg, TRUE);
+        Rectangle(263, HudY, 319, HudY + 8, HudBg, TRUE);
         Graph.GetImage(0, 0, 104, 198, BkAddress);
         Graph.PutImage(0, ScrollSpeed, BkAddress, Graph._GPSET);
         Graph.GetImage(215, 0, 319, 198, BkAddress);
@@ -226,9 +228,10 @@ BEGIN
         IF (PixelColour = Blue) OR (PixelColour = LightBlue) THEN
             HudBg := Blue;
         ELSE
-            HudBg := LightBlue;
+            HudBg := LightBrown;
         END;
         DrawLives();
+        UpdateScore(1);
 
         (* Update + draw plane *)
         CheckMouse();

@@ -17,10 +17,9 @@ FROM Exobius IMPORT
     DarkestGreen, DarkGreen, Green, LightGreen, LightestGreen,
     DarkestYellow, DarkYellow, Yellow, LightYellow, LightestYellow,
     PlaneX, BulletX, BulletY, Lives, HudY, HudBg,
-    Xs, Ys,
-    ScreenComplete, GameOver, GameSpeed,
-    Update3DBullet, StartBulletCooldown, DrawPlane, DrawPlane5025, DrawLives, CheckMouse, Die,
-    FinishScreen, Key, Score, BkAddress, DrawGameOver, TextPos;
+    Xs, Ys, ScreenComplete, GameOver, GameSpeed,
+    Update3DBullet, StartBulletCooldown, DrawPlane, DrawPlane5025, DrawLives, UpdateScore, CheckMouse, Die,
+    FinishScreen, Key, BkAddress, DrawGameOver, TextPos;
 
 PROCEDURE DrawBoss1(y : CARDINAL);
 BEGIN
@@ -59,6 +58,8 @@ BEGIN
     Graph.OutText("Extra Life!");
     ScreenComplete := TRUE;
     Lives := Lives + 1;
+    DrawLives();
+    UpdateScore(1000);
     FOR Explosions := 1 TO 200 DO
         Sound(Lib.RANDOM(15) + 20);
         CASE (Lib.RANDOM(10)) OF
@@ -79,7 +80,6 @@ BEGIN
         NoSound();
     END;
     Rectangle(0, 0, 319, 10, 176, TRUE);
-    DrawLives();
 END KillBoss1;
 
 PROCEDURE Boss1;
@@ -137,6 +137,9 @@ BEGIN
     (* Boss's health bar *)
     Rectangle(0, 0, 319, 10, White, FALSE);
     Rectangle(1, 1, 318, 9, Red, TRUE);
+    HudBg := 176; HudY := 11;
+    DrawLives();
+    UpdateScore(0);
     Graph.GetImage(BkSpittingLeft, BkSpittingTop, BkSpittingRight, BkSpittingBottom, BkAddress);
 
     CheckMouse();
@@ -162,9 +165,10 @@ BEGIN
                 Rectangle(1 + (BossLives * 40), 1, 318, 9, Black, TRUE);
                 StartBulletCooldown();
                 Delay(5);
-                Score := Score + 150;
                 IF (BossLives = 0) THEN
                     KillBoss1();
+                ELSE
+                    UpdateScore(100);
                 END;
             END;
             Delay(GameSpeed);

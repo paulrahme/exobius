@@ -14,8 +14,8 @@ FROM Exobius IMPORT
     DarkestGreen, DarkGreen, Green, LightGreen, LightestGreen,
     DarkestYellow, DarkYellow, Yellow, LightYellow, LightestYellow,
     PlaneX, PlaneY, PlaneStartX, PlaneStartY, PlaneWidth, BulletX, BulletY, Update3DBullet,
-    Count, Lives, Enemy1X, EnemyY, Boss1Lives, HudY, HudBg,
-    ScreenComplete, GameOver, FinishScreen, GameSpeed, Die, DrawGameOver, TextPos, DrawLives,
+    Count, Lives, Enemy1X, EnemyY, Boss1Lives, HudY, HudBg, ScreenComplete, GameOver,
+    FinishScreen, GameSpeed, Die, DrawGameOver, TextPos, DrawLives, UpdateScore,
     DrawPlane, DrawPlane5025, CheckMouse, CheckMouseAndSpecialKeys;
 FROM Sprites IMPORT RandomBrown;
 
@@ -154,6 +154,7 @@ BEGIN
     END;
     Rectangle(0, 0, 319, 20, Black, TRUE);
     DrawLives();
+    UpdateScore(0);
 END BlowUpBoss;
 
 PROCEDURE CheckBulletAgainstBoss();
@@ -165,8 +166,10 @@ BEGIN
         DrawBossHealthBar();
         IF (Boss1Lives = 0) THEN
             ScreenComplete := TRUE;
+            UpdateScore(1000);
             BlowUpBoss();
         ELSE
+            UpdateScore(20);
             Disc(Enemy1X, BossY, BossRadius, LightestWhite);
             Sound(440); Delay(BossFlashDelay); NoSound;
             Sound(220); Delay(BossFlashDelay); NoSound;
@@ -197,8 +200,10 @@ BEGIN
     Boss1Lives := BossLives;
     Enemy1X := 160;
     EnemyY := 0; (* Don't try automatically checking bullet against enemies *)
-    HudY := 0; HudBg := 0;
+    HudY := 11; HudBg := 0;
     DrawBossHealthBar();
+    DrawLives();
+    UpdateScore(0);
     WHILE NOT ScreenComplete AND NOT GameOver DO
         (* Closest arch passed? *)
         IF (Arches[0].Distance < 15) THEN

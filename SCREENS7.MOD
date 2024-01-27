@@ -15,7 +15,7 @@ FROM Exobius IMPORT
     DarkestYellow, DarkYellow, Yellow, LightYellow, LightestYellow,
     PlaneX, PlaneY, PlaneStartX, PlaneStartY, PlaneWidth, PlaneHeight, DrawPlane5025,
     PutPixel, Count, ClearTheBuffer, CheckSpecialKeys, CheckMouseAndSpecialKeys, CheckMouse,
-    GameSpeed, Die, GameOver, DrawGameOver, DrawLives, HudY, HudBg;
+    GameSpeed, Die, GameOver, DrawGameOver, DrawLives, UpdateScore, HudY, HudBg;
 
 CONST
     NoOfPillars = 30;
@@ -93,9 +93,24 @@ BEGIN
     FOR BlueCircles := 1 TO NoOfCircles DO
         IF NOT (GameOver) THEN
             Graph.ClearScreen(Graph._GCLEARSCREEN);
+            DrawLives();
+            UpdateScore(5);
+
+            CheckMouseAndSpecialKeys();
+            IF (PlaneX < PlaneStartX) THEN
+                PlaneX := PlaneX + RANDOM(5);
+            ELSE
+                PlaneX := PlaneX - RANDOM(5);
+            END;
+            IF (PlaneY < PlaneStartY) THEN
+                PlaneY := PlaneY + 1;
+            END;
+            DrawPlane5025();
+
             FOR StarCount := 0 TO 15 DO
                 PutPixel(RANDOM(319), RANDOM(199), BYTE(StarCount));
             END;
+
             CircleRadius := (BlueCircles + 20) MOD 10;
             IF (CircleRadius = 0) THEN
                 CircleRadius := 10;
@@ -115,16 +130,6 @@ BEGIN
                 Circle(160, 100, CircleRadius, CircleColour);
                 CircleRadius := CircleRadius*2;
             END;
-            CheckMouseAndSpecialKeys();
-            IF (PlaneX < PlaneStartX) THEN
-                PlaneX := PlaneX + RANDOM(5);
-            ELSE
-                PlaneX := PlaneX - RANDOM(5);
-            END;
-            IF (PlaneY < PlaneStartY) THEN
-                PlaneY := PlaneY + 1;
-            END;
-            DrawPlane5025();
         END;
     END; (* Circle fly-through *)
 END FlyThroughSpace;
@@ -229,7 +234,8 @@ BEGIN
             END;
         END;
         DrawLives();
-
+        UpdateScore(0);
+        
         (* Update bouncing movement *)
         IF (PlaneInAir) THEN
             IF (BounceVelocity > -BounceInitialVelocity) THEN
@@ -290,7 +296,8 @@ BEGIN
                 (* Move onto next pillar *)
                 IF (PlaneInAir) THEN
                     BounceHeight := 0; BounceVelocity := BounceInitialVelocity;
-                ELSE
+                    UpdateScore(30);
+                    ELSE
                     DrawX := CARDINAL(160 + PillarXs[NextPillarIdx]);
                     Rectangle(DrawX - 14, 0, DrawX + 14, 99, Black, TRUE);
                     Rectangle(DrawX - 14, 100, DrawX + 14, 199, DarkBrown, TRUE);

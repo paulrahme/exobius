@@ -16,7 +16,7 @@ FROM Exobius IMPORT
     DarkestGreen, DarkGreen, Green, LightGreen, LightestGreen,
     DarkestYellow, DarkYellow, Yellow, LightYellow, LightestYellow,
     PlaneX, PlaneY, PlaneStartX, PlaneStartY, DrawPlane5025, CheckMouse,
-    Count, GameOver, GameSpeed, Die, DrawLives, HudY, HudBg, DrawGameOver;
+    Count, GameOver, GameSpeed, Die, DrawLives, UpdateScore, HudY, HudBg, DrawGameOver;
 
 PROCEDURE DrawPillarBottom(x, y : CARDINAL);
 VAR
@@ -60,6 +60,7 @@ BEGIN
     Rectangle(LeftX, 98, RightX, 104, 182, TRUE);
     Rectangle(LeftX, 105, RightX, 199, DarkRed, TRUE);
     DrawLives();
+    UpdateScore(0);
 END DrawSkyPortion;
 
 PROCEDURE Screen9;

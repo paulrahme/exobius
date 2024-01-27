@@ -14,6 +14,9 @@ TYPE
 CONST
     BulletCooldownFrames = 5;
 
+VAR
+    Score : CARDINAL;
+
 PROCEDURE SetVGAMode;
 VAR
     VideoMode : BOOLEAN;
@@ -240,16 +243,16 @@ BEGIN
     WHILE (DigitX > StartX) DO
         DigitX := DigitX - 8;
         CASE (DivScore MOD 10) OF
-            |0: Num_0(DigitX, 0);
-            |1: Num_1(DigitX, 0);
-            |2: Num_2(DigitX, 0);
-            |3: Num_3(DigitX, 0);
-            |4: Num_4(DigitX, 0);
-            |5: Num_5(DigitX, 0);
-            |6: Num_6(DigitX, 0);
-            |7: Num_7(DigitX, 0);
-            |8: Num_8(DigitX, 0);
-            |9: Num_9(DigitX, 0);
+            |0: Num_0(DigitX, HudY);
+            |1: Num_1(DigitX, HudY);
+            |2: Num_2(DigitX, HudY);
+            |3: Num_3(DigitX, HudY);
+            |4: Num_4(DigitX, HudY);
+            |5: Num_5(DigitX, HudY);
+            |6: Num_6(DigitX, HudY);
+            |7: Num_7(DigitX, HudY);
+            |8: Num_8(DigitX, HudY);
+            |9: Num_9(DigitX, HudY);
         END;
         DivScore := DivScore DIV 10;
     END;
@@ -549,6 +552,7 @@ BEGIN
     Rectangle(96, 16, 234, 94, LightestRed, FALSE);
     G(110, 30); A(140, 30); M(170, 30); E(200, 30);
     O(110, 60); V(140, 60); E(170, 60); R(200, 60);
+    UpdateScore(0);
     Key := IO.RdKey();
 END DrawGameOver;
 

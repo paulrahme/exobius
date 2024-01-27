@@ -17,9 +17,9 @@ FROM Exobius IMPORT
     DarkestGreen, DarkGreen, Green, LightGreen, LightestGreen,
     DarkestYellow, DarkYellow, Yellow, LightYellow, LightestYellow,
     PlaneX, PlaneY, PlaneWidth, PlaneHeight, BulletX, BulletY, Lives, HudY, HudBg,
-    GameOver, GameSpeed, DrawLives,
+    GameOver, GameSpeed, DrawLives, UpdateScore,
     Update3DBullet, Clear3DBullet, StartBulletCooldown, DrawPlane5025, CheckMouse, Die,
-    FinishScreen, Score, DrawGameOver, TextPos;
+    FinishScreen, DrawGameOver, TextPos;
 
 CONST
     BossHoleY = 130; BossHoleWidth = 52; BossHoleHeight = 26; BossHoleHalfHeight = 13;
@@ -145,6 +145,7 @@ BEGIN
     Rectangle(1, 1, 318, 9, Red, TRUE);
     HudY := 11; HudBg := 0;
     DrawLives();
+    UpdateScore(0);
 
     WHILE NOT GameOver AND (BossLives > 0) DO
         (* Update plane *)
@@ -172,9 +173,11 @@ BEGIN
                 Rectangle(1 + (BossLives * 20), 1, 318, 9, Black, TRUE);
                 StartBulletCooldown();
                 Sound(30); Delay(5); NoSound();
-                Score := Score + 150;
                 IF (BossLives = 0) THEN
+                    UpdateScore(1000);
                     KillBoss();
+                ELSE
+                    UpdateScore(100);
                 END;
             END;
         END;

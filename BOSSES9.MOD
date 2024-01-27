@@ -16,7 +16,7 @@ FROM Exobius IMPORT
     DarkestYellow, DarkYellow, Yellow, LightYellow, LightestYellow,
     PlaneX, PlaneY, PlaneStartX, PlaneStartY, DrawPlane5025, DrawPlane,
     CheckMouse, Count, GameOver, ScreenComplete, GameSpeed, Update3DBullet,
-    Die, DrawLives, DrawGameOver, BulletX, BulletY, Score, HudY, HudBg;
+    Die, HudY, HudBg, DrawLives, UpdateScore, DrawGameOver, BulletX, BulletY;
 
 PROCEDURE WritePlayExobius(x, y, Width : CARDINAL);
 BEGIN
@@ -215,6 +215,7 @@ BEGIN
     Rectangle(0, 0, 319, 10, White, FALSE);
     HudY := 11; HudBg := 184;
     DrawLives();
+    UpdateScore(0);
 
     (****************************************************************)
 
@@ -246,12 +247,14 @@ BEGIN
                 BossLives := BossLives - 1;
                 DrawBoss9(BossWidth);
                 Delay(GameSpeed);
-                Score := Score + 150;
                 Rectangle(319 * BossLives DIV Boss9Health, 1, 319, 9, Black, TRUE);
                 IF (BossLives = 0) THEN
                     Graph.PutImage(0, 100, BkAddress, Graph._GPSET);
+                    UpdateScore(5000);
                     KillBoss9();
                     ScreenComplete := TRUE;
+                ELSE
+                    UpdateScore(150);
                 END;
             END;
             IF (SpitY > SpitHitY) AND (PlaneX + (PlaneWidth DIV 2) + 20 > SpitX) AND (PlaneX + (PlaneWidth DIV 2) < SpitX + 20) THEN

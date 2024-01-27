@@ -17,7 +17,7 @@ FROM Exobius IMPORT
     DarkestYellow, DarkYellow, Yellow, LightYellow, LightestYellow,
     BulletY, PlaneY, PlaneStartY, PlaneWidth, PlaneHeight, Lives, HudY, HudBg,
     Xs, Ys, ScreenComplete, GameOver, GameSpeed,
-    PlaneX, PlaneY, DrawPlane, DrawPlane5025, CheckMouse, Die, DrawLives,
+    PlaneX, PlaneY, DrawPlane, DrawPlane5025, CheckMouse, Die, DrawLives, UpdateScore,
     BkAddress, DrawGameOver, FinishScreen, TextPos;
 
 CONST
@@ -107,8 +107,10 @@ BEGIN
         Boss8Lives := 0;
         Rectangle(1, 1, 318, 9, Black, TRUE);
         ScreenComplete := TRUE;
+        UpdateScore(1000);
         KillBoss8();
     ELSE
+        UpdateScore(15);
         Boss8Lives := Boss8Lives - 1;
     END;
     Rectangle(1 + (Boss8Lives * 318 DIV Boss8Health), 1, 318, 9, Black, TRUE);
@@ -137,6 +139,7 @@ BEGIN
     Graph.PutImage(PlanetBkLeft, PlanetBkTop, BkAddress, Graph._GPSET);
     Rectangle(0, 11, 319, PlanetBkTop - 1, Black, TRUE);
     DrawLives();
+    UpdateScore(0);
     Rectangle(0, PlanetBkTop, PlanetBkLeft - 1, 199, Black, TRUE);
     Rectangle(PlanetBkRight + 1, PlanetBkTop, 319, 199, Black, TRUE);
     Rectangle(PlanetBkLeft, PlanetBkBottom, PlanetBkRight, 199, Black, TRUE);

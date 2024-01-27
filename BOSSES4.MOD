@@ -17,7 +17,7 @@ FROM Exobius IMPORT
     GameSpeed, BkAddress,
     PlaneX, PlaneY, PlaneWidth, BulletX, BulletY, OldBulletX, Lives, HudY, HudBg,
     Boss1Lives, Boss2Lives, Boss3Lives, OneAlive, TwoAlive, ThreeAlive,
-    ScreenComplete, GameOver, DrawLives,
+    ScreenComplete, GameOver, DrawLives, UpdateScore,
     DrawPlane, DrawPlane5025, CheckMouse, Die, DrawGameOver, TextPos;
 
 CONST
@@ -68,6 +68,9 @@ BEGIN
         Rectangle(217, 0, 319, 10, White, FALSE);
         Rectangle(218, 1, 318, 9, Black, TRUE);
         Rectangle(218, 1, 218 + (Boss3Lives * 5), 9, Red, TRUE);
+    ELSE
+        Rectangle(0, 0, 218, 10, Black, TRUE);
+        UpdateScore(0);
     END;
 END DrawHealthBars;
 
@@ -181,6 +184,7 @@ BEGIN
             END;
          END;
     END;
+    UpdateScore(20);
     DrawHealthBars();
 END HurtBoss;
 
@@ -308,9 +312,9 @@ BEGIN
                 IF (BulletY=4) THEN
                     Disc (PlaneX + (PlaneWidth DIV 2), PlaneY - 4, 4, Black);
                 END;
-                IF (Point(PlaneX + 10, PlaneY - 2) <> Black) OR
-                   (Point(PlaneX + 40, PlaneY - 2) <> Black) OR
-                   (Point(PlaneX + 25, PlaneY - 2) <> Black) THEN
+                IF (OneAlive AND (Point(PlaneX + 10, PlaneY - 2) > Black)) OR
+                   (TwoAlive AND (Point(PlaneX + 40, PlaneY - 2) > Black)) OR
+                   (ThreeAlive AND (Point(PlaneX + 25, PlaneY - 2) > Black)) THEN
                     Die();
                     DrawHealthBars();
                     CASE LeftBehind OF
@@ -348,9 +352,9 @@ BEGIN
                 IF (BulletY=4) THEN
                     Disc(PlaneX + (PlaneWidth DIV 2), PlaneY - 4, 4, Black);
                 END;
-                IF (Point(PlaneX + 10, PlaneY - 2) <> Black) OR
-                   (Point(PlaneX + 40, PlaneY - 2) <> Black) OR
-                   (Point(PlaneX + 25, PlaneY - 2) <> Black) THEN
+                IF (OneAlive AND (Point(PlaneX + 10, PlaneY - 2) > Black)) OR
+                   (TwoAlive AND (Point(PlaneX + 40, PlaneY - 2) > Black)) OR
+                   (ThreeAlive AND (Point(PlaneX + 25, PlaneY - 2) > Black)) THEN
                     Die();
                     DrawHealthBars();
                     CASE LeftBehind OF

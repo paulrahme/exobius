@@ -14,7 +14,8 @@ FROM Exobius IMPORT
     DarkestBrown, DarkBrown, Brown, LightBrown, LightestBrown,
     DarkestGreen, DarkGreen, Green, LightGreen, LightestGreen,
     DarkestYellow, DarkYellow, Yellow, LightYellow, LightestYellow,
-    GameSpeed, Xs, Ys, TextPos, WaitForAnyMouseButton, WaitForMouseButtonUp;
+    GameSpeed, Xs, Ys, TextPos, WaitForAnyMouseButton, WaitForMouseButtonUp,
+    HudY, HudBg, DrawLives, UpdateScore;
 FROM Font IMPORT D, E, H, N, T;
 
 PROCEDURE Intro1;
@@ -1453,31 +1454,33 @@ PROCEDURE PlayIntroSlideshow;
 BEGIN
     ClearScreen(_GCLEARSCREEN);
     Intro1;
-    TextPos := SetTextPosition (1, 1);
+    TextPos := SetTextPosition(1, 1);
     OutText("Working at Le Grande Pizzeria");
-    TextPos := SetTextPosition (2, 1);
+    TextPos := SetTextPosition(2, 1);
     OutText("has bad days...");
     WaitForAnyMouseButton();
     ClearScreen(_GCLEARSCREEN);
     Intro2;
-    TextPos := SetTextPosition (23, 1);
+    TextPos := SetTextPosition(23, 1);
     OutText("But does this look like your dream");
-    TextPos := SetTextPosition (24, 1);
+    TextPos := SetTextPosition(24, 1);
     OutText("ship?...");
     WaitForAnyMouseButton();
     ClearScreen(_GCLEARSCREEN);
     Intro3;
-    TextPos := SetTextPosition (1, 1);
+    TextPos := SetTextPosition(1, 1);
     OutText("''Park it well'', he says...");
     WaitForAnyMouseButton();
     ClearScreen(_GCLEARSCREEN);
-    TextPos := SetTextPosition (1, 1);
+    TextPos := SetTextPosition(1, 1);
     OutText("But you're in for a joyride!!");
     WaitForAnyMouseButton();
     WaitForMouseButtonUp();
 END PlayIntroSlideshow;
 
 PROCEDURE PlayGoodEnding;
+VAR
+    OldColour : CARDINAL;
 BEGIN
     ClearScreen(_GCLEARSCREEN);
     Intro1;
@@ -1485,23 +1488,29 @@ BEGIN
     WaitForAnyMouseButton();
     ClearScreen(_GCLEARSCREEN);
     Intro3;
-    TextPos := SetTextPosition (1, 1);
+    TextPos := SetTextPosition(1, 1);
     OutText("''You're not a bad driver'', he says...");
     WaitForAnyMouseButton();
-    TextPos := SetTextPosition (1, 1);
+    TextPos := SetTextPosition(1, 1);
     OutText("''What you doing in a place like this?''");
     WaitForAnyMouseButton();
     ClearScreen(_GCLEARSCREEN);
     EndingKeyInHand;
-    TextPos := SetTextPosition (1, 1);
+    TextPos := SetTextPosition(1, 1);
     OutText("''You can keep the car...''");
     WaitForAnyMouseButton();
-    TextPos := SetTextPosition (2, 1);
+    TextPos := SetTextPosition(2, 1);
     OutText("''...and go on home, okay?''");
     WaitForAnyMouseButton();
     TextPos := SetTextPosition (19, 30);
     T(240, 150); H(265, 150); E(290, 150);
     E(240, 180); N(265, 180); D(290, 180);
+    HudY := 20; HudBg := 0;
+    DrawLives();
+    OldColour := Graph.SetTextColor(LightYellow);
+    TextPos := SetTextPosition(1, 35); OutText("FINAL");
+    TextPos := SetTextPosition(2, 35); OutText("SCORE");
+    UpdateScore(0);
     WaitForAnyMouseButton();
     WaitForMouseButtonUp();
 END PlayGoodEnding;
@@ -1514,27 +1523,27 @@ BEGIN
     WaitForAnyMouseButton();
     ClearScreen(_GCLEARSCREEN);
     Intro3;
-    TextPos := SetTextPosition (1, 1);
+    TextPos := SetTextPosition(1, 1);
     OutText("''You fell off the pillars'', he says...");
     WaitForAnyMouseButton();
-    TextPos := SetTextPosition (1, 1);
+    TextPos := SetTextPosition(1, 1);
     OutText("''Give back my car!''                   ");
     WaitForAnyMouseButton();
     ClearScreen(_GCLEARSCREEN);
     Intro2;
-    TextPos := SetTextPosition (1, 1);
+    TextPos := SetTextPosition(1, 1);
     OutText("''I'm outta here.''");
     WaitForAnyMouseButton();
     ClearScreen(_GCLEARSCREEN);
     Intro1;
-    TextPos := SetTextPosition (1, 1);
+    TextPos := SetTextPosition(1, 1);
     OutText("And back to your valet job you go.");
     WaitForAnyMouseButton();
     ClearScreen(_GCLEARSCREEN);
-    TextPos := SetTextPosition (1, 1);
+    TextPos := SetTextPosition(1, 1);
     OutText("Try do better next time!");
     WaitForAnyMouseButton();
-    TextPos := SetTextPosition (13, 16);
+    TextPos := SetTextPosition(13, 16);
     OutText("THE END?");
     WaitForAnyMouseButton();
     WaitForMouseButtonUp();
