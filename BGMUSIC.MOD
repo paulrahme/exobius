@@ -78,6 +78,7 @@ BEGIN
     RepeatIndex := 0;
     FileHandle := FIO.OpenRead(FileName);
     SongIndex := 0;
+    FIO.EOF := FALSE;
     WHILE NOT FIO.EOF DO
         Card := FIO.RdCard(FileHandle);
         Char := FIO.RdChar(FileHandle);

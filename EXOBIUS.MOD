@@ -82,7 +82,6 @@ BEGIN
     BkSize := CARDINAL(Graph.ImageSize(0, 0, 319, 100));
     Storage.ALLOCATE(BkAddress, BkSize);
     BgMusic.Init();
-    BgMusic.LoadNewSong("BGM_INTR.DAT");
 END Init;
 
 PROCEDURE ShutDown();

@@ -2,6 +2,7 @@ MODULE Exomain;
 (*$I+,O+,R+,S+,Z+*)
 (*$S FF00*)
 
+IMPORT BgMusic;
 FROM Exobius IMPORT
     Init, ShutDown, SetVGAMode, SetTextMode,
     GameOver, ClearTheBuffer;
@@ -26,6 +27,8 @@ FROM Bosses9 IMPORT Boss9;
 
 PROCEDURE PlayLevels();
 BEGIN
+    BgMusic.LoadNewSong("BGM_PAUS.DAT");
+
     Screen1();      IF GameOver THEN RETURN; END;
     Boss1();        IF GameOver THEN RETURN; END;
     Screen2();      IF GameOver THEN RETURN; END;

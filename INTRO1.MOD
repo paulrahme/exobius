@@ -1,6 +1,6 @@
 IMPLEMENTATION MODULE Intro1;
 
-IMPORT Graph, IO, Lib, Exobius, Storage, Font;
+IMPORT Graph, IO, Lib, Exobius, Storage, Font, BgMusic;
 FROM Graph IMPORT ClearScreen, _GCLEARSCREEN, Rectangle, Polygon, Line, HLine, Circle, Ellipse, Disc, Plot, Arc;
 FROM IO IMPORT KeyPressed;
 FROM Lib IMPORT Delay;

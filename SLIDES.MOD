@@ -1452,6 +1452,7 @@ END EndingKeyInHand;
 
 PROCEDURE PlayIntroSlideshow;
 BEGIN
+    BgMusic.LoadNewSong("BGM_INTR.DAT");
     ClearScreen(_GCLEARSCREEN);
     Intro1();
     TextPos := SetTextPosition(1, 1);
@@ -1487,6 +1488,7 @@ PROCEDURE PlayGoodEnding;
 VAR
     OldColour : CARDINAL;
 BEGIN
+    BgMusic.LoadNewSong("BGM_FL.DAT");
     ClearScreen(_GCLEARSCREEN);
     Intro1();
     Intro2();
@@ -1529,13 +1531,14 @@ END PlayGoodEnding;
 
 PROCEDURE PlayBadEnding;
 BEGIN
+    BgMusic.LoadNewSong("BGM_FL.DAT");
     ClearScreen(_GCLEARSCREEN);
-    Intro1;
-    Intro2;
+    Intro1();
+    Intro2();
     WHILE NOT CheckForAnyMouseButton() DO BgMusic.UpdateSong(); END;
 
     ClearScreen(_GCLEARSCREEN);
-    Intro3;
+    Intro3();
     TextPos := SetTextPosition(1, 1);
     OutText("''You fell off the pillars'', he says...");
     WHILE NOT CheckForAnyMouseButton() DO BgMusic.UpdateSong(); END;
@@ -1545,13 +1548,13 @@ BEGIN
     WHILE NOT CheckForAnyMouseButton() DO BgMusic.UpdateSong(); END;
 
     ClearScreen(_GCLEARSCREEN);
-    Intro2;
+    Intro2();
     TextPos := SetTextPosition(1, 1);
     OutText("''I'm outta here.''");
     WHILE NOT CheckForAnyMouseButton() DO BgMusic.UpdateSong(); END;
 
     ClearScreen(_GCLEARSCREEN);
-    Intro1;
+    Intro1();
     TextPos := SetTextPosition(1, 1);
     OutText("And back to your valet job you go.");
     WHILE NOT CheckForAnyMouseButton() DO BgMusic.UpdateSong(); END;
