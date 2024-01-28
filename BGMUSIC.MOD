@@ -82,8 +82,8 @@ BEGIN
     WHILE NOT FIO.EOF DO
         Card := FIO.RdCard(FileHandle);
         Char := FIO.RdChar(FileHandle);
+        (*IO.WrCard(Card, 2); IO.WrChar(' '); IO.WrChar(Char); IO.WrChar(' '); IO.WrLn();*)
         IF (NOT FIO.EOF) AND (NOT ProcessSpecialChars(Char)) THEN
-            (*IO.WrChar(Char); IO.WrChar(' '); IO.WrLn();*)
             SongData[SongIndex] := Frequencies[Card][Char];
             SongIndex := SongIndex + 1;
         END;

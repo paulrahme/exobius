@@ -18,6 +18,9 @@ FROM Exobius IMPORT
     HudY, HudBg, DrawLives, UpdateScore;
 FROM Font IMPORT D, E, H, N, T;
 
+VAR
+    MouseOverlayTimer : CARDINAL;
+
 PROCEDURE Intro1;
 BEGIN
     Xs[0] := 140; Ys[0] := 100; Xs[1] := 140; Ys[1] := 104; Xs[2] := 210; Ys[2] := 180; Xs[3] := 210; Ys[3] := 169;
@@ -1450,6 +1453,26 @@ BEGIN
     Plot (83,22,1);
 END EndingKeyInHand;
 
+PROCEDURE UpdateMouseOverlay;
+BEGIN
+    MouseOverlayTimer := MouseOverlayTimer + 1;
+    IF (MouseOverlayTimer > 60000) THEN
+        MouseOverlayTimer := MouseOverlayTimer - 30000;
+    END;
+    
+    IF (MouseOverlayTimer = 25000) THEN
+        Rectangle(300, 180, 315, 195, Yellow, TRUE);
+        Rectangle(309, 182, 313, 188, Black, TRUE);
+    END;
+    
+    IF (MouseOverlayTimer >= 25000) THEN
+        CASE (MouseOverlayTimer MOD 6000) OF
+            |0: Rectangle(302, 182, 307, 188, Black, TRUE);
+            |3000: Rectangle(302, 182, 307, 188, LightestYellow, TRUE);
+        END;
+    END;
+END UpdateMouseOverlay;
+
 PROCEDURE PlayIntroSlideshow;
 BEGIN
     BgMusic.LoadNewSong("BGM_INTR.DAT");
@@ -1459,7 +1482,11 @@ BEGIN
     OutText("Working at Le Grande Pizzeria");
     TextPos := SetTextPosition(2, 1);
     OutText("has bad days...");
-    WHILE NOT CheckForAnyMouseButton() DO BgMusic.UpdateSong(); END;
+    MouseOverlayTimer := 0;
+    WHILE NOT CheckForAnyMouseButton() DO
+        BgMusic.UpdateSong();
+        UpdateMouseOverlay();
+    END;
 
     ClearScreen(_GCLEARSCREEN);
     Intro2();
@@ -1467,18 +1494,30 @@ BEGIN
     OutText("But does this look like your dream");
     TextPos := SetTextPosition(24, 1);
     OutText("ship?...");
-    WHILE NOT CheckForAnyMouseButton() DO BgMusic.UpdateSong(); END;
+    MouseOverlayTimer := 0;
+    WHILE NOT CheckForAnyMouseButton() DO
+        BgMusic.UpdateSong();
+        UpdateMouseOverlay();
+    END;
 
     ClearScreen(_GCLEARSCREEN);
     Intro3();
     TextPos := SetTextPosition(1, 1);
     OutText("''Park it well'', he says...");
-    WHILE NOT CheckForAnyMouseButton() DO BgMusic.UpdateSong(); END;
+    MouseOverlayTimer := 0;
+    WHILE NOT CheckForAnyMouseButton() DO
+        BgMusic.UpdateSong();
+        UpdateMouseOverlay();
+    END;
 
     ClearScreen(_GCLEARSCREEN);
     TextPos := SetTextPosition(1, 1);
     OutText("But you're in for a joyride!!");
-    WHILE NOT CheckForAnyMouseButton() DO BgMusic.UpdateSong(); END;
+    MouseOverlayTimer := 0;
+    WHILE NOT CheckForAnyMouseButton() DO
+        BgMusic.UpdateSong();
+        UpdateMouseOverlay();
+    END;
 
     WaitForMouseButtonUp();
     Lib.NoSound();
@@ -1492,27 +1531,47 @@ BEGIN
     ClearScreen(_GCLEARSCREEN);
     Intro1();
     Intro2();
-    WHILE NOT CheckForAnyMouseButton() DO BgMusic.UpdateSong(); END;
+    MouseOverlayTimer := 0;
+    WHILE NOT CheckForAnyMouseButton() DO
+        BgMusic.UpdateSong();
+        UpdateMouseOverlay();
+    END;
 
     ClearScreen(_GCLEARSCREEN);
     Intro3;
     TextPos := SetTextPosition(1, 1);
     OutText("''You're not a bad driver'', he says...");
-    WHILE NOT CheckForAnyMouseButton() DO BgMusic.UpdateSong(); END;
+    MouseOverlayTimer := 0;
+    WHILE NOT CheckForAnyMouseButton() DO
+        BgMusic.UpdateSong();
+        UpdateMouseOverlay();
+    END;
 
     TextPos := SetTextPosition(1, 1);
     OutText("''What you doing in a place like this?''");
-    WHILE NOT CheckForAnyMouseButton() DO BgMusic.UpdateSong(); END;
+    MouseOverlayTimer := 0;
+    WHILE NOT CheckForAnyMouseButton() DO
+        BgMusic.UpdateSong();
+        UpdateMouseOverlay();
+    END;
 
     ClearScreen(_GCLEARSCREEN);
     EndingKeyInHand;
     TextPos := SetTextPosition(1, 1);
     OutText("''You can keep the car...''");
-    WHILE NOT CheckForAnyMouseButton() DO BgMusic.UpdateSong(); END;
+    MouseOverlayTimer := 0;
+    WHILE NOT CheckForAnyMouseButton() DO
+        BgMusic.UpdateSong();
+        UpdateMouseOverlay();
+    END;
 
     TextPos := SetTextPosition(2, 1);
     OutText("''...and go on home, okay?''");
-    WHILE NOT CheckForAnyMouseButton() DO BgMusic.UpdateSong(); END;
+    MouseOverlayTimer := 0;
+    WHILE NOT CheckForAnyMouseButton() DO
+        BgMusic.UpdateSong();
+        UpdateMouseOverlay();
+    END;
 
     TextPos := SetTextPosition (19, 30);
     T(240, 150); H(265, 150); E(290, 150);
@@ -1523,7 +1582,11 @@ BEGIN
     TextPos := SetTextPosition(1, 35); OutText("FINAL");
     TextPos := SetTextPosition(2, 35); OutText("SCORE");
     UpdateScore(0);
-    WHILE NOT CheckForAnyMouseButton() DO BgMusic.UpdateSong(); END;
+    MouseOverlayTimer := 0;
+    WHILE NOT CheckForAnyMouseButton() DO
+        BgMusic.UpdateSong();
+        UpdateMouseOverlay();
+    END;
 
     WaitForMouseButtonUp();
     Lib.NoSound();
@@ -1535,38 +1598,66 @@ BEGIN
     ClearScreen(_GCLEARSCREEN);
     Intro1();
     Intro2();
-    WHILE NOT CheckForAnyMouseButton() DO BgMusic.UpdateSong(); END;
+    MouseOverlayTimer := 0;
+    WHILE NOT CheckForAnyMouseButton() DO
+        BgMusic.UpdateSong();
+        UpdateMouseOverlay();
+    END;
 
     ClearScreen(_GCLEARSCREEN);
     Intro3();
     TextPos := SetTextPosition(1, 1);
     OutText("''You fell off the pillars'', he says...");
-    WHILE NOT CheckForAnyMouseButton() DO BgMusic.UpdateSong(); END;
+    MouseOverlayTimer := 0;
+    WHILE NOT CheckForAnyMouseButton() DO
+        BgMusic.UpdateSong();
+        UpdateMouseOverlay();
+    END;
 
     TextPos := SetTextPosition(1, 1);
     OutText("''Give back my car!''                   ");
-    WHILE NOT CheckForAnyMouseButton() DO BgMusic.UpdateSong(); END;
+    MouseOverlayTimer := 0;
+    WHILE NOT CheckForAnyMouseButton() DO
+        BgMusic.UpdateSong();
+        UpdateMouseOverlay();
+    END;
 
     ClearScreen(_GCLEARSCREEN);
     Intro2();
     TextPos := SetTextPosition(1, 1);
     OutText("''I'm outta here.''");
-    WHILE NOT CheckForAnyMouseButton() DO BgMusic.UpdateSong(); END;
+    MouseOverlayTimer := 0;
+    WHILE NOT CheckForAnyMouseButton() DO
+        BgMusic.UpdateSong();
+        UpdateMouseOverlay();
+    END;
 
     ClearScreen(_GCLEARSCREEN);
     Intro1();
     TextPos := SetTextPosition(1, 1);
     OutText("And back to your valet job you go.");
-    WHILE NOT CheckForAnyMouseButton() DO BgMusic.UpdateSong(); END;
+    MouseOverlayTimer := 0;
+    WHILE NOT CheckForAnyMouseButton() DO
+        BgMusic.UpdateSong();
+        UpdateMouseOverlay();
+    END;
 
     ClearScreen(_GCLEARSCREEN);
     TextPos := SetTextPosition(1, 1);
     OutText("Try do better next time!");
-    WHILE NOT CheckForAnyMouseButton() DO BgMusic.UpdateSong(); END;
+    MouseOverlayTimer := 0;
+    WHILE NOT CheckForAnyMouseButton() DO
+        BgMusic.UpdateSong();
+        UpdateMouseOverlay();
+    END;
 
     TextPos := SetTextPosition(13, 16);
     OutText("THE END?");
-    WHILE NOT CheckForAnyMouseButton() DO BgMusic.UpdateSong(); END;
+    MouseOverlayTimer := 0;
+    WHILE NOT CheckForAnyMouseButton() DO
+        BgMusic.UpdateSong();
+        UpdateMouseOverlay();
+    END;
 
     WaitForMouseButtonUp();
     Lib.NoSound();
