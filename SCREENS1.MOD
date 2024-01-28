@@ -23,7 +23,7 @@ FROM Exobius IMPORT
     OneAlive, TwoAlive, ThreeAlive, FourAlive, FiveAlive, SixAlive,
     Enemies, Xs, Ys, Count, Lives, EnemyY, HudY, HudBg,
     ScreenComplete, GameOver,  MouseButtons,  MouseMove, GameSpeed,
-    Update3DBullet, DrawPlane, DrawPlane5025, DrawLives, UpdateScore, HudY, HudBg,
+    Update3DBullet, Clear3DBullet, DrawPlane, DrawPlane5025, DrawLives, UpdateScore, HudY, HudBg,
     CheckMouse, Die, DrawGameOver, FinishScreen,
     CheckSpecialKeys, ClearTheBuffer, DrawGameOver;
 
@@ -381,7 +381,11 @@ BEGIN
                 Polygon(4, Xs, Ys, LightBrown);
                 UpdateGroundDots();
                 DrawEnemies1();
-                Update3DBullet(TRUE);
+                IF (ScreenComplete) THEN
+                    Clear3DBullet(LightBrown);
+                ELSE
+                    Update3DBullet(TRUE);
+                END;
                 DrawPlane5025();
                 IF (EnemyY > CollisionY) THEN
                     CheckDeath1(TRUE, 176);
