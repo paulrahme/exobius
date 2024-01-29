@@ -1,0 +1,215 @@
+EXOBIUS 2024
+============
+
+1. The Story of Exobius and Exobius 2024
+2. Storyline
+3. Getting started
+4. Playing the game (includes controls, etc.)
+5. Exobius 2024 Updates
+
+----------------------------------------
+1. THE STORY OF EXOBIUS AND EXOBIUS 2024
+----------------------------------------
+
+Welcome to Exobius!
+
+This is a 2024 update of a game originally released in 1995. I wrote this
+in an "advanced for the time but long forgotten" language by the name of
+Modula-2, and it was built using the JSI TopSpeed IDE and ocmpiler. It was
+when I was still self-taught and learning how to code while finishing school
+and starting university, and the original game turned out very glitchy,
+flickery, buggy, jerky framerate...you get the idea. Part of this was down to
+TopSpeed Modula-2 not having any known assembler or low-level support for
+graphics apart from its built-in Graph functions, but admittedly a lot of it
+was also down to my lack of experience in how to make games.
+
+Fast-forward to late 2021, and while visitng my family, I found an old CD-ROM
+in my sister's drawer, which read "PC Backup 1997". To my surprise, not only
+did it still read, it included a backup of the entire folder of the Modula-2
+IDE and entire source projects, including Exobius! It didn't take long to get
+this running in DOSBox, and before I knew it, I had started tinkering with it,
+doing some bugfixes and performance improvements, and then the idea struck me:
+I can put over 2 decades of experience as a professional games developer to the
+test by remastering an old game written in a mostly forgotten language.
+
+This led to several months of development, culminating in the version you see
+here. It's far from perfect by any means - it still flickers pretty badly (due
+to having to draw over the same screen every time with no vertical sync or
+virtual paging or framebuffer), and try as hard as I could, it was impossible
+to get the music to play during the actual intro sequence and gameplay as I
+had hoped, so music is limited to static slide-show cutscenes in the intro,
+endings and pause menu.
+
+But it's a much better looking, sounding and playing game overall. This version
+has several enhancements, optimisations and bug fixes. See the "Exobius 2024
+Updates" section below for more details.
+
+This version has been optimised to run on a 486/33, which should be:
+- 13,500 cycle CPU speed on DOSBox
+- Default 486 Core on a MiSTer (as of early 2024)
+Please check you are using these speed settings - slower or faster may lead to
+the game being unplayably fast or slow, or not working fully at all.
+
+------------
+2. STORYLINE
+------------
+
+You are (your name here), a parking valet at "Le Grande Pizzeria", a space
+restuarant somewhere near the end of the Universe.
+
+You are having a bad day, getting no tips, the dog ate your homework, etc, etc,
+etc... until a cool ship approaches. A rich alien gets out, says "Park it
+well..." and gives you no tip. Since you have nothing to lose, you decide to
+take it on a hyperspace joyride.
+
+------------------
+3. GETTING STARTED
+------------------
+
+Type EXOBIUS at the prompt and hit Enter.
+
+-------------------
+4. PLAYING THE GAME
+-------------------
+
+Use the mouse to control your ship, with any mouse button to fire whichever
+any weapon available for that stage (if it's a shooting section).
+
+Esc : Pauses the game. From here, Press 'Q' to quit back to DOS, or any other
+      key to continue.
+
+-----------------------
+5. EXOBIUS 2024 UPDATES
+-----------------------
+
+Gameplay - General:
+- Plenty of smoothing out and balancing enhancements, general QoL improvements.
+- Fixes (and optimisations) for main ship drawing.
+- Lives displayed in the top left corner (sometimes lower down).
+- Score displayed in the top right corner (sometimes lower down).
+- Autofire - hold down mouse button to keep shooting.
+- Many bugfixes to bosses' health bars, collision, blowing up sequences, etc.
+- Ability to pause (and quit) pretty much everywhere, including screen fly-ins.
+- Several fixes for mouse movement during non-gameplay bits affecting position.
+- Music in intro/ending slideshows as well as Pause menu.
+
+Intro slideshow:
+- Background music!
+- Now entirely mouse driven, with helpful animated mouse icon appearing.
+- Minor grammar corrections.
+
+Title Sequence:
+- Massively improved large text font.
+- Better timing on "INFINITE SOFTWARE" sequence.
+- Completely redone spinning rectangle.
+- Yellow particle effect on EXOBIUS title when blue beam is being erased.
+- Redone "PAUL RAHME" bouncing-down-the-screen animation.
+- MUSIC BY: ATMOSFEAR - redone text animation, doubled the logo size.
+- Planet drawing minor enhancements when the ship is flying towards it.
+
+Stage 1: Mountain Path
+- Faster, more streamlined take-off sequence.
+- Ground now animated with 3D perspective dots.
+- Multiple bugfixes for enemy drawing.
+
+Boss 1:
+- Smoother, slightly slower bubble shot.
+- Better collision detection (on both player and boss).
+
+Screen 2: Cave
+- Faster, slicker fly-in sequence.
+- Glow worms now animated and move around independently.
+- Player shot collision bugfixes.
+- Glow worms now swoop the player when they get low enough.
+- Screen ends immediately after last glow-worm is shot.
+
+Screen 3: Snowy Landscape
+- Smoothed out the screen refresh a bit (still bad, but slightly less bad!)
+- Multiple bugfixes for enemy drawing.
+- Some mixed rows of enemy types.
+
+Screen 4: Top-down Bridge
+- Bridge now made up of longer, narrower planks for better navigation.
+- Bugfixes for placement after falling in the water (when moving the mouse).
+
+Screen 4a: Sandy Lakes
+- Completely new sub-stage added, seamlessly after the water bridge.
+
+Boss 4: Giant Spinners
+- Speed and smoothness improvements.
+- Collision improvements.
+- Higher boss health to match faster shooting.
+- Fix for possible screen corruption.
+- Health bar fixes.
+- Fix for rightmost boss never coming downward.
+
+Boss 4a: Boss Nucleus Chase
+- Completely new section added.
+- Chase & shoot down the boss through winding arches.
+- This screen replaces the old "few brown dots around the screen edge" tunnel.
+
+Screen 5: Bouncing on pillars
+- Major improvement to jumping physics/mechanics.
+- Much smoother framerate.
+- First few pillars are lined up and ship is locked in position.
+- Pillar perspective & smoothing improvements.
+- Bouncing sound effects.
+- Last pillar has magnetic/energy effect to bounce you into space.
+
+--- (Split path for the rest of game here) ---
+
+Screen 5a: Driving Between pillars
+- Turned this into an alternate route to the end of the game.
+- Improvements to pillar drawing and perspective.
+
+Boss 5: Rounded Sand Snake Head
+- Completely new boss added.
+- Shoot boss when it comes out the hole in the ground, avoiding its shots.
+
+Bad ending
+- Background music!
+- Now entirely mouse driven, with helpful animated mouse icon appearing.
+- After falling off pillars, driving through remaining ones & boss fight.
+- Alien takes back his car and goes away.
+
+--- (Game ends here after getting the bad ending) ---
+
+Screen 6: Flying Through space
+- Happens after successfully bouncing on all pillars without falling.
+- Smoothed out drawing.
+- Made it feel a bit faster and smoother.
+
+Screen 7: Flying Towards Planet
+- Both forward and upward shots now off the same mouse button.
+- Smoothed out drawing quite a bit. (Still flickery, but better!)
+- Improved shot->enemy collision.
+- Fix for stage ending before last wave of enemies (gold ones) came down.
+
+Boss 7: Space Crow
+- Smoothed out boss drawing a fair bit.
+- Smoothed out ship + player's vertical laser shot.
+- Boss/player collision bugfixes.
+- Increased boss health, balanced movement.
+- Fix for boss explosion sometimes happening on the bottom of the screen.
+
+Screen 8: Driving Between Beams
+- Changed from repeat of pillars in Screen 5a to light blue pillars.
+- Imcreased the difficulty a bit.
+- Improved collision.
+- Increased the number of beams to avoid.
+
+Boss 8: Play Exobius PigCat
+- Fix for not being centered on screen.
+- Improved framerate significantly.
+- Minor shading improvment to boss's base.
+- Smoothed out and overhauled boss's homing bubble shot.
+- Improvement to boss hurt flashing.
+- After dying, ship is now respawned on opposite side to bubble shot.
+
+Good ending
+- Background music!
+- Now entirely mouse driven, with helpful animated mouse icon appearing.
+- Grammar fix
+- THE END displayed on final screen, along with lives and score.
+
+--- (Game ends here after getting the good ending) ---
