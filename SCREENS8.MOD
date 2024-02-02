@@ -14,7 +14,7 @@ FROM Exobius IMPORT
     DarkestBrown, DarkBrown, Brown, LightBrown, LightestBrown,
     DarkestGreen, DarkGreen, Green, LightGreen, LightestGreen,
     DarkestYellow, DarkYellow, Yellow, LightYellow, LightestYellow,
-    PlaneX, BulletX, BulletY, PlaneY, CoverRectangleX,
+    PlaneX, BulletX, BulletY, PlaneY,
     Enemies, Enemy1X, Enemy2X, Enemy3X, Enemy4X, Enemy5X, Enemy6X, EnemyY,
     ScreenComplete, GameOver, DrawGameOver, GameSpeed, HudY, HudBg,
     DrawPlane5025, DrawLives, UpdateScore, CheckMouse, Die;

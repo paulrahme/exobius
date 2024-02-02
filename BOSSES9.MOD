@@ -193,6 +193,7 @@ VAR
     SpitX, SpitY, SpitYOffset, BossWidth, BossLives : CARDINAL;
 BEGIN
     ScreenComplete := FALSE;
+    PlaneY := PlaneStartY;
 
     (* Intro - approaching boss *)
     Rectangle(0, 100, 319, 199, DarkRed, TRUE);

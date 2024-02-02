@@ -2,7 +2,6 @@ IMPLEMENTATION MODULE Intro2;
 
 IMPORT Graph, IO, Lib, Exobius, Storage, Font;
 FROM Graph IMPORT ClearScreen, _GCLEARSCREEN, Rectangle, Polygon, Line, HLine, Circle, Ellipse, Disc, Plot, Arc;
-FROM IO IMPORT KeyPressed;
 FROM Lib IMPORT Delay;
 FROM Font IMPORT A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z;
 FROM Exobius IMPORT
@@ -16,7 +15,7 @@ FROM Exobius IMPORT
     DarkestGreen, DarkGreen, Green, LightGreen, LightestGreen,
     DarkestYellow, DarkYellow, Yellow, LightYellow, LightestYellow,
     DrawPlane, PlaneX, PlaneY,
-    Count, GameSpeed, CheckForAnyMouseButton;
+    Count, GameSpeed, CheckForAnyMouseButton, Key, CheatCode;
 
 PROCEDURE DrawVGAPlanet;
 VAR
@@ -53,6 +52,23 @@ BEGIN
     END;
 END DrawVGAPlanet;
 
+PROCEDURE CheckCheatKey;
+BEGIN
+    Key := IO.RdKey();
+    CASE Key OF
+        |'1': CheatCode := 101;
+        |'2': CheatCode := 102;
+        |'3': CheatCode := 103;
+        |'4': CheatCode := 104;
+        |'5': CheatCode := 105;
+        |'6': CheatCode := 106;
+        |'7': CheatCode := 107;
+        |'8': CheatCode := 108;
+        |'9': CheatCode := 109;
+        |'i': CheatCode := 1;
+    END;
+END CheckCheatKey;
+
 PROCEDURE PlaneToPlanet;
 VAR
     RandomRed, Width : CARDINAL;
@@ -71,6 +87,9 @@ BEGIN
         DrawPlane(PlaneX, PlaneY, Width);
         Lib.Delay(GameSpeed * 3);
         IF CheckForAnyMouseButton() THEN
+            PlaneY := 200;
+        ELSIF (IO.KeyPressed()) THEN
+            CheckCheatKey();
             PlaneY := 200;
         END;
     END;

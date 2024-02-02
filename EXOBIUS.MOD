@@ -78,6 +78,7 @@ BEGIN
     GameOver := FALSE;
     ScreenComplete := FALSE;
     Lives := 3;
+    CheatCode := 0;
     PlaneX := PlaneStartX; PlaneY := PlaneStartY; BulletX := 0; BulletY := 0; EnemyY := 65000;
     BkSize := CARDINAL(Graph.ImageSize(0, 0, 319, 100));
     Storage.ALLOCATE(BkAddress, BkSize);
@@ -221,10 +222,11 @@ END DrawPlane1608;
 
 PROCEDURE DrawLives();
 VAR
-    LifeCount : CARDINAL;
+    LivesCard, LifeCount : CARDINAL;
 BEGIN
-    Rectangle(0, HudY, (Lives + 1) * 16, HudY + 8, HudBg, TRUE);
-    FOR LifeCount := 1 TO Lives DO
+    LivesCard := CARDINAL(Lives);
+    Rectangle(0, HudY, (LivesCard + 1) * 16, HudY + 8, HudBg, TRUE);
+    FOR LifeCount := 1 TO LivesCard DO
         DrawPlane1608((LifeCount - 1) * 16, HudY);
     END;
 END DrawLives;
@@ -515,6 +517,8 @@ PROCEDURE Die();
 CONST
     SoundDelay = 50;
 BEGIN
+    IF (CheatCode = 1) THEN RETURN; END;
+
     Sound(200);
     Ellipse(PlaneX + (PlaneWidth DIV 2), PlaneY + (PlaneHeight DIV 2), PlaneWidth DIV 2, PlaneHeight DIV 2, Red, TRUE);
     Lib.Delay(SoundDelay);

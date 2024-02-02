@@ -15,7 +15,8 @@ FROM Exobius IMPORT
     LightestGreen, DarkestYellow, DarkYellow, Yellow, LightYellow, LightestYellow,
     PlaneX, PlaneY, PlaneWidth, PlaneHeight, PlaneStartX, PlaneStartY, Xs, Ys, Lives, HudY, HudBg, 
     ScreenComplete, GameOver, GameSpeed, GetPixel, PutPixel, DrawPlane, DrawPlane5025, DrawPlane1608,
-    CheckMouse, CheckMouseAndSpecialKeys, BkAddress, ClearTheBuffer, DrawLives, UpdateScore, DrawGameOver, TextPos;
+    CheckMouse, CheckMouseAndSpecialKeys, BkAddress, ClearTheBuffer, DrawLives, UpdateScore, DrawGameOver,
+    TextPos, CheatCode;
 FROM Sprites IMPORT RandomBrown;
 
 CONST
@@ -41,6 +42,8 @@ CONST
 VAR
     PixelColour : SHORTCARD;
 BEGIN
+    IF (CheatCode = 1) THEN RETURN; END;
+
     Graph.GetImage(0, 190, 319, 200, BkAddress);
     Rectangle(0, 190, 320, 200, Blue, TRUE);
     Circle(PlaneX + 10, PlaneY + 5, 2, LightestBlue);
@@ -212,9 +215,9 @@ BEGIN
             END;
         END;
 
-        (* Hide plane + HUD, scroll up *)
+        (* Hide plane + HUD, scroll downwards *)
         Graph.PutImage(PlaneX, PlaneY, BehindPlaneAddress, Graph._GPSET);
-        Rectangle(0, HudY, (Lives + 1) * 16, HudY + 8, HudBg, TRUE);
+        Rectangle(0, HudY, (CARDINAL(Lives) + 1) * 16, HudY + 8, HudBg, TRUE);
         Rectangle(263, HudY, 319, HudY + 8, HudBg, TRUE);
         Graph.GetImage(0, 0, 104, 198, BkAddress);
         Graph.PutImage(0, ScrollSpeed, BkAddress, Graph._GPSET);

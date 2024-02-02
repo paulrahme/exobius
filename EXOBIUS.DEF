@@ -28,7 +28,8 @@ VAR
     Key : CHAR;
     PlaneX, PlaneY, BulletX, OldBulletX, BulletY, DrawBulletX,
         Enemies, Enemy1X, Enemy2X, Enemy3X, Enemy4X, Enemy5X, Enemy6X, EnemyY, Boss1Lives, Boss2Lives, Boss3Lives,
-        CoverRectangleX, Count, Lives, BkSize, HudY, HudBg : CARDINAL;
+        Count, BkSize, HudY, HudBg : CARDINAL;
+    Lives, CheatCode : SHORTCARD;
     BkAddress : ADDRESS;
     BkColour, OldBkColor : LONGCARD;
     Xs, Ys : CoordArray;

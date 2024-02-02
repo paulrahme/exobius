@@ -3,9 +3,7 @@ MODULE Exomain;
 (*$S FF00*)
 
 IMPORT BgMusic;
-FROM Exobius IMPORT
-    Init, ShutDown, SetVGAMode, SetTextMode,
-    GameOver, ClearTheBuffer;
+FROM Exobius IMPORT Init, ShutDown, SetVGAMode, SetTextMode, GameOver, ClearTheBuffer, CheatCode;
 
 FROM Font IMPORT DrawFontTest;
 FROM Slides IMPORT PlayIntroSlideshow, PlayGoodEnding, PlayBadEnding;
@@ -29,25 +27,45 @@ PROCEDURE PlayLevels();
 BEGIN
     BgMusic.LoadNewSong("BGM_PAUS.DAT");
 
-    Screen1();      IF GameOver THEN RETURN; END;
-    Boss1();        IF GameOver THEN RETURN; END;
-    Screen2();      IF GameOver THEN RETURN; END;
-    Screen3();      IF GameOver THEN RETURN; END;
-    Screen4();      IF GameOver THEN RETURN; END;
-    Boss4();        IF GameOver THEN RETURN; END;
-    Screen6();      IF GameOver THEN RETURN; END;
-    Screen7();      IF GameOver THEN RETURN; END;
+    IF (CheatCode < 101) THEN
+        Screen1();      IF GameOver THEN RETURN; END;
+        Boss1();        IF GameOver THEN RETURN; END;
+    END;
+    IF (CheatCode < 102) THEN
+        Screen2();      IF GameOver THEN RETURN; END;
+    END;
+    IF (CheatCode < 103) THEN
+        Screen3();      IF GameOver THEN RETURN; END;
+    END;
+    IF (CheatCode < 104) THEN
+        Screen4();      IF GameOver THEN RETURN; END;
+        Boss4();        IF GameOver THEN RETURN; END;
+    END;
+    IF (CheatCode < 105) THEN
+        Screen6();      IF GameOver THEN RETURN; END;
+    END;
+    IF (CheatCode < 106) THEN
+        Screen7();      IF GameOver THEN RETURN; END;
+    END;
+
+    IF (CheatCode >= 106) THEN PlaneInAir := TRUE; END;
 
     (* Stage/boss split *)
     IF NOT PlaneInAir THEN
         Boss7();    IF GameOver THEN RETURN; END;
     ELSE
-        FlyThroughSpace();
-        Screen8();  IF GameOver THEN RETURN; END;
-        Boss8();    IF GameOver THEN RETURN; END;
-        Screen9();  IF GameOver THEN RETURN; END;
+        IF (CheatCode < 106) THEN
+            FlyThroughSpace();
+        END;
+        IF (CheatCode < 107) THEN
+            Screen8();  IF GameOver THEN RETURN; END;
+            Boss8();    IF GameOver THEN RETURN; END;
+        END;
+        IF (CheatCode < 108) THEN
+            Screen9();  IF GameOver THEN RETURN; END;
+        END;
         Boss9();    IF GameOver THEN RETURN; END;
-  END;
+    END;
 END PlayLevels;
 
 (* Main loop *)

@@ -10,7 +10,7 @@ FROM Sprites IMPORT DrawMaces,DrawIceRocks, DrawSnowMen, DrawSnowBalls, DrawSkii
 FROM Exobius IMPORT
     Black, DarkestGrey, DarkGrey, Grey, LightGrey, LightestGrey,
     DarkestWhite, DarkWhite, White, LightWhite, LightestWhite, LightBlue,
-    PlaneX, BulletY, PlaneY,
+    BulletY, PlaneY, PlaneStartY,
     Enemies, Enemy1X, Enemy2X, Enemy3X, Enemy4X, Enemy5X, Enemy6X,
     OneAlive, TwoAlive, ThreeAlive, FourAlive, FiveAlive, SixAlive,
     EnemyY, EnemyYStart, CollisionY,
@@ -194,6 +194,7 @@ BEGIN
     Rectangle(0, 0, 319, 99, LightBlue, TRUE);
 
     ScreenComplete := FALSE;
+    PlaneY := PlaneStartY;
     BulletY := 0;
     Enemies := 1;
 
