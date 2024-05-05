@@ -1,5 +1,11 @@
-EXOBIUS 2024
-============
+EXOBIUS: 2024 EDITION
+=====================
+
+----------------------------------------
+Dedicated to Niklaus Wirth (1934 - 2024)
+High Level Programming Languages Pioneer
+----------------------------------------
+
 
 1. The Story of Exobius and Exobius 2024
 2. Storyline
@@ -7,9 +13,9 @@ EXOBIUS 2024
 4. Playing the game (includes controls, etc.)
 5. Exobius 2024 Updates
 
-----------------------------------------
-1. THE STORY OF EXOBIUS AND EXOBIUS 2024
-----------------------------------------
+-------------------------------------------------
+1. THE STORY OF EXOBIUS AND EXOBIUS: 2024 EDITION
+-------------------------------------------------
 
 Welcome to Exobius!
 
